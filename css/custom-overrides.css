@@ -1,13 +1,13 @@
-/* GDTA Conference 2026 Brand Colors */
+/* GDTA Conference 2026 Brand Colors - Professional White Theme */
 :root {
-  --gdta-bg-primary: #1F1F1F;      /* Primary Background */
-  --gdta-bg-card: #2B2B2B;         /* Card / Surface */
-  --gdta-accent: #F2B705;          /* Primary Accent (CTA) */
-  --gdta-text-primary: #FFFFFF;    /* Primary Text */
-  --gdta-text-secondary: #D1D1D1;  /* Secondary Text */
-  --gdta-text-muted: #9CA3AF;      /* Muted Text */
-  --gdta-teal: #00A8A8;            /* Optional Teal */
-  --gdta-magenta: #C2185B;         /* Optional Magenta */
+  --gdta-bg-primary: #FFFFFF;      /* Primary Background - White */
+  --gdta-bg-card: #F8F9FA;         /* Card / Surface - Light Grey */
+  --gdta-accent: #000000;          /* Primary Accent - Black */
+  --gdta-text-primary: #212529;    /* Primary Text - Dark Grey/Black */
+  --gdta-text-secondary: #495057;  /* Secondary Text - Medium Grey */
+  --gdta-text-muted: #6C757D;      /* Muted Text - Grey */
+  --gdta-border: #DEE2E6;          /* Border Color - Light Grey */
+  --gdta-hover: #E9ECEF;           /* Hover Background - Very Light Grey */
 }
 
 /* Global Resets */
@@ -53,8 +53,9 @@ p, span, div, a {
 }
 
 .navbar {
-    background-color: var(--gdta-bg-card) !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    background-color: #F8F9FA !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid var(--gdta-border);
 }
 
 
@@ -62,33 +63,33 @@ p, span, div, a {
 .btn-primary {
     background-color: var(--gdta-accent) !important;
     border-color: var(--gdta-accent) !important;
-    color: var(--gdta-bg-primary) !important;
+    color: #FFFFFF !important;
     font-weight: 600;
     transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-    background-color: #d9a504 !important;
-    border-color: #d9a504 !important;
+    background-color: #333333 !important;
+    border-color: #333333 !important;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(242, 183, 5, 0.4);
-    color: var(--gdta-bg-primary) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    color: #FFFFFF !important;
 }
 
 .btn-light {
-    background-color: var(--gdta-text-primary) !important;
-    border-color: var(--gdta-text-primary) !important;
-    color: var(--gdta-bg-primary) !important;
+    background-color: #FFFFFF !important;
+    border-color: var(--gdta-border) !important;
+    color: var(--gdta-text-primary) !important;
     font-weight: 600;
     transition: all 0.3s ease;
 }
 
 .btn-light:hover {
-    background-color: var(--gdta-accent) !important;
-    border-color: var(--gdta-accent) !important;
-    color: var(--gdta-bg-primary) !important;
+    background-color: var(--gdta-hover) !important;
+    border-color: var(--gdta-text-secondary) !important;
+    color: var(--gdta-text-primary) !important;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(242, 183, 5, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .btn-outline-primary {
@@ -101,9 +102,9 @@ p, span, div, a {
 .btn-outline-primary:hover {
     background-color: var(--gdta-accent) !important;
     border-color: var(--gdta-accent) !important;
-    color: var(--gdta-bg-primary) !important;
+    color: #FFFFFF !important;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(242, 183, 5, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Navigation Pills */
@@ -120,7 +121,7 @@ p, span, div, a {
 }
 
 .nav-pill:hover {
-    background-color: var(--gdta-bg-primary);
+    background-color: var(--gdta-hover);
     color: var(--gdta-accent) !important;
 }
 
@@ -142,11 +143,11 @@ p, span, div, a {
 
 /* Section Backgrounds */
 .section-dark {
-    background-color: var(--gdta-bg-primary) !important;
+    background-color: var(--gdta-bg-card) !important;
 }
 
 .section-card {
-    background-color: var(--gdta-bg-card) !important;
+    background-color: #FFFFFF !important;
 }
 
 .section-accent {
@@ -159,12 +160,13 @@ p, span, div, a {
 .section-accent h4,
 .section-accent h5,
 .section-accent p {
-    color: var(--gdta-bg-primary) !important;
+    color: #FFFFFF !important;
 }
 
 /* Footer */
 .footer {
-    background-color: var(--gdta-bg-primary) !important;
+    background-color: #F8F9FA !important;
+    border-top: 1px solid var(--gdta-border);
 }
 
 .footer h1,
@@ -184,25 +186,26 @@ p, span, div, a {
 .footer .btn-outline-primary:hover {
     background-color: var(--gdta-accent) !important;
     border-color: var(--gdta-accent) !important;
-    color: var(--gdta-bg-primary) !important;
+    color: #FFFFFF !important;
 }
 
 /* Card Styles */
 .committee-card,
 .secretariat-card,
 .content-card {
-    background-color: var(--gdta-bg-card);
-    border: 2px solid rgba(242, 183, 5, 0.2);
+    background-color: #FFFFFF;
+    border: 1px solid var(--gdta-border);
     border-radius: 10px;
     padding: 25px;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .committee-card:hover,
 .secretariat-card:hover,
 .content-card:hover {
-    border-color: var(--gdta-accent);
-    box-shadow: 0 5px 20px rgba(242, 183, 5, 0.3);
+    border-color: var(--gdta-text-secondary);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     transform: translateY(-5px);
 }
 
@@ -223,16 +226,8 @@ p, span, div, a {
     color: var(--gdta-accent) !important;
 }
 
-.text-teal {
-    color: var(--gdta-teal) !important;
-}
-
-.text-magenta {
-    color: var(--gdta-magenta) !important;
-}
-
 .border-bottom {
-    border-bottom-color: var(--gdta-accent) !important;
+    border-bottom-color: var(--gdta-border) !important;
 }
 
 /* Smooth scrolling - Disabled for multi-page */
