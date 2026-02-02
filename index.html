@@ -34,6 +34,316 @@
 
     <!-- Custom Color Overrides -->
     <link href="css/custom-overrides.css" rel="stylesheet">
+
+    <!-- Advanced UI Enhancements -->
+    <style>
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Advanced Card Hover Effects */
+        .article-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-card>div {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+            z-index: 1;
+        }
+
+        .article-card:hover::before {
+            left: 100%;
+        }
+
+        .article-card:hover>div {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        /* Featured Article Fade Animation */
+        .featured-article img {
+            transition: all 0.5s ease-in-out;
+        }
+
+        .featured-article.changing img {
+            opacity: 0;
+            transform: scale(1.05);
+        }
+
+        /* Pagination Buttons Advanced Effect */
+        .carousel-indicator {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .carousel-indicator::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: #E91E63;
+            transition: width 0.3s ease;
+        }
+
+        .carousel-indicator.active::after {
+            width: 100%;
+        }
+
+        .carousel-indicator:hover {
+            transform: scale(1.3);
+            background-color: #6C757D !important;
+        }
+
+        /* Parallax Effect for Background */
+        .parallax-section {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Badge Pulse Animation */
+        .badge {
+            animation: subtle-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes subtle-pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        /* Image Zoom on Hover */
+        .article-card img {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .article-card:hover img {
+            transform: scale(1.08);
+        }
+
+        /* Loading Skeleton Animation */
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        .skeleton-loader {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        /* Smooth Text Reveal */
+        .reveal-text {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .reveal-text.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Button Ripple Effect */
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-ripple::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-ripple:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Gradient Border Animation */
+        @keyframes border-flow {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(90deg, #E91E63, #9C27B0, #2196F3, #00BCD4);
+            background-size: 300% 300%;
+            animation: border-flow 5s ease infinite;
+            padding: 2px;
+            border-radius: 15px;
+        }
+
+        .gradient-border-inner {
+            background: white;
+            border-radius: 13px;
+        }
+
+        /* Smooth Section Transitions */
+        section {
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Advanced Shadow Effects */
+        .shadow-lift {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .shadow-lift:hover {
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        /* Stagger Animation for Cards */
+        .stagger-animation {
+            animation: stagger-fade-in 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes stagger-fade-in {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stagger-animation:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .stagger-animation:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .stagger-animation:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .stagger-animation:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .stagger-animation:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        /* Cursor Trail Effect */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: #E91E63;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease;
+            opacity: 0.7;
+        }
+
+        /* Text Gradient */
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Micro Interactions */
+        .micro-interact {
+            transition: all 0.2s ease;
+        }
+
+        .micro-interact:active {
+            transform: scale(0.95);
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #E91E63, #9C27B0);
+            width: 0%;
+            z-index: 10000;
+            transition: width 0.2s ease;
+        }
+    </style>
 </head>
 
 <body>
@@ -194,6 +504,230 @@
     </div>
     <!-- Highlights Section End -->
 
+    <!-- Featured Sessions Section Start -->
+    <div class="container-fluid py-5" style="background-color: #FFFFFF;">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h5 class="text-uppercase mb-2"
+                    style="color: #E91E63 !important; letter-spacing: 2px; font-weight: 600;">Explore Our Tracks</h5>
+                <h2 class="mb-4" style="font-weight: 800; color: #000000 !important;">Featured Conference Sessions</h2>
+                <p style="color: #495057; max-width: 800px; margin: 0 auto;">Catch up with our latest conference tracks
+                    and explore innovative topics that will shape the future</p>
+            </div>
+
+            <!-- Featured Article (Recent Post) -->
+            <div class="featured-article mb-5 wow fadeInUp shadow-lift" data-wow-delay="0.1s">
+                <div class="gradient-border">
+                    <div class="gradient-border-inner">
+                        <div class="row g-0" style="border-radius: 13px; overflow: hidden;">
+                            <div class="col-lg-5" style="position: relative; overflow: hidden;">
+                                <img id="featured-img" src="img/Sessions/FutureForesight.jpg" alt="Featured Session"
+                                    style="width: 100%; height: 100%; object-fit: cover; min-height: 350px;">
+                                <div
+                                    style="position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 20px;">
+                                    <span
+                                        style="color: #fff; font-weight: 600; font-size: 12px; text-transform: uppercase;">🔥
+                                        Trending</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-7 p-5 glass-effect">
+                                <div class="mb-3">
+                                    <span class="gradient-text"
+                                        style="font-weight: 700; font-size: 14px; letter-spacing: 1px;">FEATURED
+                                        TRACK</span>
+                                    <span style="color: #6C757D; margin-left: 15px; font-size: 14px;"
+                                        id="featured-date">29 Sep 2026 • 4 min</span>
+                                </div>
+                                <h3 id="featured-title" class="reveal-text"
+                                    style="color: #000000; font-weight: 800; margin-bottom: 20px;">Futures Foresight
+                                </h3>
+                                <p id="featured-description" class="reveal-text"
+                                    style="color: #495057; line-height: 1.8; margin-bottom: 25px;">
+                                    In an era of deep uncertainty, relying on past data to predict the future is no
+                                    longer sufficient.
+                                    This track moves beyond simple forecasting to explore Strategic Foresight—a
+                                    disciplined approach
+                                    to identifying weak signals of change and creating alternative futures.
+                                </p>
+                                <div class="d-flex gap-2 reveal-text">
+                                    <a href="program-sessions.html"
+                                        class="btn btn-primary px-4 py-2 btn-ripple micro-interact float-animation"
+                                        style="border-radius: 25px; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);">Read
+                                        More</a>
+                                    <button class="btn btn-outline-secondary px-3 py-2 micro-interact"
+                                        style="border-radius: 25px;">
+                                        <i class="fas fa-bookmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly Most Read -->
+            <div class="most-read-section">
+                <div class="d-flex align-items-center mb-4">
+                    <h4 style="color: #000000; font-weight: 700; margin: 0;">More Tracks</h4>
+                    <span style="margin-left: 10px; font-size: 24px;">🔥</span>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-4 col-md-6 wow fadeInUp article-card stagger-animation" data-wow-delay="0.1s"
+                        data-track="1">
+                        <div class="shadow-lift"
+                            style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); border-radius: 15px; overflow: hidden; cursor: pointer; height: 100%;">
+                            <div style="position: relative; overflow: hidden;">
+                                <img src="img/Sessions/DesignAi.jpg" alt="Design AI"
+                                    style="width: 100%; height: 200px; object-fit: cover;">
+                                <div
+                                    style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%);">
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="mb-2 d-flex align-items-center justify-content-between">
+                                    <span style="color: #6C757D; font-size: 13px;">📅 29 Sep 2026 • 4 min</span>
+                                </div>
+                                <h5
+                                    style="color: #000000; font-weight: 700; margin-bottom: 10px; transition: color 0.3s;">
+                                    Design AI</h5>
+                                <p style="color: #495057; font-size: 14px; margin-bottom: 15px; line-height: 1.6;">
+                                    Human-Centered
+                                    Intelligence exploring AI's role in design thinking and creative innovation.</p>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <span class="badge micro-interact"
+                                        style="background-color: #E3F2FD; color: #1976D2; padding: 5px 12px; border-radius: 15px; font-size: 12px;">AI</span>
+                                    <span class="badge micro-interact"
+                                        style="background-color: #F3E5F5; color: #7B1FA2; padding: 5px 12px; border-radius: 15px; font-size: 12px;">Design</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 wow fadeInUp article-card stagger-animation" data-wow-delay="0.2s"
+                        data-track="2">
+                        <div class="shadow-lift"
+                            style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); border-radius: 15px; overflow: hidden; cursor: pointer; height: 100%;">
+                            <div style="position: relative; overflow: hidden;">
+                                <img src="img/Sessions/SocialImpact.jpg" alt="Social Impact"
+                                    style="width: 100%; height: 200px; object-fit: cover;">
+                                <div
+                                    style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%);">
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="mb-2 d-flex align-items-center justify-content-between">
+                                    <span style="color: #6C757D; font-size: 13px;">📅 29 Sep 2026 • 4 min</span>
+                                </div>
+                                <h5 style="color: #000000; font-weight: 700; margin-bottom: 10px;">Social Impact</h5>
+                                <p style="color: #495057; font-size: 14px; margin-bottom: 15px;">Designing for Good in
+                                    Complex Systems to tackle wicked problems and create measurable change.</p>
+                                <div class="d-flex gap-2">
+                                    <span class="badge"
+                                        style="background-color: #E8F5E9; color: #388E3C; padding: 5px 12px; border-radius: 15px; font-size: 12px;">Impact</span>
+                                    <span class="badge"
+                                        style="background-color: #FFF3E0; color: #F57C00; padding: 5px 12px; border-radius: 15px; font-size: 12px;">Social</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 wow fadeInUp article-card" data-wow-delay="0.3s" data-track="3">
+                        <div
+                            style="background-color: #F8F9FA; border-radius: 15px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s; height: 100%;">
+                            <img src="img/Sessions/EducationPolicy.jpg" alt="Education Policy"
+                                style="width: 100%; height: 200px; object-fit: cover;">
+                            <div class="p-4">
+                                <div class="mb-2">
+                                    <span style="color: #6C757D; font-size: 13px;">30 Sep 2026 • 4 min</span>
+                                </div>
+                                <h5 style="color: #000000; font-weight: 700; margin-bottom: 10px;">Education Policy</h5>
+                                <p style="color: #495057; font-size: 14px; margin-bottom: 15px;">Nurturing Resilient
+                                    Lifelong Learners through holistic and multidisciplinary education.</p>
+                                <div class="d-flex gap-2">
+                                    <span class="badge"
+                                        style="background-color: #FFF9C4; color: #F57F17; padding: 5px 12px; border-radius: 15px; font-size: 12px;">Education</span>
+                                    <span class="badge"
+                                        style="background-color: #FCE4EC; color: #C2185B; padding: 5px 12px; border-radius: 15px; font-size: 12px;">Policy</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-6 col-md-6 wow fadeInUp article-card" data-wow-delay="0.4s" data-track="4">
+                        <div
+                            style="background-color: #F8F9FA; border-radius: 15px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s; height: 100%;">
+                            <img src="img/Sessions/IndustryInnovation.jpg" alt="Industry Innovation"
+                                style="width: 100%; height: 200px; object-fit: cover;">
+                            <div class="p-4">
+                                <div class="mb-2">
+                                    <span style="color: #6C757D; font-size: 13px;">30 Sep 2026 • 4 min</span>
+                                </div>
+                                <h5 style="color: #000000; font-weight: 700; margin-bottom: 10px;">Industry Innovation
+                                </h5>
+                                <p style="color: #495057; font-size: 14px; margin-bottom: 15px;">The Industrial
+                                    Metaverse & Digital Twin exploring Industry 4.0 and sustainable production systems.
+                                </p>
+                                <div class="d-flex gap-2">
+                                    <span class="badge"
+                                        style="background-color: #E1F5FE; color: #0277BD; padding: 5px 12px; border-radius: 15px; font-size: 12px;">Industry</span>
+                                    <span class="badge"
+                                        style="background-color: #F1F8E9; color: #558B2F; padding: 5px 12px; border-radius: 15px; font-size: 12px;">Innovation</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 wow fadeInUp article-card" data-wow-delay="0.5s" data-track="0">
+                        <div
+                            style="background-color: #F8F9FA; border-radius: 15px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s; height: 100%;">
+                            <img src="img/Sessions/FutureForesight.jpg" alt="Futures Foresight"
+                                style="width: 100%; height: 200px; object-fit: cover;">
+                            <div class="p-4">
+                                <div class="mb-2">
+                                    <span style="color: #6C757D; font-size: 13px;">29 Sep 2026 • 4 min</span>
+                                </div>
+                                <h5 style="color: #000000; font-weight: 700; margin-bottom: 10px;">Futures Foresight
+                                </h5>
+                                <p style="color: #495057; font-size: 14px; margin-bottom: 15px;">From Prediction to
+                                    Preparedness - Strategic foresight for navigating uncertainty and creating
+                                    alternative futures.</p>
+                                <div class="d-flex gap-2">
+                                    <span class="badge"
+                                        style="background-color: #EDE7F6; color: #512DA8; padding: 5px 12px; border-radius: 15px; font-size: 12px;">Foresight</span>
+                                    <span class="badge"
+                                        style="background-color: #E0F2F1; color: #00695C; padding: 5px 12px; border-radius: 15px; font-size: 12px;">Strategy</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="text-center mt-5">
+                    <div class="d-inline-flex gap-2">
+                        <button class="carousel-indicator active" data-index="0"
+                            style="width: 12px; height: 12px; border-radius: 50%; background-color: #000000; border: none; padding: 0;"></button>
+                        <button class="carousel-indicator" data-index="1"
+                            style="width: 12px; height: 12px; border-radius: 50%; background-color: #DEE2E6; border: none; padding: 0;"></button>
+                        <button class="carousel-indicator" data-index="2"
+                            style="width: 12px; height: 12px; border-radius: 50%; background-color: #DEE2E6; border: none; padding: 0;"></button>
+                        <button class="carousel-indicator" data-index="3"
+                            style="width: 12px; height: 12px; border-radius: 50%; background-color: #DEE2E6; border: none; padding: 0;"></button>
+                        <button class="carousel-indicator" data-index="4"
+                            style="width: 12px; height: 12px; border-radius: 50%; background-color: #DEE2E6; border: none; padding: 0;"></button>
+                    </div>
+                    <button class="btn btn-primary mt-3 px-4 py-2"
+                        onclick="window.location.href='program-sessions.html'" style="border-radius: 25px;">View All
+                        Tracks →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Featured Sessions Section End -->
+
     <!-- Call to Action Section Start -->
     <div class="container-fluid py-5" style="background-color: #000000;">
         <div class="container py-5">
@@ -249,6 +783,200 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <script>
+        // Featured Sessions Data
+        const sessions = [
+            {
+                title: "Futures Foresight",
+                description: "In an era of deep uncertainty, relying on past data to predict the future is no longer sufficient. This track moves beyond simple forecasting to explore Strategic Foresight—a disciplined approach to identifying weak signals of change and creating alternative futures.",
+                image: "img/Sessions/FutureForesight.jpg",
+                date: "29 Sep 2026 • 4 min"
+            },
+            {
+                title: "Design AI",
+                description: "As we enter the 'Intelligence Age,' AI is reshaping the design process itself. This track examines the intersection of Human-Centered Design and Artificial Intelligence, focusing on how we can automate the routine to unleash the creative.",
+                image: "img/Sessions/DesignAi.jpg",
+                date: "29 Sep 2026 • 4 min"
+            },
+            {
+                title: "Social Impact",
+                description: "Aligned with GDTA's mission of 'Design Thinking for Good,' this track tackles 'Wicked Problems'—challenges with conflicting values and confusing information. We focus on moving from good intentions to measurable, systemic change.",
+                image: "img/Sessions/SocialImpact.jpg",
+                date: "29 Sep 2026 • 4 min"
+            },
+            {
+                title: "Education Policy",
+                description: "With the backdrop of India's National Education Policy (NEP) 2020, this track explores how education must evolve to prepare students for a multidisciplinary, AI-driven world.",
+                image: "img/Sessions/EducationPolicy.jpg",
+                date: "30 Sep 2026 • 4 min"
+            },
+            {
+                title: "Industry Innovation",
+                description: "Leveraging our partnership with Siemens, this track focuses on the convergence of digital and physical worlds. We explore how 'Industry 4.0' and emerging 'Industry 5.0' are creating smarter, more sustainable production systems.",
+                image: "img/Sessions/IndustryInnovation.jpg",
+                date: "30 Sep 2026 • 4 min"
+            }
+        ];
+
+        let currentIndex = 0;
+        let autoRotateInterval;
+
+        // Update featured article with smooth transition
+        function updateFeaturedArticle(index) {
+            const session = sessions[index];
+            const featuredArticle = document.querySelector('.featured-article');
+            const img = document.getElementById('featured-img');
+
+            // Add changing class for fade effect
+            featuredArticle.classList.add('changing');
+
+            setTimeout(() => {
+                img.src = session.image;
+                document.getElementById('featured-title').textContent = session.title;
+                document.getElementById('featured-description').textContent = session.description;
+                document.getElementById('featured-date').textContent = session.date;
+
+                // Remove changing class
+                featuredArticle.classList.remove('changing');
+            }, 250);
+
+            // Update carousel indicators with animation
+            document.querySelectorAll('.carousel-indicator').forEach((btn, i) => {
+                if (i === index) {
+                    btn.style.backgroundColor = '#000000';
+                    btn.style.width = '32px';
+                    btn.classList.add('active');
+                } else {
+                    btn.style.backgroundColor = '#DEE2E6';
+                    btn.style.width = '12px';
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Auto-rotate featured article every 3 seconds
+        function startAutoRotate() {
+            autoRotateInterval = setInterval(() => {
+                currentIndex = (currentIndex + 1) % sessions.length;
+                updateFeaturedArticle(currentIndex);
+            }, 3000);
+        }
+
+        // Stop auto-rotate
+        function stopAutoRotate() {
+            clearInterval(autoRotateInterval);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            // Progress bar scroll effect
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            document.body.appendChild(progressBar);
+
+            window.addEventListener('scroll', () => {
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
+                progressBar.style.width = scrollPercent + '%';
+            });
+
+            // Intersection Observer for reveal animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all reveal-text elements
+            document.querySelectorAll('.reveal-text').forEach(el => observer.observe(el));
+
+            // Carousel indicator click handlers
+            document.querySelectorAll('.carousel-indicator').forEach((btn, index) => {
+                btn.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateFeaturedArticle(currentIndex);
+                    stopAutoRotate();
+                    setTimeout(startAutoRotate, 5000);
+                });
+            });
+
+            // Article card click handlers with ripple effect
+            document.querySelectorAll('.article-card').forEach(card => {
+                card.addEventListener('click', function (e) {
+                    // Create ripple effect
+                    const ripple = document.createElement('div');
+                    ripple.style.position = 'absolute';
+                    ripple.style.borderRadius = '50%';
+                    ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+                    ripple.style.width = ripple.style.height = '100px';
+                    ripple.style.left = e.clientX - this.getBoundingClientRect().left - 50 + 'px';
+                    ripple.style.top = e.clientY - this.getBoundingClientRect().top - 50 + 'px';
+                    ripple.style.animation = 'ripple-effect 0.6s ease-out';
+                    ripple.style.pointerEvents = 'none';
+
+                    this.appendChild(ripple);
+
+                    setTimeout(() => {
+                        ripple.remove();
+                        window.location.href = 'program-sessions.html';
+                    }, 400);
+                });
+            });
+
+            // Pause auto-rotate on hover
+            const featuredArticle = document.querySelector('.featured-article');
+            featuredArticle.addEventListener('mouseenter', stopAutoRotate);
+            featuredArticle.addEventListener('mouseleave', startAutoRotate);
+
+            // Add button ripple effects
+            document.querySelectorAll('.btn').forEach(btn => {
+                if (!btn.classList.contains('btn-ripple')) {
+                    btn.classList.add('btn-ripple', 'micro-interact');
+                }
+            });
+
+            // Smooth parallax effect
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const parallax = document.querySelector('.parallax-section');
+                if (parallax) {
+                    parallax.style.backgroundPositionY = scrolled * 0.5 + 'px';
+                }
+            });
+
+            // Add stagger animation to cards
+            document.querySelectorAll('.article-card').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.classList.add('stagger-animation');
+            });
+
+            // Start auto-rotation
+            startAutoRotate();
+        });
+
+        // Add ripple animation keyframe
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes ripple-effect {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 
 </html>

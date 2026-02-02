@@ -77,77 +77,437 @@
         </div>
     </div>
 
+    <style>
+        /* Advanced Card Hover Effects */
+        .track-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .track-card>div {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .track-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+            z-index: 1;
+        }
+
+        .track-card:hover::before {
+            left: 100%;
+        }
+
+        .track-card:hover>div {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .track-card-image {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .track-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .track-card:hover .track-card-image img {
+            transform: scale(1.08);
+        }
+
+        .track-card-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+        }
+
+        .track-number {
+            font-size: 80px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.9);
+            position: absolute;
+            z-index: 2;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .track-card-body {
+            padding: 25px;
+        }
+
+        .track-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .track-card:hover .track-content,
+        .track-card.active .track-content {
+            max-height: 2000px;
+        }
+
+        .track-subtitle {
+            color: #E91E63;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .track-description {
+            color: #495057;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .track-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .track-list li {
+            color: #495057;
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .track-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #E91E63;
+            font-weight: bold;
+        }
+
+        /* Micro Interactions */
+        .micro-interact {
+            transition: all 0.2s ease;
+        }
+
+        .micro-interact:active {
+            transform: scale(0.95);
+        }
+
+        /* Badge Animation */
+        .track-badge {
+            animation: subtle-pulse 3s ease-in-out infinite;
+            transition: all 0.2s ease;
+        }
+
+        @keyframes subtle-pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        .track-badge:hover {
+            transform: scale(1.1) !important;
+        }
+
+        /* Stagger Animation */
+        .stagger-animation {
+            animation: stagger-fade-in 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes stagger-fade-in {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stagger-animation:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .stagger-animation:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .stagger-animation:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .stagger-animation:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .stagger-animation:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+    </style>
+
     <div class="container-fluid py-5" style="background-color: #F8F9FA;">
         <div class="container py-5">
             <div class="text-center mb-5">
                 <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Featured Sessions</h5>
+                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Conference Tracks</h5>
                 <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #FFFFFF !important;">Conference Sessions</h2>
+                    style="font-weight: 800; color: #000000 !important;">Explore Our Five Thematic Tracks</h2>
+                <p style="color: #495057; max-width: 800px; margin: 0 auto;">Hover over each card to explore the track
+                    details</p>
             </div>
 
             <div class="row g-4">
-                <div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.1s">
-                    <div class="content-card">
-                        <div class="mb-3"
-                            style="width: 100%; height: 250px; background-color: #FFFFFF; border-radius: 10px; overflow: hidden;">
-                            <img src="img/placeholder-card.jpg" alt="Speaker Placeholder"
-                                style="width: 100%; height: 100%; object-fit: cover;">
+                <!-- Track 1: Futures Foresight -->
+                <div class="col-lg-6 wow fadeInLeft stagger-animation" data-wow-delay="0.1s">
+                    <div class="track-card">
+                        <div>
+                            <div class="track-card-image">
+                                <img src="img/Sessions/FutureForesight.jpg" alt="Futures Foresight">
+                                <span class="track-number">01</span>
+                            </div>
+                            <div class="track-card-body">
+                                <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Futures Foresight
+                                </h3>
+                                <p class="track-subtitle">Theme: From Prediction to Preparedness</p>
+
+                                <div class="track-content">
+                                    <p class="track-description">
+                                        In an era of deep uncertainty, relying on past data to predict the future is no
+                                        longer sufficient.
+                                        This track moves beyond simple forecasting to explore Strategic Foresight—a
+                                        disciplined approach
+                                        to identifying weak signals of change and creating alternative futures.
+                                    </p>
+                                    <ul class="track-list">
+                                        <li><strong>Beyond Forecasting:</strong> Understanding the difference between
+                                            predicting a single probable future and preparing for multiple plausible
+                                            futures
+                                            (the "pluriverse").</li>
+                                        <li><strong>Methodologies for Clarity:</strong> Workshops on Horizon Scanning,
+                                            Causal Layered Analysis, and the Three Horizons Framework.</li>
+                                        <li><strong>Speculative Design:</strong> Using design to create "props" and
+                                            immersive scenarios from the future to test strategies today.</li>
+                                        <li><strong>Anticipatory Governance:</strong> How governments and institutions
+                                            can
+                                            use foresight to build resilience against shocks like pandemics or climate
+                                            change.</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 10px;">Opening Keynote
-                        </h4>
-                        <h6 style="color: #FFFFFF !important; margin-bottom: 15px;">Speaker Name & Designation</h6>
-                        <p style="margin-bottom: 0; color: #495057 !important;">Exploring how design thinking transforms
-                            chaos into clarity, with real-world examples from global innovation leaders.</p>
                     </div>
                 </div>
 
-                <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.2s">
-                    <div class="content-card">
-                        <div class="mb-3"
-                            style="width: 100%; height: 250px; background-color: #FFFFFF; border-radius: 10px; overflow: hidden;">
-                            <img src="img/placeholder-card.jpg" alt="Speaker Placeholder"
-                                style="width: 100%; height: 100%; object-fit: cover;">
+                <!-- Track 2: Design AI -->
+                <div class="col-lg-6 wow fadeInRight stagger-animation" data-wow-delay="0.2s">
+                    <div class="track-card">
+                        <div>
+                            <div class="track-card-image">
+                                <img src="img/Sessions/DesignAi.jpg" alt="Design AI">
+                                <span class="track-number">02</span>
+                            </div>
+                            <div class="track-card-body">
+                                <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Design AI</h3>
+                                <p class="track-subtitle">Theme: Human-Centered Intelligence</p>
+
+                                <div class="track-content">
+                                    <p class="track-description">
+                                        As we enter the "Intelligence Age," AI is reshaping the design process
+                                        itself. This
+                                        track
+                                        examines the intersection of Human-Centered Design and Artificial
+                                        Intelligence,
+                                        focusing on
+                                        how we can automate the routine to unleash the creative.
+                                    </p>
+                                    <ul class="track-list">
+                                        <li><strong>Human-Centered AI (HCAI):</strong> Shifting focus from replacing
+                                            humans
+                                            to augmenting human capabilities with reliable, safe, and trustworthy AI
+                                            systems.</li>
+                                        <li><strong>Generative Design & Automation:</strong> How AI tools automate
+                                            complex
+                                            layout generation, allowing designers to focus on high-level problem
+                                            solving.
+                                        </li>
+                                        <li><strong>Trust & Transparency:</strong> Implementing UX principles like
+                                            "Layered
+                                            Transparency" and "Dynamic Consent" for algorithmic decisions.</li>
+                                        <li><strong>The AI-Powered Workflow:</strong> Utilizing AI for user research
+                                            analysis and prototype generation as a "creative intern."</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 10px;">Panel Discussion
-                        </h4>
-                        <h6 style="color: #FFFFFF !important; margin-bottom: 15px;">Multiple Industry Experts</h6>
-                        <p style="margin-bottom: 0; color: #495057 !important;">Industry leaders discuss practical
-                            applications of design thinking in diverse organizational contexts.</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.3s">
-                    <div class="content-card">
-                        <div class="mb-3"
-                            style="width: 100%; height: 250px; background-color: #FFFFFF; border-radius: 10px; overflow: hidden;">
-                            <img src="img/placeholder-card.jpg" alt="Speaker Placeholder"
-                                style="width: 100%; height: 100%; object-fit: cover;">
+            <!-- Track 3: Social Impact -->
+            <div class="col-lg-6 wow fadeInLeft stagger-animation" data-wow-delay="0.3s">
+                <div class="track-card">
+                    <div>
+                        <div class="track-card-image">
+                            <img src="img/Sessions/SocialImpact.jpg" alt="Social Impact">
+                            <span class="track-number">03</span>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 10px;">Workshop Session
-                        </h4>
-                        <h6 style="color: #FFFFFF !important; margin-bottom: 15px;">Workshop Facilitator Name</h6>
-                        <p style="margin-bottom: 0; color: #495057 !important;">Hands-on workshop focusing on practical
-                            design thinking tools and methodologies.</p>
-                    </div>
-                </div>
+                        <div class="track-card-body">
+                            <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Social Impact
+                            </h3>
+                            <p class="track-subtitle">Theme: Designing for Good in Complex Systems</p>
 
-                <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.4s">
-                    <div class="content-card">
-                        <div class="mb-3"
-                            style="width: 100%; height: 250px; background-color: #FFFFFF; border-radius: 10px; overflow: hidden;">
-                            <img src="img/placeholder-card.jpg" alt="Speaker Placeholder"
-                                style="width: 100%; height: 100%; object-fit: cover;">
+                            <div class="track-content">
+                                <p class="track-description">
+                                    Aligned with GDTA's mission of "Design Thinking for Good," this track
+                                    tackles
+                                    "Wicked Problems"—
+                                    challenges with conflicting values and confusing information. We focus on
+                                    moving
+                                    from good
+                                    intentions to measurable, systemic change.
+                                </p>
+                                <ul class="track-list">
+                                    <li><strong>Theory of Change:</strong> Moving beyond "impact washing" by
+                                        rigorously
+                                        mapping how specific activities lead to sustained long-term community
+                                        changes.
+                                    </li>
+                                    <li><strong>Systems Thinking:</strong> Understanding social impact as a
+                                        network of
+                                        relationships connecting individual efforts to larger ecosystems.</li>
+                                    <li><strong>Rigorous Evaluation:</strong> Establishing high standards for
+                                        "AI for
+                                        Social Good" projects, ensuring they are deployed and effective.</li>
+                                    <li><strong>Inclusive Innovation:</strong> Case studies on frugal innovation
+                                        and
+                                        "Jugaad" driving breakthrough social solutions.</li>
+                                </ul>
+                            </div>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 10px;">Case Study
-                            Presentation</h4>
-                        <h6 style="color: #FFFFFF !important; margin-bottom: 15px;">Presenter Name & Organization</h6>
-                        <p style="margin-bottom: 0; color: #495057 !important;">Real-world case studies showcasing
-                            successful design thinking implementations.</p>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Track 4: Education Policy -->
+        <div class="col-lg-6 wow fadeInRight stagger-animation" data-wow-delay="0.4s">
+            <div class="track-card">
+                <div>
+                    <div class="track-card-image">
+                        <img src="img/Sessions/EducationPolicy.jpg" alt="Education Policy">
+                        <span class="track-number">04</span>
+                    </div>
+                    <div class="track-card-body">
+                        <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Education Policy
+                        </h3>
+                        <p class="track-subtitle">Theme: Nurturing Resilient Lifelong Learners</p>
+
+                        <div class="track-content">
+                            <p class="track-description">
+                                With the backdrop of India's National Education Policy (NEP) 2020, this
+                                track
+                                explores how
+                                education must evolve to prepare students for a multidisciplinary, AI-driven
+                                world.
+                            </p>
+                            <ul class="track-list">
+                                <li><strong>Holistic & Multidisciplinary Learning:</strong> Breaking down
+                                    silos
+                                    between arts, sciences, and vocational skills to create well-rounded
+                                    critical
+                                    thinkers.</li>
+                                <li><strong>AI Literacy & Ethics:</strong> Integrating AI education as
+                                    foundational
+                                    literacy for all, focusing on ethical implications and responsible
+                                    technology
+                                    use.</li>
+                                <li><strong>Lifelong Learning:</strong> Shifting education from one-time
+                                    degrees to
+                                    continuous upskilling and reskilling for digital transformation.</li>
+                                <li><strong>EdTech Privacy & Security:</strong> Addressing technology
+                                    acquisition
+                                    hurdles while protecting student data privacy in the surveillance era.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Track 5: Industry Innovation -->
+    <div class="col-lg-12 wow fadeInUp stagger-animation" data-wow-delay="0.5s">
+        <div class="track-card">
+            <div>
+                <div class="track-card-image">
+                    <img src="img/Sessions/IndustryInnovation.jpg" alt="Industry Innovation">
+                    <span class="track-number">05</span>
+                </div>
+                <div class="track-card-body">
+                    <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Industry
+                        Innovation</h3>
+                    <p class="track-subtitle">Theme: The Industrial Metaverse & The Digital Twin</p>
+
+                    <div class="track-content">
+                        <p class="track-description">
+                            Leveraging our partnership with Siemens, this track focuses on the
+                            convergence of
+                            digital and
+                            physical worlds. We explore how "Industry 4.0" and emerging "Industry 5.0"
+                            are
+                            creating smarter,
+                            more sustainable production systems.
+                        </p>
+                        <ul class="track-list">
+                            <li><strong>The Executable Digital Twin:</strong> How virtual models of
+                                physical
+                                assets allow us to simulate, predict, and optimize performance before
+                                building.
+                            </li>
+                            <li><strong>Siemens Xcelerator & Open Ecosystems:</strong> The shift from
+                                closed
+                                systems to open digital business platforms accelerating transformation
+                                through
+                                collaboration.</li>
+                            <li><strong>Disruptive Innovation:</strong> How technologies like 3D
+                                printing and
+                                IoT enable smaller, more affordable solutions to challenge established
+                                markets.
+                            </li>
+                            <li><strong>Sustainable Industry (DEGREE Framework):</strong> Digital tools
+                                like
+                                blockchain and sensors driving decarbonization and supply chain
+                                transparency.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
     </div>
 
     <div class="container-fluid py-5" style="background-color: #FFFFFF;">
@@ -155,7 +515,8 @@
             <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
                 <h5 class="text-uppercase mb-2"
                     style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Announcement</h5>
-                <p class="fs-5" style="color: #495057 !important; max-width: 800px; margin: 0 auto;">Detailed speaker
+                <p class="fs-5" style="color: #495057 !important; max-width: 800px; margin: 0 auto;">Detailed
+                    speaker
                     information and session descriptions will be announced soon. Follow us on social media for the
                     latest updates.</p>
             </div>
@@ -169,7 +530,8 @@
             </a>
             <p
                 style="color: #495057 !important; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                GDTA Indian Chapter – D Conference 2026<br>Chaos & Clarity: Driving Progress with Design Thinking</p>
+                GDTA Indian Chapter – D Conference 2026<br>Chaos & Clarity: Driving Progress with Design Thinking
+            </p>
             <div class="d-flex justify-content-center mb-3">
                 <a class="btn btn-sm btn-outline-primary border-2 mx-1"
                     href="https://www.instagram.com/snsinstitutions/?hl=en" target="_blank"
@@ -197,6 +559,17 @@
     <script src="lib/easing/easing.min.js"></script>
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        // Make track cards clickable on mobile devices
+        document.querySelectorAll('.track-card').forEach(card => {
+            card.addEventListener('click', function () {
+                // Toggle active class on click for mobile
+                if (window.innerWidth <= 768) {
+                    this.classList.toggle('active');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
