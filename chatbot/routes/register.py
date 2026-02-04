@@ -106,15 +106,23 @@ def submit_answer():
     try:
         data = request.get_json()
         
+        print(f"[DEBUG] Received data: {data}")
+        print(f"[DEBUG] Request headers: {dict(request.headers)}")
+        
         if not data or 'answer' not in data:
-            return jsonify({"error": "Answer field required"}), 400
+            print(f"[ERROR] Missing answer field. Data received: {data}")
+            return jsonify({"error": "Answer field required", "received": data}), 400
         
         # Use session_id from request body if provided, otherwise use Flask session
         session_id = data.get('session_id') or get_session_id()
         user_answer = data['answer']
         
+        print(f"[DEBUG] Session ID: {session_id}")
+        print(f"[DEBUG] Active sessions: {list(registration_sessions.keys())}")
+        
         # Get registration state
         if session_id not in registration_sessions:
+            print(f"[ERROR] Session {session_id} not found in registration_sessions")
             return jsonify({
                 "error": "No active registration session. Please start registration first.",
                 "action": "start_registration"

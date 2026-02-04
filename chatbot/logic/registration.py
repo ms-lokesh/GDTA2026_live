@@ -518,10 +518,10 @@ def process_input(registration_state, user_input):
         if registration_state.editing_field:
             registration_state.current_step = RegistrationSteps.REVIEW
             registration_state.editing_field = None
-            message = f"Email updated to: {normalized_value}"
+            message = f"Email updated to: {normalized_value}\n\nPlease review all your details below:"
         else:
             registration_state.current_step = RegistrationSteps.REVIEW
-            message = f"Email recorded: {normalized_value}"
+            message = f"Email recorded: {normalized_value}\n\nPlease review all your details below:"
         
         return {
             "success": True,

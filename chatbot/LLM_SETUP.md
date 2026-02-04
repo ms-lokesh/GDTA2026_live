@@ -22,7 +22,15 @@ Your chatbot now has **RAG (Retrieval-Augmented Generation)** capabilities:
 3. Click **"Create API Key"**
 4. Copy the key (starts with `AIza...`)
 
-### Option 2: OpenAI (Backup - Paid)
+### Option 2: Grok (X.AI - Paid)
+
+1. Go to: https://console.x.ai/
+2. Sign in with your X (Twitter) account
+3. Navigate to API Keys
+4. Create a new API key
+5. Copy the key (starts with `xai-...`)
+
+### Option 3: OpenAI (Backup - Paid)
 
 1. Go to: https://platform.openai.com/api-keys
 2. Click **"Create new secret key"**
@@ -50,10 +58,17 @@ Open `.env` and paste your key:
 GOOGLE_API_KEY=AIzaSyC_your_actual_key_here
 ```
 
+**For Grok:**
+```
+GROK_API_KEY=xai-your_actual_key_here
+```
+
 **For OpenAI (backup):**
 ```
 OPENAI_API_KEY=sk-your_actual_key_here
 ```
+
+**Note:** You can configure multiple API keys. The system will try them in this order: Gemini → Grok → OpenAI
 
 ### Step 3: Restart the server
 

@@ -74,6 +74,7 @@ class RAGEngine:
         self.conference_data = conference_data
         self.sessions_data = sessions_data
         self.gemini_key = os.getenv('GOOGLE_API_KEY')
+        self.grok_key = os.getenv('GROK_API_KEY')
         self.openai_key = os.getenv('OPENAI_API_KEY')
         
     def _build_system_prompt(self) -> str:
@@ -164,8 +165,8 @@ Remember: You are providing information only. The backend handles all actions.""
             from google import genai
             
             client = genai.Client(api_key=self.gemini_key)
-            # Use gemini-2.5-flash-lite - better free tier limits
-            model_name = 'gemini-2.5-flash-lite'
+            # Use gemini-1.5-flash
+            model_name = 'gemini-1.5-flash'
             
             system_prompt = self._build_system_prompt()
             
@@ -195,6 +196,50 @@ ASSISTANT RESPONSE:"""
             return None
         except Exception as e:
             logger.error(f"Gemini API error: {e}")
+            return None
+    
+    def _call_grok(self, user_query: str, context: str, timeout: int = 10) -> Optional[str]:
+        """
+        Call Grok API for response generation
+        
+        Args:
+            user_query: User's question
+            context: Relevant data context
+            timeout: Request timeout
+            
+        Returns:
+            Generated response or None on failure
+        """
+        try:
+            import openai
+            
+            # Grok uses OpenAI-compatible API
+            client = openai.OpenAI(
+                api_key=self.grok_key,
+                base_url="https://api.x.ai/v1",
+                timeout=timeout
+            )
+            
+            system_prompt = self._build_system_prompt()
+            
+            response = client.chat.completions.create(
+                model="grok-beta",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": f"RELEVANT SESSION DATA:\n{context}\n\nUSER QUESTION: {user_query}"}
+                ],
+                temperature=0.7,
+                max_tokens=500
+            )
+            
+            # Clean markdown formatting for professional display
+            return clean_markdown(response.choices[0].message.content)
+            
+        except ImportError:
+            logger.warning("OpenAI package not installed (required for Grok)")
+            return None
+        except Exception as e:
+            logger.error(f"Grok API error: {e}")
             return None
     
     def _call_openai(self, user_query: str, context: str, timeout: int = 10) -> Optional[str]:
@@ -259,6 +304,11 @@ ASSISTANT RESPONSE:"""
             logger.info("Calling Gemini for RAG response")
             response = self._call_gemini(user_query, context)
         
+        # Try Grok next
+        if not response and self.grok_key:
+            logger.info("Trying Grok for RAG response")
+            response = self._call_grok(user_query, context)
+        
         # Fallback to OpenAI
         if not response and self.openai_key:
             logger.info("Falling back to OpenAI for RAG response")
@@ -310,4 +360,4 @@ ASSISTANT RESPONSE:"""
 
 def is_rag_available() -> bool:
     """Check if RAG can be used (requires API key)"""
-    return bool(os.getenv('GOOGLE_API_KEY') or os.getenv('OPENAI_API_KEY'))
+    return bool(os.getenv('GOOGLE_API_KEY') or os.getenv('GROK_API_KEY') or os.getenv('OPENAI_API_KEY'))

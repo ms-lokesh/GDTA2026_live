@@ -175,8 +175,8 @@ def _call_gemini(user_message: str, api_key: str, timeout: int = 5) -> Optional[
         
         client = genai.Client(api_key=api_key)
         
-        # Use gemini-2.5-flash-lite - better free tier limits
-        model_name = 'gemini-2.5-flash-lite'
+        # Use gemini-1.5-flash
+        model_name = 'gemini-1.5-flash'
         
         prompt = f"{SYSTEM_PROMPT}\n\nUser message: {user_message}\n\nOutput (JSON only):"
         
