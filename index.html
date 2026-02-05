@@ -456,6 +456,10 @@
         const heroVideo = document.getElementById('heroVideo');
         const heroBg = document.getElementById('heroBg');
         
+        // TEMPORARY: Clear the localStorage to allow video to play again
+        // Remove this line after testing if needed
+        localStorage.removeItem('gdta_hero_video_played');
+        
         // Check if video has been played before
         const hasPlayedVideo = localStorage.getItem('gdta_hero_video_played');
         
@@ -471,7 +475,13 @@
                 console.log('Video element found - first time play');
                 
                 // Force immediate play attempt
-                heroVideo.play().catch(e => console.log('Initial play attempt:', e));
+                heroVideo.play().catch(e => {
+                    console.log('Initial play attempt failed:', e);
+                    // If autoplay fails, show background instead
+                    heroVideo.style.display = 'none';
+                    heroBg.style.opacity = '1';
+                    document.querySelector('.navbar-container').classList.add('show');
+                });
                 
                 heroVideo.addEventListener('loadstart', function() {
                     console.log('Video loading started');
@@ -966,7 +976,7 @@
                     <path d="M8 6.94L13.47 1.47a.75.75 0 0 1 1.06 1.06L9.06 8l5.47 5.47a.75.75 0 0 1-1.06 1.06L8 9.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L6.94 8 1.47 2.53a.75.75 0 0 1 1.06-1.06L8 6.94z"/>
                 </svg>
             </button>
-            <iframe class="chatbot-iframe" id="chatbotIframe" src="http://localhost:5000" title="GDTA 2026 Chatbot"></iframe>
+            <iframe class="chatbot-iframe" id="chatbotIframe" src="" title="GDTA 2026 Chatbot"></iframe>
         </div>
     </div>
     <script>
