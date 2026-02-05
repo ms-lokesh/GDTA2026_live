@@ -195,6 +195,19 @@
             animation-delay: 3s;
             opacity: 0;
         }
+        
+        /* Video hover expand effect */
+        .video-container {
+            transition: all 0.5s ease;
+            cursor: pointer;
+            aspect-ratio: 16/10;
+        }
+        
+        .video-container:hover {
+            transform: scale(1.15);
+            z-index: 50 !important;
+            aspect-ratio: 16/9;
+        }
     </style>
 </head>
 <body class="font-display bg-background-light text-black antialiased overflow-x-hidden">
@@ -294,7 +307,10 @@
 <span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Velliangiri Hills
                                 </div>
 <div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
-<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Perur Temple
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Patteeswarar Temple
+                                </div>
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Agri Field Visit
                                 </div>
 </div>
 <a href="register-safari.html" class="bg-white text-black px-8 py-4 rounded-full font-black uppercase tracking-widest text-xs btn-float btn-pop inline-block text-center no-underline">
@@ -302,8 +318,8 @@
                             </a>
 </div>
 </div>
-<div class="w-full lg:w-[45%] relative aspect-[16/10] overflow-hidden rounded-3xl bg-slate-200 order-1 lg:order-2 mb-8 lg:mb-0 border-[3px] border-black">
-<video autoplay muted loop playsinline class="w-full h-full object-cover transition-all duration-1000" src="img/Background/safari_2.mp4"></video>
+<div class="w-full lg:w-[45%] relative aspect-[16/10] overflow-visible rounded-3xl bg-slate-200 order-1 lg:order-2 mb-8 lg:mb-0 border-[3px] border-black video-container">
+<video autoplay muted loop playsinline class="w-full h-full object-cover transition-all duration-1000 rounded-3xl" src="img/Background/safari_2.mp4"></video>
 </div>
 </div>
 </div>
@@ -311,8 +327,8 @@
 <div class="relative mb-24 route-card-2">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="flex flex-col lg:flex-row items-stretch">
-<div class="w-full lg:w-[45%] relative aspect-[16/10] overflow-hidden rounded-3xl bg-slate-200 lg:-mr-12 z-30 mb-8 lg:mb-0 border-[3px] border-black order-1">
-<video autoplay muted loop playsinline class="w-full h-full object-cover transition-all duration-1000" src="img/Background/safari_1.mp4"></video>
+<div class="w-full lg:w-[45%] relative aspect-[16/10] overflow-visible rounded-3xl bg-slate-200 lg:-mr-12 mb-8 lg:mb-0 border-[3px] border-black order-1 video-container" style="z-index: 30;">
+<video autoplay muted loop playsinline class="w-full h-full object-cover transition-all duration-1000 rounded-3xl" src="img/Background/safari_1.mp4"></video>
 </div>
 <div class="w-full lg:w-[55%] vibrant-gradient-2 z-pattern-box text-white relative overflow-hidden lg:ml-12 order-2 self-center">
 <div class="absolute inset-0 collage-texture opacity-20"></div>
@@ -327,7 +343,10 @@
 <span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Town Hall
                                 </div>
 <div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
-<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Ukkadam Lake
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Roots/MSME
+                                </div>
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Gedee Car Museum
                                 </div>
 </div>
 <a href="register-safari.html" class="bg-white text-black px-8 py-4 rounded-full font-black uppercase tracking-widest text-xs btn-float btn-pop inline-block text-center no-underline">
@@ -356,14 +375,17 @@
 <div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
 <span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Tenthirupathi Temple
                                 </div>
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Silk Saree Weaving
+                                </div>
 </div>
 <a href="register-safari.html" class="bg-white text-black px-8 py-4 rounded-full font-black uppercase tracking-widest text-xs btn-float btn-pop inline-block text-center no-underline">
                                 SELECT ROUTE
                             </a>
 </div>
 </div>
-<div class="w-full lg:w-[45%] relative aspect-[16/10] overflow-hidden rounded-3xl bg-slate-200 order-1 lg:order-2 mb-8 lg:mb-0 border-[3px] border-black">
-<img alt="Cotton Mill Interior" class="w-full h-full object-cover transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ6AajioE75C_vCHGtrcrvObPgaBmXAOTgdkuPl-g0VK8Nr6MEYUIHdmgsgmdDVj4eEVHvmip5Rj71JyILIfkWqD_ypwRR9zPLPqdeS3Y2tCfo0Khj7VBDStv-g-uxulDheumyRCH2z6hnpCw_VjzmR6uRc6UaNaFPzPt9EkEuJ5VZjv8H6zmKHidIQcBxVPMl1SbM4gAK2ZhHKS_v2cvQDxFSrCBhqPJ3gQYzGNXDGWys_gIl6C0ZfaCjc6LZ8ICEyvI4HGI4aYNq"/>
+<div class="w-full lg:w-[45%] relative aspect-[16/10] overflow-visible rounded-3xl bg-slate-200 order-1 lg:order-2 mb-8 lg:mb-0 border-[3px] border-black video-container">
+<video autoplay muted loop playsinline class="w-full h-full object-cover transition-all duration-1000 rounded-3xl" src="img/Background/safari_3.mp4"></video>
 </div>
 </div>
 </div>
