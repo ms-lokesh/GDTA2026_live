@@ -456,6 +456,10 @@
         const heroVideo = document.getElementById('heroVideo');
         const heroBg = document.getElementById('heroBg');
         
+        // TEMPORARY: Clear the localStorage to allow video to play again
+        // Remove this line after testing if needed
+        localStorage.removeItem('gdta_hero_video_played');
+        
         // Check if video has been played before
         const hasPlayedVideo = localStorage.getItem('gdta_hero_video_played');
         
@@ -471,7 +475,13 @@
                 console.log('Video element found - first time play');
                 
                 // Force immediate play attempt
-                heroVideo.play().catch(e => console.log('Initial play attempt:', e));
+                heroVideo.play().catch(e => {
+                    console.log('Initial play attempt failed:', e);
+                    // If autoplay fails, show background instead
+                    heroVideo.style.display = 'none';
+                    heroBg.style.opacity = '1';
+                    document.querySelector('.navbar-container').classList.add('show');
+                });
                 
                 heroVideo.addEventListener('loadstart', function() {
                     console.log('Video loading started');
