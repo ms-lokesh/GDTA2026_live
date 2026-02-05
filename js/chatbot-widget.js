@@ -27,7 +27,7 @@
                         </svg>
                     </button>
                 </div>
-                <iframe class="chatbot-iframe" id="chatbotIframe" src="http://localhost:5000" title="GDTA 2026 Chatbot" allow="cross-origin"></iframe>
+                <iframe class="chatbot-iframe" id="chatbotIframe" src="" title="GDTA 2026 Chatbot" allow="cross-origin"></iframe>
             </div>
         </div>
     `;
