@@ -1,0 +1,37 @@
+{
+  "name": "GDTA 2026",
+  "full_name": "Global Design Thinking Alliance 2026",
+  "dates": {
+    "start": "2026-03-15",
+    "end": "2026-03-16"
+  },
+  "location": {
+    "venue": "San Francisco Convention Center",
+    "city": "San Francisco",
+    "country": "USA"
+  },
+  "description": "The premier conference for design thinking professionals and students worldwide.",
+  "tracks": ["student", "industry"],
+  "faq": [
+    {
+      "question": "What is GDTA 2026?",
+      "answer": "GDTA 2026 is the Global Design Thinking Alliance conference, bringing together design thinking professionals and students from around the world."
+    },
+    {
+      "question": "When is the conference?",
+      "answer": "The conference takes place on March 15-16, 2026."
+    },
+    {
+      "question": "Where is it located?",
+      "answer": "San Francisco Convention Center, San Francisco, USA."
+    },
+    {
+      "question": "Who should attend?",
+      "answer": "Design students, design professionals, UX researchers, product designers, and anyone interested in design thinking methodologies."
+    },
+    {
+      "question": "What are the different tracks?",
+      "answer": "We offer two tracks: Student track (focused on learning and career development) and Industry track (focused on professional practice and leadership)."
+    }
+  ]
+}

@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDTA 2026 Conference Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .chat-container {
+            background: white;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .chat-header h1 {
+            font-size: 1.1em;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-header p {
+            font-size: 0.8em;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .mode-indicator {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            margin-top: 6px;
+            display: inline-block;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f8f9fa !important;
+            min-height: 0;
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            display: flex !important;
+            align-items: flex-start;
+            animation: slideIn 0.3s ease-out;
+            gap: 8px;
+            visibility: visible !important;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 15px;
+            word-wrap: break-word;
+            line-height: 1.5;
+            font-size: 0.9em;
+        }
+
+        .bot .message-content {
+            background: white;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            flex-shrink: 0;
+        }
+
+        .bot .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .user .message-avatar {
+            background: #764ba2;
+        }
+
+        .registration-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 8px 0;
+        }
+
+        .registration-card h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .registration-card p {
+            font-size: 0.85em;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .quick-btn {
+            padding: 6px 12px;
+            background: white;
+            border: 1.5px solid #667eea;
+            color: #667eea;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .quick-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .option-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .option-btn {
+            padding: 8px 12px;
+            background: white;
+            border: 1.5px solid #667eea;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .option-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(3px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .chat-input-container {
+            padding: 12px 15px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .send-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 15px;
+            width: 50px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 8px;
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #667eea;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-indicator span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .summary-box {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border: 1px solid #e9ecef;
+        }
+
+        .summary-box h4 {
+            font-size: 0.95em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .summary-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .summary-value {
+            color: #333;
+        }
+
+        /* Scrollbar Styling */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #667eea;
+        }
+
+        .progress-indicator {
+            background: #e0e0e0;
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>🎓 GDTA 2026 Assistant</h1>
+            <p>Ask me anything about the conference</p>
+            <div class="mode-indicator" id="modeIndicator">💬 Chat Mode</div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <p><strong>Welcome to GDTA 2026!</strong></p>
+                    <p>I can help you with:</p>
+                    <div class="quick-actions">
+                        <button class="quick-btn" onclick="sendQuickMessage('I want to register')">📝 Register</button>
+                        <button class="quick-btn" onclick="sendQuickMessage('Tell me about the conference')">ℹ️ About</button>
+                        <button class="quick-btn" onclick="sendQuickMessage('Show me the schedule')">📅 Schedule</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <div class="typing-indicator" id="typingIndicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="chat-input-wrapper">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Type your message..."
+                    onkeypress="handleKeyPress(event)"
+                >
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+        let registrationSessionId = null;
+        let registrationMode = false;
+        let currentStep = null;
+
+        function addMessage(text, isUser = false, html = null) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = isUser ? '👤' : '🤖';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            
+            if (html) {
+                content.innerHTML = html;
+            } else {
+                // Convert newlines to <br> tags for proper formatting
+                content.innerHTML = text.replace(/\n/g, '<br>');
+            }
+            
+            if (isUser) {
+                messageDiv.appendChild(content);
+                messageDiv.appendChild(avatar);
+            } else {
+                messageDiv.appendChild(avatar);
+                messageDiv.appendChild(content);
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTyping(show) {
+            document.getElementById('typingIndicator').style.display = show ? 'block' : 'none';
+        }
+
+        function updateMode(mode) {
+            registrationMode = mode === 'registration';
+            const indicator = document.getElementById('modeIndicator');
+            indicator.textContent = registrationMode ? '📝 Registration Mode' : '💬 Chat Mode';
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(message, true);
+            input.value = '';
+            
+            showTyping(true);
+            
+            if (registrationMode) {
+                await submitRegistrationAnswer(message);
+            } else {
+                // Normal chat mode - call the chat API
+                try {
+                    const response = await fetch(`${API_BASE}/api/chat`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: message,
+                            state: 'info_mode'
+                        })
+                    });
+
+                    const data = await response.json();
+                    showTyping(false);
+                    
+                    if (response.ok) {
+                        addMessage(data.message, false);
+                        
+                        // Check if registration was started from chat
+                        if (data.action === 'registration_started') {
+                            updateMode('registration');
+                        }
+                    } else {
+                        addMessage("Sorry, I encountered an error. Please try again.", false);
+                    }
+                } catch (error) {
+                    showTyping(false);
+                    addMessage("Sorry, I'm having trouble connecting. Please try again.", false);
+                }
+            }
+        }
+
+        function addOptionsButtons(options) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = '🤖';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            
+            const buttonsHtml = options.map(opt => 
+                `<button class="option-btn" onclick="sendQuickMessage('${opt}')">${opt}</button>`
+            ).join('');
+            
+            content.innerHTML = `<div class="option-buttons">${buttonsHtml}</div>`;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function sendQuickMessage(message) {
+            document.getElementById('chatInput').value = message;
+            sendMessage();
+        }
+
+        async function startRegistration() {
+            updateMode('registration');
+            addMessage("Great! Let's get you registered for GDTA 2026. I'll guide you through the process step by step.", false);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/register/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                registrationSessionId = data.session_id;
+                currentStep = data.state.current_step;
+                
+                displayRegistrationQuestion(data);
+            } catch (error) {
+                addMessage("Sorry, I couldn't start the registration. Please make sure the server is running.", false);
+            }
+        }
+
+        function displayRegistrationQuestion(data) {
+            const question = data.next_question || data.question;
+            
+            if (!question) return;
+            
+            let html = `<p><strong>${question.question}</strong></p>`;
+            
+            if (question.validation_type === 'review') {
+                html += generateReviewHTML(data);
+            } else if (question.validation_type === 'confirmation') {
+                html += generateConfirmationHTML(data);
+            } else if (question.options && question.options.length > 0) {
+                html += '<div class="option-buttons">';
+                question.options.forEach(option => {
+                    html += `<button class="option-btn" onclick="submitRegistrationAnswer('${option}')">${option}</button>`;
+                });
+                html += '</div>';
+            } else {
+                html += `<p style="margin-top: 10px; color: #666; font-size: 0.9em;">Type your answer below and click Send</p>`;
+            }
+            
+            addMessage('', false, html);
+        }
+
+        function generateReviewHTML(data) {
+            const registrationData = data.state?.data || {};
+            
+            let html = '<div class="summary-box"><h4>Review Your Details:</h4>';
+            
+            const fields = [
+                { key: 'name', label: 'Name' },
+                { key: 'institution', label: 'Institution' },
+                { key: 'role', label: 'Role' },
+                { key: 'gdta_member', label: 'GDTA Member' },
+                { key: 'gdta_affiliation', label: 'GDTA Affiliation' },
+                { key: 'country', label: 'Country' },
+                { key: 'state', label: 'State' },
+                { key: 'email', label: 'Email' }
+            ];
+            
+            fields.forEach(field => {
+                const value = registrationData[field.key];
+                if (value) {
+                    html += `<div class="summary-item">
+                        <span class="summary-label">${field.label}:</span>
+                        <span class="summary-value">${value}</span>
+                    </div>`;
+                }
+            });
+            
+            html += '</div>';
+            html += '<div class="option-buttons">';
+            html += '<button class="option-btn" onclick="submitRegistrationAnswer(\'continue\')">✓ Continue</button>';
+            html += '<button class="option-btn" onclick="editRegistrationField()">✏️ Edit a Field</button>';
+            html += '</div>';
+            
+            return html;
+        }
+
+        function generateConfirmationHTML(data) {
+            let html = '<div class="registration-card">';
+            html += '<h4>Final Confirmation</h4>';
+            html += '<p>Please review all details one last time before submitting.</p>';
+            html += '</div>';
+            html += '<div class="option-buttons">';
+            html += '<button class="option-btn" onclick="submitRegistrationAnswer(\'CONFIRM\')">✓ Confirm & Submit</button>';
+            html += '<button class="option-btn" onclick="submitRegistrationAnswer(\'EDIT\')">✏️ Edit Details</button>';
+            html += '</div>';
+            
+            return html;
+        }
+
+        function editRegistrationField() {
+            const field = prompt('Enter field name to edit:\n(name, institution, role, gdta_member, gdta_affiliation, country, state, email)');
+            if (field) {
+                submitRegistrationAnswer(field.toLowerCase());
+            }
+        }
+
+        async function submitRegistrationAnswer(answer) {
+            showTyping(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/register/answer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        session_id: registrationSessionId,
+                        answer: answer
+                    })
+                });
+                
+                const data = await response.json();
+                
+                showTyping(false);
+                
+                if (data.success) {
+                    if (data.completed) {
+                        addMessage('', false, `
+                            <div class="registration-card">
+                                <h4>✓ Registration Complete!</h4>
+                                <p>${data.message}</p>
+                            </div>
+                            <button class="quick-btn" onclick="location.reload()">Start New Chat</button>
+                        `);
+                        updateMode('chat');
+                    } else if (data.cancelled) {
+                        addMessage(data.message, false);
+                        updateMode('chat');
+                    } else {
+                        currentStep = data.state?.current_step;
+                        if (data.message) {
+                            addMessage(data.message, false);
+                        }
+                        displayRegistrationQuestion(data);
+                    }
+                } else {
+                    addMessage(`⚠️ ${data.message}`, false);
+                    // Redisplay question
+                    if (data.next_question) {
+                        displayRegistrationQuestion(data);
+                    }
+                }
+            } catch (error) {
+                showTyping(false);
+                addMessage('Sorry, there was an error. Please try again.', false);
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Focus input on load
+        window.onload = () => {
+            document.getElementById('chatInput').focus();
+        };
+    </script>
+</body>
+</html>
