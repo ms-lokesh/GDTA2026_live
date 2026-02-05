@@ -1,41 +1,223 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <title>Design Safari - GDTA 2026</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link href="img/logo.png" rel="icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap"
-        rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/custom-overrides.css" rel="stylesheet">
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Coimbatore Innovation Safari | D-Conference '26</title>
+<meta content="Explore the Coimbatore Innovation Safari - Curated site visits and real-world immersion tours for D-Conference '26." name="description"/>
+<link href="img/Logo/Screenshot 2026-01-24 143837.png" rel="icon">
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+<link href="lib/animate/animate.min.css" rel="stylesheet">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<link href="css/custom-overrides.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#F59E0B", 
+                        secondary: "#0D9488", 
+                        accent: "#EAB308", 
+                        tertiary: "#BE123C", 
+                        "background-light": "#FFFBEB", 
+                        "deep-indigo": "#1E1B4B",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        serif: ["Playfair Display", "serif"],
+                    },
+                    borderRadius: {
+                        'DEFAULT': "0.5rem",
+                        'xl': '1rem',
+                        '2xl': '1.5rem',
+                        '3xl': '2rem',
+                    },
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">
+        .collage-texture {
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuD8UWYaJo-hv3zOTVQd-lX924pQqnrRdt_4stcLT2Uc_PgZcandgQnWNYdYeY92JziNTZRnzK9NpFl5koWuqaZMPzztrOiDHcLnsp53lMAtodrOox1YusJzS-tlR_d7moBqx-5ZrETjnbp4Ygb2Wc_QCrYCKYKv6eER6WjNAHLhOVeaFnxFayoGldYz_O11FCmxajbTVX1c8HZJ45Y9iCVYKwTMJl8tddKPIdwuGXJ-UsvbENNocJWKK1e6KrPJqb7YXrEE5Tt6p1cW);
+            background-blend-mode: multiply;
+            background-size: cover;
+            opacity: 0.1;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .z-pattern-box {
+            @apply relative z-20 p-8 md:p-12 flex flex-col justify-center min-h-[400px] rounded-3xl shadow-xl transition-all duration-500;
+        }
+        .btn-float {
+            @apply transition-all duration-300 shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:shadow-[0_20px_45px_rgba(0,0,0,0.25)] hover:-translate-y-1 active:translate-y-0 active:shadow-lg;
+        }
+        .vibrant-gradient-1 {
+            background: linear-gradient(135deg, #F59E0B 0%, #EAB308 100%);
+        }
+        .vibrant-gradient-2 {
+            background: linear-gradient(135deg, #0D9488 0%, #1E1B4B 100%);
+        }
+        .vibrant-gradient-3 {
+            background: linear-gradient(135deg, #BE123C 0%, #F59E0B 100%);
+        }
+        
+        /* Hero text box animation */
+        @keyframes slideInFromLeft {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .hero-text-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideInFromLeft 1s ease-out forwards;
+        }
+        
+        .hero-text-box h1 {
+            color: #000000 !important;
+        }
+        
+        .hero-text-box p {
+            color: #333333 !important;
+        }
+        
+        /* Footer text box animation */
+        @keyframes popUpFromBottom {
+            0% {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .footer-text-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: popUpFromBottom 1s ease-out forwards;
+        }
+        
+        .footer-text-box h2 {
+            color: #000000 !important;
+        }
+        
+        .footer-text-box p {
+            color: #333333 !important;
+        }
+        
+        .footer-text-box button {
+            background-color: #000000 !important;
+            color: #FFFFFF !important;
+        }
+        
+        .text-shadow-yellow {
+            text-shadow: 4px 4px 0px #F59E0B, 
+                         8px 8px 0px #EAB308,
+                         -1px -1px 0px #F59E0B,
+                         1px -1px 0px #F59E0B,
+                         -1px 1px 0px #F59E0B,
+                         1px 1px 0px #F59E0B;
+            color: white !important;
+            background: transparent !important;
+            padding: 0 1rem !important;
+        }
+        
+        /* Button pop animation */
+        @keyframes popButton {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+        
+        .btn-pop {
+            animation: popButton 2s ease-in-out infinite;
+        }
+        
+        .btn-pop:hover {
+            animation: none;
+            transform: scale(1.05);
+        }
+        
+        /* Route cards slide in animation */
+        @keyframes slideInFromRight {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .route-card-1 {
+            animation: slideInFromRight 1.5s ease-out forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+        
+        .route-card-2 {
+            animation: slideInFromRight 1.5s ease-out forwards;
+            animation-delay: 1.5s;
+            opacity: 0;
+        }
+        
+        .route-card-3 {
+            animation: slideInFromRight 1.5s ease-out forwards;
+            animation-delay: 3s;
+            opacity: 0;
+        }
+    </style>
 </head>
+<body class="font-display bg-background-light text-black antialiased overflow-x-hidden">
 
-<body>
-
-    <div class="container-fluid p-0"
-        style="background-color: #F8F9FA; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;">
-        <nav class="navbar navbar-expand-lg navbar-dark px-4 py-1">
+<!-- Header Start -->
+    <div class="container-fluid p-0 navbar-container"
+        style="background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(0, 0, 0, 0.1); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;">
+        <nav class="navbar navbar-expand-lg navbar-light px-4 py-1">
             <a href="index.html" class="navbar-brand">
-                <img src="img/Logo/gdta_main_logo.png" alt="GDTA Logo" style="height: 45px; width: auto;">
+                <img src="img/Logo/gdta_main_logo.png" alt="GDTA Logo" style="height: 65px; width: auto;">
             </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
+
+            <div class="navbar-collapse" id="navbarCollapse" style="display: flex !important;">
                 <div class="navbar-nav ms-auto">
-                    <a href="index.html" class="nav-item nav-link" style="color: #495057 !important;">Home</a>
+                    <a href="index.html" class="nav-item nav-link" style="color: #000000 !important; font-weight: 600;">Home</a>
+
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-                            style="color: #495057 !important;">About</a>
+                            style="color: #000000 !important; font-weight: 600;">About</a>
                         <div class="dropdown-menu" style="background-color: #F8F9FA;">
                             <a href="about-gdta.html" class="dropdown-item" style="color: #495057 !important;">GDTA</a>
                             <a href="about-gdta-2026.html" class="dropdown-item" style="color: #495057 !important;">GDTA
@@ -43,170 +225,212 @@
                             <a href="about-sns.html" class="dropdown-item" style="color: #495057 !important;">SNS</a>
                         </div>
                     </div>
+
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown"
-                            style="color: #000000 !important;">Program</a>
+                            style="color: #000000 !important; font-weight: 700;">Program</a>
                         <div class="dropdown-menu" style="background-color: #F8F9FA;">
                             <a href="program-schedule.html" class="dropdown-item"
                                 style="color: #495057 !important;">Details & Schedule</a>
                             <a href="program-sessions.html" class="dropdown-item"
                                 style="color: #495057 !important;">Sessions & Speakers</a>
                             <a href="program-safari.html" class="dropdown-item"
-                                style="color: #000000 !important;">Safari</a>
+                                style="color: #495057 !important;">Safari</a>
                         </div>
                     </div>
-                    <a href="travel-stay.html" class="nav-item nav-link" style="color: #495057 !important;">Travel &
+
+                    <a href="travel-stay.html" class="nav-item nav-link" style="color: #000000 !important; font-weight: 600;">Travel &
                         Stay</a>
-                    <a href="sponsors.html" class="nav-item nav-link" style="color: #495057 !important;">Sponsors &
+                    <a href="sponsors.html" class="nav-item nav-link" style="color: #000000 !important; font-weight: 600;">Sponsors &
                         Partners</a>
-                    <a href="contact.html" class="nav-item nav-link" style="color: #495057 !important;">Contact Us</a>
+                    <a href="contact.html" class="nav-item nav-link" style="color: #000000 !important; font-weight: 600;">Contact Us</a>
                 </div>
-                <a class="btn btn-primary border-0 px-4 py-1 ms-3" href="register.html"
-                    style="border-radius: 25px; font-weight: 600;">Register</a>
+
+                <a class="navbar-register-btn border-0 ms-3" href="register-safari.html" style="display: inline-block !important;">Register for Safari</a>
             </div>
         </nav>
     </div>
+    <!-- Header End -->
 
-    <div class="container-fluid py-5"
-        style="background: linear-gradient(rgba(31, 31, 31, 0.5), rgba(31, 31, 31, 0.5)), url('img/Background/travel_stay_bg.png') center center/cover no-repeat; margin-top: 100px; padding-top: 80px !important;">
-        <div class="container text-center py-5">
-            <h1 class="display-3 mb-3 wow fadeInDown" data-wow-delay="0.1s"
-                style="color: #FFFFFF !important; font-weight: 800;">Design Safari</h1>
-            <p class="fs-5 wow fadeInUp" data-wow-delay="0.2s" style="color: #FFFFFF !important;">Experiential Learning
-                Journey</p>
-        </div>
-    </div>
-
-    <div class="container-fluid py-5" style="background-color: #F8F9FA;">
-        <div class="container py-5">
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-6">
-                    <div class="wow fadeInLeft" data-wow-delay="0.1s">
-                        <h5 class="text-uppercase mb-2"
-                            style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Experience Design
-                        </h5>
-                        <h2 class="mb-4" style="font-weight: 800; color: #FFFFFF !important;">What is Design Safari?
-                        </h2>
-                        <p class="mb-4" style="line-height: 1.8; text-align: justify; color: #495057 !important;">Design
-                            Safari is an immersive, experiential learning journey where participants observe and analyze
-                            real-world design implementations in local contexts.</p>
-                        <p class="mb-4" style="line-height: 1.8; text-align: justify; color: #495057 !important;">
-                            Through guided site visits and observation exercises, participants develop deeper insights
-                            into how design thinking principles are applied in practice across different environments
-                            and industries.</p>
-                        <p class="mb-0" style="line-height: 1.8; text-align: justify; color: #495057 !important;">This
-                            hands-on experience complements the conference sessions by providing tangible examples of
-                            design in action.</p>
-                    </div>
+<header class="relative overflow-hidden pt-24 pb-20" style="margin-top: 86px; background: linear-gradient(rgba(31, 31, 31, 0.5), rgba(31, 31, 31, 0.5)), url('img/Background/travel_stay_bg.png') center center/cover no-repeat;">
+<div class="absolute inset-0 collage-texture pointer-events-none"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="max-w-4xl hero-text-box">
+<div class="inline-flex items-center gap-2 px-5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest mb-6 shadow-lg" style="background-color: #F59E0B; color: #000000;">
+<span class="material-symbols-outlined text-xs">explore</span> Exclusive Experience
                 </div>
-                <div class="col-lg-6">
-                    <div class="wow fadeInRight" data-wow-delay="0.2s">
-                        <img src="img/placeholder-section.jpg" alt="Design Safari Placeholder"
-                            style="width: 100%; height: 400px; object-fit: cover; border-radius: 15px; box-shadow: 0 10px 30px rgba(242, 183, 5, 0.3);">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<h1 class="text-6xl md:text-8xl font-black leading-[0.9] mb-8 tracking-tighter">
+<span class="underline decoration-[8px] decoration-primary">SAFARI</span>
+</h1>
+<p class="text-lg md:text-xl font-semibold max-w-xl leading-relaxed">
+                    A vivid journey through the industrial heart and spiritual soul of South India. 
+                </p>
+</div>
+</div>
+</header>
+<section class="py-20 relative z-10 bg-white/50 backdrop-blur-sm">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+<div class="h-1 bg-black w-24 mb-6"></div>
+<div class="flex flex-col md:flex-row justify-between items-start gap-4">
+<div>
+<h2 class="text-4xl md:text-5xl font-black uppercase tracking-tighter text-black">The Routes</h2>
+<p class="text-black/70 text-lg mt-2 font-medium">Curated immersions for the curious mind.</p>
+</div>
+</div>
+</div>
+<div class="relative mb-24 route-card-1">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col lg:flex-row items-stretch">
+<div class="w-full lg:w-[55%] vibrant-gradient-1 z-pattern-box text-white relative overflow-hidden lg:-mr-12 order-2 lg:order-1 self-center">
+<div class="absolute inset-0 collage-texture opacity-20"></div>
+<div class="relative z-10">
+<span class="text-[10px] font-black uppercase tracking-[0.4em] mb-4 block border-2 border-white/40 inline-block px-3 py-1" style="color: #FFFFFF !important;">Route 01</span>
+<h3 class="text-3xl md:text-4xl font-black mb-8 leading-tight" style="color: #FFFFFF !important;">Spiritual Origins &amp; Sacred Landscapes</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Isha Foundation
+                                </div>
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Velliangiri Hills
+                                </div>
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Perur Temple
+                                </div>
+</div>
+<a href="register-safari.html" class="bg-white text-black px-8 py-4 rounded-full font-black uppercase tracking-widest text-xs btn-float btn-pop inline-block text-center no-underline">
+                                SELECT ROUTE
+                            </a>
+</div>
+</div>
+<div class="w-full lg:w-[45%] relative aspect-[16/10] overflow-hidden rounded-3xl bg-slate-200 order-1 lg:order-2 mb-8 lg:mb-0 shadow-xl border-[3px] border-black">
+<img alt="Isha Foundation Coimbatore" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCo3GCgYTMnRkSm6WgJh-JYXdQm9lV0pTvE7fRqXp_-AN7MXArnS8jG1PwZfjp2GiIRXPifTXxdyTf10cACFSnxRfBQLP3gQRw_hoi5hx_RyZL37oTyukJ8McwTFvkDKeztfwCTRH0uvdXeuZDQGNIbbJkF-SLCYgL70q82kTVMpxnk7Bjx_1D55fKzq6oLbJzdpUR2D_Fu7sM6t9PVCmAumPY8GORl1c2mfBtt-WEsyv4FbmS8BbloyPIN_z5_0auUtaMByqiOGkiQ"/>
+<div class="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
+<div class="absolute inset-0 flex items-center justify-center group">
+<div class="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform cursor-pointer">
+<span class="material-symbols-outlined text-3xl">play_circle</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="relative mb-24 route-card-2">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col lg:flex-row items-stretch">
+<div class="w-full lg:w-[45%] relative aspect-[16/10] overflow-hidden rounded-3xl bg-slate-200 lg:-mr-12 z-30 mb-8 lg:mb-0 shadow-xl border-[3px] border-black order-1">
+<img alt="Indian Heritage Architecture" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkb7qCpYYr9j0iQUbjtOv3_v5jLg8ej3CDSnditHYRGjf-XOkoZdvFIng6Z5p-mQif01WXzA-T80ZX1PLfaE3Tz3Cl9_yadLy6Gj2h9IrGEY1a8mxXpin2cHMuHouKGHhfHUfnUc2o5V3sdRn-DSDbuYs05DChDvP2PksNQ-3pb0Pb9WmmINn6gA4-jHtEsWojkeKNoCNXO-d1cPmJd3Qfwlr-A1-YtAbUhIY2_TvHya6Z4o1eHDxuK924_xK0eR9bmpcWLEwVaKdh"/>
+<div class="absolute inset-0 bg-secondary/20 mix-blend-multiply"></div>
+<div class="absolute inset-0 flex items-center justify-center group">
+<div class="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform cursor-pointer">
+<span class="material-symbols-outlined text-3xl">play_circle</span>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-[55%] vibrant-gradient-2 z-pattern-box text-white relative overflow-hidden lg:ml-12 order-2 self-center">
+<div class="absolute inset-0 collage-texture opacity-20"></div>
+<div class="relative z-10">
+<span class="text-[10px] font-black uppercase tracking-[0.4em] mb-4 block border-2 border-white/40 inline-block px-3 py-1" style="color: #FFFFFF !important;">Route 02</span>
+<h3 class="text-3xl md:text-4xl font-black mb-8 leading-tight" style="color: #FFFFFF !important;">Urban Pulse &amp; Living Heritage</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Maruthamalai Temple
+                                </div>
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Town Hall
+                                </div>
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Ukkadam Lake
+                                </div>
+</div>
+<a href="register-safari.html" class="bg-white text-black px-8 py-4 rounded-full font-black uppercase tracking-widest text-xs btn-float btn-pop inline-block text-center no-underline">
+                                SELECT ROUTE
+                            </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="relative mb-24 route-card-3">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col lg:flex-row items-stretch">
+<div class="w-full lg:w-[55%] vibrant-gradient-3 z-pattern-box text-white relative overflow-hidden lg:-mr-12 order-2 lg:order-1 self-center">
+<div class="absolute inset-0 collage-texture opacity-20"></div>
+<div class="relative z-10">
+<span class="text-[10px] font-black uppercase tracking-[0.4em] mb-4 block border-2 border-white/40 inline-block px-3 py-1" style="color: #FFFFFF !important;">Route 03</span>
+<h3 class="text-3xl md:text-4xl font-black mb-8 leading-tight" style="color: #FFFFFF !important;">Industrial Legacy &amp; Rural Faith</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Cotton Textile Mills
+                                </div>
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Sirumugai
+                                </div>
+<div class="flex items-center gap-3 text-base font-bold" style="color: #FFFFFF !important;">
+<span class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center material-symbols-outlined text-[10px]">circle</span> Tenthirupathi Temple
+                                </div>
+</div>
+<a href="register-safari.html" class="bg-white text-black px-8 py-4 rounded-full font-black uppercase tracking-widest text-xs btn-float btn-pop inline-block text-center no-underline">
+                                SELECT ROUTE
+                            </a>
+</div>
+</div>
+<div class="w-full lg:w-[45%] relative aspect-[16/10] overflow-hidden rounded-3xl bg-slate-200 order-1 lg:order-2 mb-8 lg:mb-0 shadow-xl border-[3px] border-black">
+<img alt="Cotton Mill Interior" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ6AajioE75C_vCHGtrcrvObPgaBmXAOTgdkuPl-g0VK8Nr6MEYUIHdmgsgmdDVj4eEVHvmip5Rj71JyILIfkWqD_ypwRR9zPLPqdeS3Y2tCfo0Khj7VBDStv-g-uxulDheumyRCH2z6hnpCw_VjzmR6uRc6UaNaFPzPt9EkEuJ5VZjv8H6zmKHidIQcBxVPMl1SbM4gAK2ZhHKS_v2cvQDxFSrCBhqPJ3gQYzGNXDGWys_gIl6C0ZfaCjc6LZ8ICEyvI4HGI4aYNq"/>
+<div class="absolute inset-0 bg-tertiary/20 mix-blend-multiply"></div>
+<div class="absolute inset-0 flex items-center justify-center group">
+<div class="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform cursor-pointer">
+<span class="material-symbols-outlined text-3xl">play_circle</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="bg-accent py-12 relative z-10 border-y-[6px] border-black">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-4xl text-black">info</span>
+<p class="font-black text-2xl uppercase tracking-tighter text-black">Important Notice</p>
+</div>
+<p class="text-black font-bold text-center md:text-left max-w-lg text-lg leading-tight uppercase">
+                Delegates may select <span class="bg-white text-black px-2 font-black">one safari route</span> only.
+            </p>
+</div>
+</div>
+<section class="relative py-32 overflow-hidden z-10" style="background: linear-gradient(rgba(31, 31, 31, 0.7), rgba(31, 31, 31, 0.7)), url('img/Background/travel_stay_bg.png') center center/cover no-repeat;">
+<div class="absolute inset-0 collage-texture opacity-30"></div>
+<div class="absolute top-[-10%] right-[-5%] w-[35rem] h-[35rem] border-[40px] border-white/10 rounded-full"></div>
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex items-center justify-center">
+<div class="footer-text-box text-center">
+<h2 class="text-5xl md:text-7xl font-black mb-10 leading-[0.9] tracking-tighter">
+                READY TO <br/>
+<span class="text-shadow-yellow">NAVIGATE</span> <br/>
+                THE CHAOS?
+            </h2>
+<p class="text-lg mb-12 max-w-xl mx-auto font-extrabold uppercase tracking-tight">
+                Secure your spot and transform your understanding of design in action.
+            </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+<a href="register-safari.html" class="w-full sm:w-auto px-12 py-5 rounded-full font-black uppercase tracking-widest text-lg btn-float inline-block text-center no-underline">
+                    Register for Safari
+                </a>
+</div>
+</div>
+</div>
+</section>
 
-    <div class="container-fluid py-5" style="background-color: #FFFFFF;">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Program Details</h5>
-                <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #FFFFFF !important;">Safari Information</h2>
-            </div>
-
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="content-card text-center" style="height: 100%;">
-                        <div
-                            style="width: 60px; height: 60px; background-color: #000000; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-calendar-day" style="color: #FFFFFF; font-size: 24px;"></i>
-                        </div>
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 10px;">Date</h4>
-                        <p style="margin-bottom: 0; color: #495057 !important;">September 30, 2026<br>Morning Session
-                        </p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
-                    <div class="content-card text-center" style="height: 100%;">
-                        <div
-                            style="width: 60px; height: 60px; background-color: #000000; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-clock" style="color: #FFFFFF; font-size: 24px;"></i>
-                        </div>
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 10px;">Duration</h4>
-                        <p style="margin-bottom: 0; color: #495057 !important;">2 Hours<br>10:00 AM - 12:00 PM</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="content-card text-center" style="height: 100%;">
-                        <div
-                            style="width: 60px; height: 60px; background-color: #000000; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-users" style="color: #FFFFFF; font-size: 24px;"></i>
-                        </div>
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 10px;">Participation</h4>
-                        <p style="margin-bottom: 0; color: #495057 !important;">Optional Activity<br>Limited Seats
-                            Available</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid py-5" style="background-color: #000000;">
-        <div class="container py-5">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h2 class="mb-4" style="font-weight: 800; color: #FFFFFF !important;">Interested in Design Safari?</h2>
-                <p class="mb-4 fs-5" style="color: #FFFFFF !important; max-width: 800px; margin: 0 auto;">Indicate your
-                    interest during registration. More details including venue and logistics will be shared with
-                    registered participants.</p>
-                <a href="register.html" class="btn btn-lg px-5 py-3"
-                    style="background-color: #FFFFFF !important; color: #000000 !important; border-radius: 30px; font-weight: 700;">Register
-                    Now</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid footer py-4 wow fadeIn" data-wow-delay="0.1s" style="background-color: #FFFFFF;">
-        <div class="container text-center py-4">
-            <a href="index.html">
-                <h2 class="mb-3" style="color: #000000 !important; font-weight: 800;">GDTA 2026</h2>
-            </a>
-            <p
-                style="color: #495057 !important; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                GDTA Indian Chapter – D Conference 2026<br>Chaos & Clarity: Driving Progress with Design Thinking</p>
-            <div class="d-flex justify-content-center mb-3">
-                <a class="btn btn-sm btn-outline-primary border-2 mx-1"
-                    href="https://www.instagram.com/snsinstitutions/?hl=en" target="_blank"
-                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i
-                        class="fab fa-instagram"></i></a>
-                <a class="btn btn-sm btn-outline-primary border-2 mx-1"
-                    href="https://www.linkedin.com/company/sns-institutions/?originalSubdomain=in" target="_blank"
-                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i
-                        class="fab fa-linkedin-in"></i></a>
-                <a class="btn btn-sm btn-outline-primary border-2 mx-1" href="https://x.com/snsinstitutions?lang=en"
-                    target="_blank"
-                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i
-                        class="fab fa-twitter"></i></a>
-            </div>
-            <p style="font-size: 0.9rem; margin: 0; color: #6C757D !important;">September 29-30, 2026 | SNS
-                Institutions, India</p>
-            <p style="font-size: 0.9rem; margin-top: 10px; color: #6C757D !important;">&copy; <span
-                    style="color: #000000 !important;">GDTA Indian Chapter</span>, All Rights Reserved.</p>
-        </div>
-    </div>
-
+    <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="lib/wow/wow.min.js"></script>
     <script src="lib/easing/easing.min.js"></script>
     <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/chatbot-widget.js"></script>
-</body>
 
-</html>
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+
+    <!-- Chatbot Widget -->
+    <script src="js/chatbot-widget.js"></script>
+
+</body></html>

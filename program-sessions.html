@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Sessions & Speakers - GDTA 2026</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link href="img/logo.png" rel="icon">
+    <link href="img/Logo/Screenshot 2026-01-24 143837.png" rel="icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -129,7 +129,7 @@
         style="background-color: #F8F9FA; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;">
         <nav class="navbar navbar-expand-lg navbar-dark px-4 py-1">
             <a href="index.html" class="navbar-brand">
-                <img src="img/Logo/gdta_main_logo.png" alt="GDTA Logo" style="height: 45px; width: auto;">
+                <img src="img/Logo/gdta_main_logo.png" alt="GDTA Logo" style="height: 65px; width: auto;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
@@ -165,8 +165,7 @@
                         Partners</a>
                     <a href="contact.html" class="nav-item nav-link" style="color: #495057 !important;">Contact Us</a>
                 </div>
-                <a class="btn btn-primary border-0 px-4 py-1 ms-3" href="register.html"
-                    style="border-radius: 25px; font-weight: 600;">Register</a>
+                <a class="navbar-register-btn border-0 ms-3" href="register.html">Register</a>
             </div>
         </nav>
     </div>
@@ -174,7 +173,7 @@
     <div class="container-fluid py-5"
         style="background: linear-gradient(rgba(31, 31, 31, 0.5), rgba(31, 31, 31, 0.5)), url('img/Background/travel_stay_bg.png') center center/cover no-repeat; margin-top: 100px; padding-top: 80px !important;">
         <div class="container text-center py-5">
-            <h1 class="display-3 mb-3 wow fadeInDown" data-wow-delay="0.1s"
+            <h1 class="display-3 mb-3 wow fadeInDown" data-wow-delay="0.2s"
                 style="color: #FFFFFF !important; font-weight: 800;">Sessions & Speakers</h1>
             <p class="fs-5 wow fadeInUp" data-wow-delay="0.2s" style="color: #FFFFFF !important;">Leading Practitioners
                 & Industry Experts</p>
@@ -188,11 +187,18 @@
                 <h5 class="text-uppercase mb-2"
                     style="color: #E91E63 !important; letter-spacing: 2px; font-weight: 600;">Explore Our Tracks</h5>
                 <h2 class="mb-4" style="font-weight: 800; color: #000000 !important;">Featured Conference Sessions</h2>
-                <p style="color: #495057; max-width: 800px; margin: 0 auto;">Discover our five thematic tracks - auto-rotating every 3 seconds or click indicators to explore</p>
+                <p style="color: #495057; max-width: 800px; margin: 0 auto;">Discover our five thematic tracks that will shape the future of design thinking</p>
             </div>
 
             <!-- Featured Article (Carousel) -->
-            <div class="featured-article mb-4 wow fadeInUp shadow-lift" data-wow-delay="0.1s">
+            <div class="featured-article mb-4 wow fadeInUp shadow-lift" data-wow-delay="0.2s" style="position: relative;">
+                <!-- Navigation Arrows -->
+                <button class="carousel-nav-btn carousel-prev" onclick="navigatePrev()" style="position: absolute; left: -20px; top: 50%; transform: translateY(-50%); background: #000000; border: none; width: 50px; height: 50px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; z-index: 10; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-nav-btn carousel-next" onclick="navigateNext()" style="position: absolute; right: -20px; top: 50%; transform: translateY(-50%); background: #000000; border: none; width: 50px; height: 50px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; z-index: 10; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
                 <div class="gradient-border">
                     <div class="gradient-border-inner">
                         <div class="row g-0" style="border-radius: 13px; overflow: hidden;">
@@ -203,10 +209,6 @@
                                     style="position: absolute; top: 20px; left: 20px; background: #000000; backdrop-filter: blur(10px); padding: 10px 18px; border-radius: 25px; border: 2px solid #ffffff;">
                                     <span
                                         style="color: #ffffff !important; font-weight: 900 !important; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">FEATURED</span>
-                                </div>
-                                <div style="position: absolute; top: 20px; right: 20px; background: #000000; backdrop-filter: blur(10px); padding: 10px 18px; border-radius: 25px; border: 2px solid #ffffff;">
-                                    <span id="featured-number"
-                                        style="color: #ffffff !important; font-weight: 900 !important; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">01</span>
                                 </div>
                             </div>
                             <div class="col-lg-7 p-5 glass-effect">
@@ -324,12 +326,7 @@
         }
 
         .track-number {
-            font-size: 80px;
-            font-weight: 800;
-            color: rgba(255, 255, 255, 0.9);
-            position: absolute;
-            z-index: 2;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: none;
         }
 
         .track-content {
@@ -445,7 +442,7 @@
     <div class="container-fluid py-5" style="background-color: #F8F9FA;">
         <div class="container py-5">
             <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
+                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.2s"
                     style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Conference Tracks</h5>
                 <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
                     style="font-weight: 800; color: #000000 !important;">Explore Our Five Thematic Tracks</h2>
@@ -455,12 +452,11 @@
 
             <div class="row g-4">
                 <!-- Track 1: Futures Foresight -->
-                <div class="col-lg-6 wow fadeInLeft stagger-animation" data-wow-delay="0.1s">
+                <div class="col-lg-6 wow fadeInLeft stagger-animation" data-wow-delay="0.2s">
                     <div class="track-card">
                         <div>
                             <div class="track-card-image">
                                 <img src="img/Sessions/FutureForesight.jpg" alt="Futures Foresight">
-                                <span class="track-number">01</span>
                             </div>
                             <div class="track-card-body">
                                 <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Futures Foresight
@@ -501,7 +497,6 @@
                         <div>
                             <div class="track-card-image">
                                 <img src="img/Sessions/DesignAi.jpg" alt="Design AI">
-                                <span class="track-number">02</span>
                             </div>
                             <div class="track-card-body">
                                 <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Design AI</h3>
@@ -540,12 +535,11 @@
                 </div>
 
                 <!-- Track 3: Social Impact -->
-                <div class="col-lg-6 wow fadeInLeft stagger-animation" data-wow-delay="0.3s">
+                <div class="col-lg-6 wow fadeInLeft stagger-animation" data-wow-delay="0.2s">
                     <div class="track-card">
                         <div>
                             <div class="track-card-image">
                                 <img src="img/Sessions/SocialImpact.jpg" alt="Social Impact">
-                                <span class="track-number">03</span>
                             </div>
                             <div class="track-card-body">
                                 <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Social Impact
@@ -585,12 +579,11 @@
                 </div>
 
                 <!-- Track 4: Education Policy -->
-                <div class="col-lg-6 wow fadeInRight stagger-animation" data-wow-delay="0.4s">
+                <div class="col-lg-6 wow fadeInRight stagger-animation" data-wow-delay="0.2s">
                     <div class="track-card">
                         <div>
                             <div class="track-card-image">
                                 <img src="img/Sessions/EducationPolicy.jpg" alt="Education Policy">
-                                <span class="track-number">04</span>
                             </div>
                             <div class="track-card-body">
                                 <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Education Policy
@@ -636,7 +629,6 @@
                         <div>
                             <div class="track-card-image">
                                 <img src="img/Sessions/IndustryInnovation.jpg" alt="Industry Innovation">
-                                <span class="track-number">05</span>
                             </div>
                             <div class="track-card-body">
                                 <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Industry
@@ -715,7 +707,7 @@
 
     <div class="container-fluid py-5" style="background-color: #FFFFFF;">
         <div class="container py-5">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.2s">
                 <h5 class="text-uppercase mb-2"
                     style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Announcement</h5>
                 <p class="fs-5" style="color: #495057 !important; max-width: 800px; margin: 0 auto;">Detailed
@@ -726,7 +718,7 @@
         </div>
     </div>
 
-    <div class="container-fluid footer py-4 wow fadeIn" data-wow-delay="0.1s" style="background-color: #FFFFFF;">
+    <div class="container-fluid footer py-4 wow fadeIn" data-wow-delay="0.2s" style="background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('img/Background/travel_stay_bg.png') center center/cover no-repeat;">
         <div class="container text-center py-4">
             <a href="index.html">
                 <h2 class="mb-3" style="color: #000000 !important; font-weight: 800;">GDTA 2026</h2>
@@ -821,7 +813,6 @@
 
             setTimeout(() => {
                 img.src = session.image;
-                document.getElementById('featured-number').textContent = session.number;
                 document.getElementById('featured-title').textContent = session.title;
                 document.getElementById('featured-subtitle').textContent = session.subtitle;
                 document.getElementById('featured-description').textContent = session.description;
@@ -856,6 +847,22 @@
         // Stop auto-rotate
         function stopAutoRotate() {
             clearInterval(autoRotateInterval);
+        }
+
+        // Navigate to previous session
+        function navigatePrev() {
+            currentIndex = (currentIndex - 1 + sessions.length) % sessions.length;
+            updateFeaturedArticle(currentIndex);
+            stopAutoRotate();
+            setTimeout(startAutoRotate, 5000);
+        }
+
+        // Navigate to next session
+        function navigateNext() {
+            currentIndex = (currentIndex + 1) % sessions.length;
+            updateFeaturedArticle(currentIndex);
+            stopAutoRotate();
+            setTimeout(startAutoRotate, 5000);
         }
 
         // Initialize on page load
