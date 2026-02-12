@@ -10,7 +10,7 @@
         name="description">
 
     <!-- Favicon -->
-    <link href="img/logo.png" rel="icon">
+    <link href="img/Logo/Screenshot 2026-01-24 143837.png" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -384,7 +384,7 @@
 
     <!-- Header Start -->
     <div class="container-fluid p-0 navbar-container"
-        style="background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.18); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;">
+        style="background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.18); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;">
         <nav class="navbar navbar-expand-lg navbar-dark px-4 py-1">
             <a href="index.html" class="navbar-brand">
                 <img src="img/Logo/gdta_main_logo.png" alt="GDTA Logo" style="height: 65px; width: auto;">
@@ -426,11 +426,11 @@
                         Stay</a>
                     <a href="sponsors.html" class="nav-item nav-link" style="color: #495057 !important;">Sponsors &
                         Partners</a>
+                    <a href="hackathon.html" class="nav-item nav-link" style="color: #495057 !important;">Hackathon</a>
                     <a href="contact.html" class="nav-item nav-link" style="color: #495057 !important;">Contact Us</a>
                 </div>
 
-                <a class="btn btn-primary border-0 px-4 py-1 ms-3" href="register.html"
-                    style="border-radius: 25px; font-weight: 600;">Register</a>
+                <a class="navbar-register-btn border-0 ms-3" href="register.html">Register</a>
             </div>
         </nav>
     </div>
@@ -453,53 +453,76 @@
     </div>
     
     <script>
-        // Handle video end transition
+        // Handle video end transition - play only once using localStorage
         const heroVideo = document.getElementById('heroVideo');
         const heroBg = document.getElementById('heroBg');
         
+        // Check if video has been played before
+        const hasPlayedVideo = localStorage.getItem('gdta_hero_video_played');
+        
         if (heroVideo) {
-            console.log('Video element found');
-            
-            // Force immediate play attempt
-            heroVideo.play().catch(e => console.log('Initial play attempt:', e));
-            
-            heroVideo.addEventListener('loadstart', function() {
-                console.log('Video loading started');
-            });
-            
-            heroVideo.addEventListener('loadeddata', function() {
-                console.log('Video data loaded, playing...');
-                heroVideo.play().catch(e => console.error('Play error:', e));
-            });
-            
-            heroVideo.addEventListener('canplay', function() {
-                console.log('Video can play');
-                heroVideo.play().catch(e => console.error('Play error:', e));
-            });
-            
-            heroVideo.addEventListener('ended', function() {
-                console.log('Video ended, fading out...');
-                // Show background image
-                heroBg.style.opacity = '1';
-                heroBg.style.transition = 'opacity 1s ease-out';
-                // Fade out video smoothly
-                heroVideo.style.opacity = '0';
-                heroVideo.style.transition = 'opacity 1s ease-out';
-                // Show navbar with slide-down animation
-                setTimeout(() => {
-                    document.querySelector('.navbar-container').classList.add('show');
-                }, 500);
-                // Remove video from DOM after fade completes
-                setTimeout(() => {
-                    heroVideo.style.display = 'none';
-                }, 1000);
-            });
-            
-            // Fallback: If video fails to load, hide it immediately
-            heroVideo.addEventListener('error', function(e) {
-                console.error('Video error:', e, heroVideo.error);
+            if (hasPlayedVideo === 'true') {
+                // Video was already played, skip it
+                console.log('Video already played, showing background image');
                 heroVideo.style.display = 'none';
-            });
+                heroBg.style.opacity = '1';
+                document.querySelector('.navbar-container').classList.add('show');
+            } else {
+                // First time - play the video
+                console.log('Video element found - first time play');
+                
+                // Force immediate play attempt
+                heroVideo.play().catch(e => {
+                    console.log('Initial play attempt failed:', e);
+                    // If autoplay fails, show background instead
+                    heroVideo.style.display = 'none';
+                    heroBg.style.opacity = '1';
+                    document.querySelector('.navbar-container').classList.add('show');
+                });
+                
+                heroVideo.addEventListener('loadstart', function() {
+                    console.log('Video loading started');
+                });
+                
+                heroVideo.addEventListener('loadeddata', function() {
+                    console.log('Video data loaded, playing...');
+                    heroVideo.play().catch(e => console.error('Play error:', e));
+                });
+                
+                heroVideo.addEventListener('canplay', function() {
+                    console.log('Video can play');
+                    heroVideo.play().catch(e => console.error('Play error:', e));
+                });
+                
+                heroVideo.addEventListener('ended', function() {
+                    console.log('Video ended, fading out...');
+                    // Mark video as played
+                    localStorage.setItem('gdta_hero_video_played', 'true');
+                    // Show background image
+                    heroBg.style.opacity = '1';
+                    heroBg.style.transition = 'opacity 1s ease-out';
+                    // Fade out video smoothly
+                    heroVideo.style.opacity = '0';
+                    heroVideo.style.transition = 'opacity 1s ease-out';
+                    // Show navbar with slide-down animation
+                    setTimeout(() => {
+                        document.querySelector('.navbar-container').classList.add('show');
+                    }, 500);
+                    // Remove video from DOM after fade completes
+                    setTimeout(() => {
+                        heroVideo.style.display = 'none';
+                    }, 1000);
+                });
+                
+                // Fallback: If video fails to load, hide it immediately
+                heroVideo.addEventListener('error', function(e) {
+                    console.error('Video error:', e, heroVideo.error);
+                    heroVideo.style.display = 'none';
+                    heroBg.style.opacity = '1';
+                    document.querySelector('.navbar-container').classList.add('show');
+                    localStorage.setItem('gdta_hero_video_played', 'true');
+                });
+            }
         }
     </script>
     <!-- Hero Section End -->
@@ -509,7 +532,7 @@
         <div class="container py-5">
             <div class="row g-5 align-items-start">
                 <div class="col-lg-7">
-                    <div class="wow fadeInLeft" data-wow-delay="0.1s">
+                    <div class="wow fadeInLeft" data-wow-delay="0.2s">
                         <p class="mb-4" style="line-height: 1.8; text-align: justify; color: #495057 !important;">The
                             GDTA Indian Chapter is proud to host the D Conference 2026, bringing together design
                             thinkers, innovators, and change-makers from across the globe.</p>
@@ -538,14 +561,14 @@
     <div class="container-fluid py-5" style="background-color: #FFFFFF;">
         <div class="container py-5">
             <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
+                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.2s"
                     style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Conference Highlights</h5>
                 <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
                     style="font-weight: 800; color: #FFFFFF !important;">What to Expect</h2>
             </div>
 
             <div class="row g-4">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
                     <div class="content-card" style="height: 100%;">
                         <div class="mb-3"
                             style="width: 100%; height: 220px; background-color: #FFFFFF; border-radius: 10px; overflow: hidden;">
@@ -573,7 +596,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
                     <div class="content-card" style="height: 100%;">
                         <div class="mb-3"
                             style="width: 100%; height: 220px; background-color: #FFFFFF; border-radius: 10px; overflow: hidden;">
@@ -602,7 +625,14 @@
             </div>
 
             <!-- Featured Article (Recent Post) -->
-            <div class="featured-article mb-5 wow fadeInUp shadow-lift" data-wow-delay="0.1s">
+            <div class="featured-article mb-5 wow fadeInUp shadow-lift" data-wow-delay="0.2s" style="position: relative;">
+                <!-- Navigation Arrows -->
+                <button class="carousel-nav-btn carousel-prev" onclick="navigatePrev()" style="position: absolute; left: -20px; top: 50%; transform: translateY(-50%); background: #000000; border: none; width: 50px; height: 50px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; z-index: 10; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-nav-btn carousel-next" onclick="navigateNext()" style="position: absolute; right: -20px; top: 50%; transform: translateY(-50%); background: #000000; border: none; width: 50px; height: 50px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; z-index: 10; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
                 <div class="gradient-border">
                     <div class="gradient-border-inner">
                         <div class="row g-0" style="border-radius: 13px; overflow: hidden;">
@@ -664,7 +694,7 @@
     <!-- Call to Action Section Start -->
     <div class="container-fluid py-5" style="background-color: #000000;">
         <div class="container py-5">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.2s">
                 <h2 class="mb-4" style="font-weight: 800; color: #FFFFFF !important;">Ready to Join Us?</h2>
                 <p class="mb-4 fs-5" style="color: #FFFFFF !important; max-width: 800px; margin: 0 auto;">Register now
                     to secure your spot at GDTA 2026 and be part of this transformative experience.</p>
@@ -677,7 +707,7 @@
     <!-- Call to Action Section End -->
 
     <!-- Footer Start -->
-    <div class="container-fluid footer py-4 wow fadeIn" data-wow-delay="0.1s" style="background-color: #FFFFFF;">
+    <div class="container-fluid footer py-4 wow fadeIn" data-wow-delay="0.2s" style="background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('img/Background/travel_stay_bg.png') center center/cover no-repeat;">
         <div class="container text-center py-4">
             <a href="index.html">
                 <h2 class="mb-3" style="color: #000000 !important; font-weight: 800;">GDTA 2026</h2>
@@ -799,6 +829,22 @@
         // Stop auto-rotate
         function stopAutoRotate() {
             clearInterval(autoRotateInterval);
+        }
+
+        // Navigate to previous session
+        function navigatePrev() {
+            currentIndex = (currentIndex - 1 + sessions.length) % sessions.length;
+            updateFeaturedArticle(currentIndex);
+            stopAutoRotate();
+            setTimeout(startAutoRotate, 5000);
+        }
+
+        // Navigate to next session
+        function navigateNext() {
+            currentIndex = (currentIndex + 1) % sessions.length;
+            updateFeaturedArticle(currentIndex);
+            stopAutoRotate();
+            setTimeout(startAutoRotate, 5000);
         }
 
         // Initialize
@@ -927,7 +973,7 @@
                     <path d="M8 6.94L13.47 1.47a.75.75 0 0 1 1.06 1.06L9.06 8l5.47 5.47a.75.75 0 0 1-1.06 1.06L8 9.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L6.94 8 1.47 2.53a.75.75 0 0 1 1.06-1.06L8 6.94z"/>
                 </svg>
             </button>
-            <iframe class="chatbot-iframe" id="chatbotIframe" src="http://localhost:5000" title="GDTA 2026 Chatbot"></iframe>
+            <iframe class="chatbot-iframe" id="chatbotIframe" src="" title="GDTA 2026 Chatbot"></iframe>
         </div>
     </div>
     <script>

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Register - GDTA 2026</title>
+    <title>Safari Registration - GDTA 2026</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="img/Logo/Screenshot 2026-01-24 143837.png" rel="icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,6 +17,52 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/custom-overrides.css" rel="stylesheet">
+    <style>
+        .route-option {
+            border: 2px solid rgba(242, 183, 5, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #FFFFFF;
+        }
+        
+        .route-option:hover {
+            border-color: #F2B705;
+            box-shadow: 0 4px 12px rgba(242, 183, 5, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .route-option input[type="radio"] {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+        }
+        
+        .route-option input[type="radio"]:checked + .route-content {
+            color: #000000;
+        }
+        
+        .route-option.selected {
+            border-color: #F2B705;
+            background-color: #FFFBEB;
+            box-shadow: 0 4px 12px rgba(242, 183, 5, 0.3);
+        }
+        
+        .route-content h5 {
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+        
+        .route-content p {
+            color: #495057;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+    </style>
 </head>
 
 <body>
@@ -44,7 +90,7 @@
                         </div>
                     </div>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                        <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown"
                             style="color: #495057 !important;">Program</a>
                         <div class="dropdown-menu" style="background-color: #F8F9FA;">
                             <a href="program-schedule.html" class="dropdown-item"
@@ -71,142 +117,115 @@
         style="background: linear-gradient(rgba(31, 31, 31, 0.5), rgba(31, 31, 31, 0.5)), url('img/Background/travel_stay_bg.png') center center/cover no-repeat; margin-top: 100px; padding-top: 80px !important;">
         <div class="container text-center py-5">
             <h1 class="display-3 mb-3 wow fadeInDown" data-wow-delay="0.2s"
-                style="color: #FFFFFF !important; font-weight: 800;">Register for GDTA 2026</h1>
-            <p class="fs-5 wow fadeInUp" data-wow-delay="0.2s" style="color: #FFFFFF !important;">Secure Your Spot at
-                the D Conference</p>
+                style="color: #FFFFFF !important; font-weight: 800;">Safari Registration</h1>
+            <p class="fs-5 wow fadeInUp" data-wow-delay="0.2s" style="color: #FFFFFF !important;">Choose Your Exclusive Safari Route</p>
         </div>
     </div>
 
     <div class="container-fluid py-5" style="background-color: #F8F9FA;">
         <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-5 wow fadeInLeft" data-wow-delay="0.2s">
-                    <h5 class="text-uppercase mb-2"
-                        style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Conference Details
-                    </h5>
-                    <h2 class="mb-4" style="font-weight: 800; color: #FFFFFF !important;">Registration Information</h2>
-
-                    <div class="content-card mb-4">
-                        <h5 style="color: #000000 !important; font-weight: 700; margin-bottom: 15px;">Conference Dates
-                        </h5>
-                        <p style="color: #495057 !important; margin-bottom: 0;">September 29 & 30, 2026</p>
-                    </div>
-
-                    <div class="content-card mb-4">
-                        <h5 style="color: #000000 !important; font-weight: 700; margin-bottom: 15px;">Venue</h5>
-                        <p style="color: #495057 !important; margin-bottom: 0;">SNS Institutions<br>Coimbatore, Tamil
-                            Nadu, India</p>
-                    </div>
-
-                    <div class="content-card mb-4">
-                        <h5 style="color: #000000 !important; font-weight: 700; margin-bottom: 15px;">Registration Fee
-                        </h5>
-                        <p style="color: #495057 !important; margin-bottom: 5px;">Early Bird: ₹ XXXX (Until Date TBD)
-                        </p>
-                        <p style="color: #495057 !important; margin-bottom: 5px;">Regular: ₹ XXXX</p>
-                        <p style="color: #6C757D !important; margin-bottom: 0; font-size: 14px;">(Pricing to be
-                            announced)</p>
-                    </div>
-
-                    <div class="content-card">
-                        <h5 style="color: #000000 !important; font-weight: 700; margin-bottom: 15px;">Registration
-                            Includes</h5>
-                        <ul style="color: #495057 !important; padding-left: 20px;">
-                            <li>Access to all conference sessions</li>
-                            <li>Workshop participation</li>
-                            <li>Conference materials and kit</li>
-                            <li>Lunch and refreshments (both days)</li>
-                            <li>Networking opportunities</li>
-                            <li>Certificate of participation</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="col-lg-7 wow fadeInRight" data-wow-delay="0.2s">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 wow fadeInUp" data-wow-delay="0.2s">
                     <div class="content-card" style="padding: 40px;">
-                        <h3 style="color: #000000 !important; font-weight: 700; margin-bottom: 30px;">Registration Form
+                        <h3 style="color: #000000 !important; font-weight: 700; margin-bottom: 30px;">Safari Registration Form
                         </h3>
-                        <form>
+                        <form id="safariRegistrationForm">
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label
                                         style="color: #495057 !important; margin-bottom: 8px; font-weight: 500;">First
                                         Name *</label>
-                                    <input type="text" class="form-control" required
-                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #FFFFFF; padding: 12px;">
+                                    <input type="text" class="form-control" name="firstName" required
+                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #000000; padding: 12px;">
                                 </div>
                                 <div class="col-md-6">
                                     <label style="color: #495057 !important; margin-bottom: 8px; font-weight: 500;">Last
                                         Name *</label>
-                                    <input type="text" class="form-control" required
-                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #FFFFFF; padding: 12px;">
+                                    <input type="text" class="form-control" name="lastName" required
+                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #000000; padding: 12px;">
                                 </div>
                                 <div class="col-md-6">
                                     <label
                                         style="color: #495057 !important; margin-bottom: 8px; font-weight: 500;">Email
                                         *</label>
-                                    <input type="email" class="form-control" required
-                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #FFFFFF; padding: 12px;">
+                                    <input type="email" class="form-control" name="email" required
+                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #000000; padding: 12px;">
                                 </div>
                                 <div class="col-md-6">
                                     <label
                                         style="color: #495057 !important; margin-bottom: 8px; font-weight: 500;">Phone
                                         Number *</label>
-                                    <input type="tel" class="form-control" required
-                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #FFFFFF; padding: 12px;">
+                                    <input type="tel" class="form-control" name="phone" required
+                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #000000; padding: 12px;">
                                 </div>
                                 <div class="col-12">
                                     <label
                                         style="color: #495057 !important; margin-bottom: 8px; font-weight: 500;">Organization
                                         *</label>
-                                    <input type="text" class="form-control" required
-                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #FFFFFF; padding: 12px;">
+                                    <input type="text" class="form-control" name="organization" required
+                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #000000; padding: 12px;">
                                 </div>
                                 <div class="col-12">
                                     <label
                                         style="color: #495057 !important; margin-bottom: 8px; font-weight: 500;">Designation
                                         *</label>
-                                    <input type="text" class="form-control" required
-                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #FFFFFF; padding: 12px;">
+                                    <input type="text" class="form-control" name="designation" required
+                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #000000; padding: 12px;">
                                 </div>
+
                                 <div class="col-12">
-                                    <label
-                                        style="color: #495057 !important; margin-bottom: 8px; font-weight: 500;">Design
-                                        Safari Interest</label>
-                                    <select class="form-control"
-                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #FFFFFF; padding: 12px;">
-                                        <option value="">Select Option</option>
-                                        <option value="yes">Yes, I'm interested</option>
-                                        <option value="no">No, not interested</option>
-                                    </select>
+                                    <label style="color: #000000 !important; margin-bottom: 15px; font-weight: 700; font-size: 18px;">
+                                        Select Your Safari Route *
+                                    </label>
+                                    <p style="color: #495057 !important; margin-bottom: 20px; font-size: 14px;">
+                                        Please choose one route from the options below
+                                    </p>
+
+                                    <div class="route-option" onclick="selectRoute(1)">
+                                        <label style="display: flex; align-items: start; cursor: pointer; margin: 0;">
+                                            <input type="radio" name="safariRoute" value="route1" required id="route1">
+                                            <div class="route-content" style="flex: 1;">
+                                                <h5>Route 01</h5>
+                                                <p>Isha Foundation, Veliyangiri and Perur Temple</p>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <div class="route-option" onclick="selectRoute(2)">
+                                        <label style="display: flex; align-items: start; cursor: pointer; margin: 0;">
+                                            <input type="radio" name="safariRoute" value="route2" required id="route2">
+                                            <div class="route-content" style="flex: 1;">
+                                                <h5>Route 02</h5>
+                                                <p>Maruthamalai Temple, Town Hall & Ukkadam lake</p>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <div class="route-option" onclick="selectRoute(3)">
+                                        <label style="display: flex; align-items: start; cursor: pointer; margin: 0;">
+                                            <input type="radio" name="safariRoute" value="route3" required id="route3">
+                                            <div class="route-content" style="flex: 1;">
+                                                <h5>Route 03</h5>
+                                                <p>Cotton Textile Mills in Sirumugai and Tentirupathi Temple Visit</p>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="col-12">
-                                    <label
-                                        style="color: #495057 !important; margin-bottom: 8px; font-weight: 500;">Dietary
-                                        Requirements</label>
-                                    <textarea class="form-control" rows="2"
-                                        placeholder="Please mention any dietary restrictions or preferences"
-                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #FFFFFF; padding: 12px;"></textarea>
-                                </div>
+
                                 <div class="col-12">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="termsCheck" required
                                             style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3);">
                                         <label class="form-check-label" for="termsCheck"
                                             style="color: #495057 !important;">
-                                            I agree to the terms and conditions and understand that registration
-                                            confirmation will be sent upon payment.
+                                            I agree to the terms and conditions and understand that safari registration
+                                            confirmation will be sent.
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-primary w-100 py-3"
-                                        style="font-weight: 700; font-size: 16px;">Submit Registration</button>
-                                </div>
-                                <div class="col-12">
-                                    <p
-                                        style="color: #6C757D !important; font-size: 14px; text-align: center; margin-top: 10px;">
-                                        Payment details will be shared upon form submission</p>
+                                        style="font-weight: 700; font-size: 16px;">Submit Safari Registration</button>
                                 </div>
                             </div>
                         </form>
@@ -221,9 +240,9 @@
             <div class="text-center wow fadeInUp" data-wow-delay="0.2s">
                 <h5 class="text-uppercase mb-2"
                     style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Questions?</h5>
-                <h2 class="mb-4" style="font-weight: 800; color: #FFFFFF !important;">Need Assistance?</h2>
+                <h2 class="mb-4" style="font-weight: 800; color: #FFFFFF !important;">Need Safari Assistance?</h2>
                 <p class="mb-4 fs-5" style="color: #495057 !important; max-width: 800px; margin: 0 auto;">If you have
-                    any questions about registration or the conference, please don't hesitate to reach out to our team.
+                    any questions about the safari routes or registration, please don't hesitate to reach out to our team.
                 </p>
                 <a href="contact.html" class="btn btn-outline-primary btn-lg px-5 py-3"
                     style="border-radius: 30px; font-weight: 700;">Contact Us</a>
@@ -267,6 +286,55 @@
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/chatbot-widget.js"></script>
+
+    <script>
+        // Handle route selection with visual feedback
+        function selectRoute(routeNumber) {
+            // Remove all selected classes
+            document.querySelectorAll('.route-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Check the radio button
+            const radio = document.getElementById('route' + routeNumber);
+            radio.checked = true;
+            
+            // Add selected class to clicked option
+            radio.closest('.route-option').classList.add('selected');
+        }
+
+        // Initialize WOW.js animations
+        new WOW().init();
+
+        // Form submission handler (you can customize this)
+        document.getElementById('safariRegistrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get selected route
+            const selectedRoute = document.querySelector('input[name="safariRoute"]:checked');
+            
+            if (!selectedRoute) {
+                alert('Please select a safari route');
+                return;
+            }
+            
+            // Here you would typically send the form data to your server
+            alert('Thank you for registering for the Safari! We will send you payment details shortly.');
+            
+            // You can add AJAX submission here
+            // this.submit();
+        });
+
+        // Add click event to route options to select radio button
+        document.querySelectorAll('.route-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'INPUT') {
+                    const radio = this.querySelector('input[type="radio"]');
+                    radio.click();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

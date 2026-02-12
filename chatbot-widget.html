@@ -211,7 +211,7 @@
                 </svg>
             </button>
         </div>
-        <iframe class="chatbot-iframe" id="chatbotIframe" src="http://localhost:5000" title="GDTA 2026 Chatbot"></iframe>
+        <iframe class="chatbot-iframe" id="chatbotIframe" src="" title="GDTA 2026 Chatbot"></iframe>
     </div>
 </div>
 
@@ -235,9 +235,10 @@
                 chatbotButton.classList.remove('pulse');
                 
                 // Load iframe only when opened (performance optimization)
-                if (!chatbotIframe.src) {
-                    chatbotIframe.src = 'http://localhost:5000';
-                }
+                // Backend connection disabled
+                // if (!chatbotIframe.src) {
+                //     chatbotIframe.src = 'http://localhost:5000';
+                // }
             } else {
                 chatbotWindow.classList.remove('open');
                 chatbotButton.classList.remove('open');
