@@ -444,9 +444,8 @@
         <div id="heroBg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('img/landing page GDTA (3).png') center center/cover no-repeat; opacity: 0; z-index: 0;"></div>
         
         <!-- Video Background -->
-        <video id="heroVideo" autoplay muted playsinline preload="auto" loop
+        <video id="heroVideo" muted playsinline preload="auto"
             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 1;">
-            <source src="img/Background/0001-0110.mkv" type="video/x-matroska">
             <source src="img/Background/0001-0110.mkv" type="video/mp4">
             Your browser does not support the video tag.
         </video>
@@ -454,68 +453,54 @@
     </div>
     
     <script>
-        // Handle video end transition - play only once using localStorage
+        // Handle video playback and transition - play only once per visit
         const heroVideo = document.getElementById('heroVideo');
         const heroBg = document.getElementById('heroBg');
         
-        // Check if video has been played before
-        const hasPlayedVideo = localStorage.getItem('gdta_hero_video_played');
+        // Check if video has been played in this session
+        const hasPlayedVideo = sessionStorage.getItem('gdta_hero_video_played');
         
         if (heroVideo) {
             if (hasPlayedVideo === 'true') {
-                // Video was already played, skip it
-                console.log('Video already played, showing background image');
+                // Video was already played in this session, skip it
+                console.log('Video already played in this session, showing background');
                 heroVideo.style.display = 'none';
                 heroBg.style.opacity = '1';
                 document.querySelector('.navbar-container').classList.add('show');
-                // Show chatbot immediately if video was already played
-                const chatbotWidget = document.getElementById('chatbotWidget');
-                if (chatbotWidget) {
-                    chatbotWidget.classList.add('show');
-                    console.log('Chatbot widget shown (video previously played)');
-                }
             } else {
-                // First time - play the video
-                console.log('Video element found - first time play');
+                // First visit - play the video
+                console.log('First page visit, attempting to play video...');
                 
-                // Multiple attempts to ensure video plays
-                const tryPlay = () => {
-                    const playPromise = heroVideo.play();
-                    if (playPromise !== undefined) {
-                        playPromise
-                            .then(() => {
-                                console.log('Video playing successfully');
-                            })
-                            .catch(error => {
-                                console.log('Autoplay prevented:', error);
-                                // Try again with user interaction
-                                document.addEventListener('click', () => {
-                                    heroVideo.play().catch(e => console.error('Play on click failed:', e));
-                                }, { once: true });
-                            });
-                    }
+                // Force play on user interaction if autoplay fails
+                const forcePlay = () => {
+                    heroVideo.play().then(() => {
+                        console.log('Video playing successfully');
+                    }).catch(error => {
+                        console.log('Autoplay prevented:', error);
+                        console.log('Click anywhere to start video');
+                    });
                 };
                 
-                // Try to play immediately
-                tryPlay();
+                // Try to play on page load
+                setTimeout(() => {
+                    forcePlay();
+                }, 100);
                 
-                heroVideo.addEventListener('loadstart', function() {
-                    console.log('Video loading started');
-                });
-                
-                heroVideo.addEventListener('loadedmetadata', function() {
-                    console.log('Video metadata loaded');
-                    tryPlay();
-                });
+                // Allow click to start video
+                document.addEventListener('click', () => {
+                    if (heroVideo.paused) {
+                        forcePlay();
+                    }
+                }, { once: true });
                 
                 heroVideo.addEventListener('loadeddata', function() {
-                    console.log('Video data loaded, playing...');
-                    tryPlay();
+                    console.log('Video data loaded');
+                    forcePlay();
                 });
                 
                 heroVideo.addEventListener('canplay', function() {
                     console.log('Video can play');
-                    tryPlay();
+                    forcePlay();
                 });
                 
                 heroVideo.addEventListener('playing', function() {
@@ -523,46 +508,31 @@
                 });
                 
                 heroVideo.addEventListener('ended', function() {
-                    console.log('Video ended, fading out...');
-                    // Mark video as played
-                    localStorage.setItem('gdta_hero_video_played', 'true');
+                    console.log('Video ended, showing background...');
+                    // Mark video as played for this session
+                    sessionStorage.setItem('gdta_hero_video_played', 'true');
                     // Show background image
                     heroBg.style.opacity = '1';
                     heroBg.style.transition = 'opacity 1s ease-out';
-                    // Fade out video smoothly
+                    // Fade out video
                     heroVideo.style.opacity = '0';
                     heroVideo.style.transition = 'opacity 1s ease-out';
-                    // Show navbar with slide-down animation
+                    // Show navbar
                     setTimeout(() => {
                         document.querySelector('.navbar-container').classList.add('show');
                     }, 500);
-                    // Remove video from DOM after fade completes
                     setTimeout(() => {
                         heroVideo.style.display = 'none';
                     }, 1000);
-                    // Show chatbot widget after video ends
-                    setTimeout(() => {
-                        const chatbotWidget = document.getElementById('chatbotWidget');
-                        if (chatbotWidget) {
-                            chatbotWidget.classList.add('show');
-                            console.log('Chatbot widget shown after video');
-                        }
-                    }, 1500);
                 });
                 
-                // Fallback: If video fails to load, hide it immediately
+                // Error handling
                 heroVideo.addEventListener('error', function(e) {
                     console.error('Video error:', e, heroVideo.error);
+                    sessionStorage.setItem('gdta_hero_video_played', 'true');
                     heroVideo.style.display = 'none';
                     heroBg.style.opacity = '1';
                     document.querySelector('.navbar-container').classList.add('show');
-                    localStorage.setItem('gdta_hero_video_played', 'true');
-                    // Show chatbot on video error
-                    const chatbotWidget = document.getElementById('chatbotWidget');
-                    if (chatbotWidget) {
-                        chatbotWidget.classList.add('show');
-                        console.log('Chatbot widget shown (video error)');
-                    }
                 });
             }
         }
@@ -999,7 +969,9 @@
         document.head.appendChild(style);
     </script>
 
-    <!-- GDTA 2026 Chatbot Widget -->
+    <!-- GDTA 2026 Chatbot Widget - DISABLED -->
+    <!-- Chatbot temporarily disabled for troubleshooting -->
+    <!--
     <style>
         .chatbot-widget-container{position:fixed;bottom:20px;right:20px;z-index:9999;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;opacity:0;visibility:hidden;transition:opacity 0.5s ease, visibility 0.5s ease}.chatbot-widget-container.show{opacity:1;visibility:visible}.chatbot-button{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);box-shadow:0 4px 20px rgba(102,126,234,.4);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s ease;position:relative;overflow:hidden}.chatbot-button:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(102,126,234,.6)}.chatbot-button:active{transform:scale(.95)}.chatbot-button-icon{width:30px;height:30px;fill:white;transition:all .3s ease}.chatbot-button.open .chatbot-button-icon{transform:rotate(180deg)}@keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(102,126,234,.4)}50%{box-shadow:0 4px 30px rgba(102,126,234,.8)}}.chatbot-button.pulse{animation:pulse 2s infinite}.chatbot-window{position:fixed;bottom:90px;right:20px;width:400px;height:600px;background:white;border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,.2);display:none;flex-direction:column;overflow:hidden;transition:all .3s ease;opacity:0;transform:translateY(20px)}.chatbot-window.open{display:flex;opacity:1;transform:translateY(0)}.chatbot-window-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:15px 20px;display:flex;justify-content:space-between;align-items:center}.chatbot-window-title{font-size:1.1em;font-weight:600}.chatbot-window-subtitle{font-size:.8em;opacity:.9;margin-top:2px}.chatbot-close-btn{background:rgba(255,255,255,.2);border:none;color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.chatbot-close-btn:hover{background:rgba(255,255,255,.3);transform:rotate(90deg)}.chatbot-iframe{width:100%;height:100%;border:none;flex:1}@media (max-width:768px){.chatbot-window{width:calc(100vw - 40px);height:calc(100vh - 140px);right:20px;bottom:90px}.chatbot-widget-container{bottom:15px;right:15px}.chatbot-button{width:55px;height:55px}}.chatbot-notification-badge{position:absolute;top:-5px;right:-5px;background:#ff4444;color:white;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7em;font-weight:bold;animation:bounceIn .5s ease}@keyframes bounceIn{0%{transform:scale(0)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
     </style>
@@ -1044,6 +1016,7 @@
             console.log('Chatbot widget initialized');
         })();
     </script>
+    -->
 </body>
 
 </html>
