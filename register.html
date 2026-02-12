@@ -17,6 +17,90 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/custom-overrides.css" rel="stylesheet">
+    <style>
+        .safari-section {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #FFFBEB;
+            border-radius: 12px;
+            border: 2px solid rgba(242, 183, 5, 0.3);
+        }
+        
+        .safari-section.active {
+            display: block;
+        }
+        
+        .route-option {
+            border: 2px solid rgba(242, 183, 5, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #FFFFFF;
+        }
+        
+        .route-option:hover {
+            border-color: #F2B705;
+            box-shadow: 0 4px 12px rgba(242, 183, 5, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .route-option input[type="radio"] {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+        }
+        
+        .route-option input[type="radio"]:checked + .route-content {
+            color: #000000;
+        }
+        
+        .route-option.selected {
+            border-color: #F2B705;
+            background-color: #FFFBEB;
+            box-shadow: 0 4px 12px rgba(242, 183, 5, 0.3);
+        }
+        
+        .route-content h5 {
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+        
+        .route-content p {
+            color: #495057;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+        
+        .info-icon-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: #F2B705;
+            color: #FFFFFF;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 12px;
+            margin-left: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .info-icon-link:hover {
+            background-color: #d9a604;
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(242, 183, 5, 0.4);
+        }
+        
+        .info-icon-link i {
+            pointer-events: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -72,8 +156,7 @@
         <div class="container text-center py-5">
             <h1 class="display-3 mb-3 wow fadeInDown" data-wow-delay="0.2s"
                 style="color: #FFFFFF !important; font-weight: 800;">Register for GDTA 2026</h1>
-            <p class="fs-5 wow fadeInUp" data-wow-delay="0.2s" style="color: #FFFFFF !important;">Secure Your Spot at
-                the D Conference</p>
+            <p class="fs-5 wow fadeInUp" data-wow-delay="0.2s" style="color: #FFFFFF !important;">Conference & Design Safari Registration</p>
         </div>
     </div>
 
@@ -111,7 +194,7 @@
                     <div class="content-card">
                         <h5 style="color: #000000 !important; font-weight: 700; margin-bottom: 15px;">Registration
                             Includes</h5>
-                        <ul style="color: #495057 !important; padding-left: 20px;">
+                        <ul style="color: #495057 !important; padding-left: 20px; margin-bottom: 10px;">
                             <li>Access to all conference sessions</li>
                             <li>Workshop participation</li>
                             <li>Conference materials and kit</li>
@@ -119,6 +202,15 @@
                             <li>Networking opportunities</li>
                             <li>Certificate of participation</li>
                         </ul>
+                        <div style="margin-top: 15px; padding: 12px; background-color: #FFFBEB; border-radius: 8px; border-left: 4px solid #F2B705;">
+                            <p style="color: #000000 !important; margin: 0; font-weight: 600; font-size: 14px;">
+                                <i class="fas fa-route" style="color: #F2B705; margin-right: 8px;"></i>
+                                Optional: Design Safari (Sept 30)
+                            </p>
+                            <p style="color: #495057 !important; margin: 5px 0 0 0; font-size: 13px;">
+                                Add the safari experience during registration
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -169,17 +261,78 @@
                                     <input type="text" class="form-control" required
                                         style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #FFFFFF; padding: 12px;">
                                 </div>
+                                
+                                <!-- Design Safari Section -->
                                 <div class="col-12">
-                                    <label
-                                        style="color: #495057 !important; margin-bottom: 8px; font-weight: 500;">Design
-                                        Safari Interest</label>
-                                    <select class="form-control"
-                                        style="background-color: #FFFFFF; border: 1px solid rgba(242, 183, 5, 0.3); color: #FFFFFF; padding: 12px;">
-                                        <option value="">Select Option</option>
-                                        <option value="yes">Yes, I'm interested</option>
-                                        <option value="no">No, not interested</option>
-                                    </select>
+                                    <div class="form-check mb-3" style="padding: 15px; background-color: #FFFBEB; border-radius: 8px; border: 2px solid rgba(242, 183, 5, 0.3);">
+                                        <input class="form-check-input" type="checkbox" id="safariInterest" onchange="toggleSafariSection()"
+                                            style="width: 20px; height: 20px; margin-right: 10px; cursor: pointer;">
+                                        <label class="form-check-label" for="safariInterest"
+                                            style="color: #000000 !important; font-weight: 600; font-size: 16px; cursor: pointer;">
+                                            <i class="fas fa-route" style="color: #F2B705; margin-right: 8px;"></i>
+                                            Yes, I want to register for the Design Safari (September 30, 2026)
+                                        </label>
+                                        <p style="color: #495057 !important; margin: 8px 0 0 30px; font-size: 14px;">
+                                            Join an immersive cultural experience exploring local design inspiration and traditional craftsmanship
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Safari Route Selection (Hidden by default) -->
+                                    <div id="safariRouteSection" class="safari-section">
+                                        <h5 style="color: #000000 !important; margin-bottom: 15px; font-weight: 700;">
+                                            Select Your Safari Route *
+                                        </h5>
+                                        <p style="color: #495057 !important; margin-bottom: 20px; font-size: 14px;">
+                                            Please choose one route from the options below:
+                                        </p>
+
+                                        <div class="route-option" onclick="selectRoute(1)">
+                                            <label style="display: flex; align-items: start; cursor: pointer; margin: 0;">
+                                                <input type="radio" name="safariRoute" value="route1" id="route1">
+                                                <div class="route-content" style="flex: 1;">
+                                                    <h5 style="display: flex; align-items: center;">
+                                                        Route 01
+                                                        <a href="program-safari.html" target="_blank" class="info-icon-link" onclick="event.stopPropagation()" title="View route details">
+                                                            <i class="fas fa-info"></i>
+                                                        </a>
+                                                    </h5>
+                                                    <p>Isha Foundation, Veliyangiri and Perur Temple</p>
+                                                </div>
+                                            </label>
+                                        </div>
+
+                                        <div class="route-option" onclick="selectRoute(2)">
+                                            <label style="display: flex; align-items: start; cursor: pointer; margin: 0;">
+                                                <input type="radio" name="safariRoute" value="route2" id="route2">
+                                                <div class="route-content" style="flex: 1;">
+                                                    <h5 style="display: flex; align-items: center;">
+                                                        Route 02
+                                                        <a href="program-safari.html" target="_blank" class="info-icon-link" onclick="event.stopPropagation()" title="View route details">
+                                                            <i class="fas fa-info"></i>
+                                                        </a>
+                                                    </h5>
+                                                    <p>Maruthamalai Temple, Town Hall & Ukkadam lake</p>
+                                                </div>
+                                            </label>
+                                        </div>
+
+                                        <div class="route-option" onclick="selectRoute(3)">
+                                            <label style="display: flex; align-items: start; cursor: pointer; margin: 0;">
+                                                <input type="radio" name="safariRoute" value="route3" id="route3">
+                                                <div class="route-content" style="flex: 1;">
+                                                    <h5 style="display: flex; align-items: center;">
+                                                        Route 03
+                                                        <a href="program-safari.html" target="_blank" class="info-icon-link" onclick="event.stopPropagation()" title="View route details">
+                                                            <i class="fas fa-info"></i>
+                                                        </a>
+                                                    </h5>
+                                                    <p>Cotton Textile Mills in Sirumugai and Tentirupathi Temple Visit</p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
+                                
                                 <div class="col-12">
                                     <label
                                         style="color: #495057 !important; margin-bottom: 8px; font-weight: 500;">Dietary
@@ -195,7 +348,7 @@
                                         <label class="form-check-label" for="termsCheck"
                                             style="color: #495057 !important;">
                                             I agree to the terms and conditions and understand that registration
-                                            confirmation will be sent upon payment.
+                                            confirmation (including safari, if selected) will be sent upon payment.
                                         </label>
                                     </div>
                                 </div>
@@ -223,7 +376,7 @@
                     style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Questions?</h5>
                 <h2 class="mb-4" style="font-weight: 800; color: #FFFFFF !important;">Need Assistance?</h2>
                 <p class="mb-4 fs-5" style="color: #495057 !important; max-width: 800px; margin: 0 auto;">If you have
-                    any questions about registration or the conference, please don't hesitate to reach out to our team.
+                    any questions about registration, the conference, or safari routes, please don't hesitate to reach out to our team.
                 </p>
                 <a href="contact.html" class="btn btn-outline-primary btn-lg px-5 py-3"
                     style="border-radius: 30px; font-weight: 700;">Contact Us</a>
@@ -267,6 +420,62 @@
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/chatbot-widget.js"></script>
+    <script>
+        // Toggle Safari Route Section
+        function toggleSafariSection() {
+            const checkbox = document.getElementById('safariInterest');
+            const safariSection = document.getElementById('safariRouteSection');
+            
+            if (checkbox.checked) {
+                safariSection.classList.add('active');
+                // Make safari route required when checked
+                document.querySelectorAll('input[name="safariRoute"]').forEach(radio => {
+                    radio.required = true;
+                });
+            } else {
+                safariSection.classList.remove('active');
+                // Remove required when unchecked
+                document.querySelectorAll('input[name="safariRoute"]').forEach(radio => {
+                    radio.required = false;
+                    radio.checked = false;
+                });
+                // Remove selected styling from all routes
+                document.querySelectorAll('.route-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+            }
+        }
+
+        // Handle Route Selection
+        function selectRoute(routeNum) {
+            // Check if safari is enabled
+            const safariCheckbox = document.getElementById('safariInterest');
+            if (!safariCheckbox.checked) {
+                return;
+            }
+            
+            // Remove selected class from all options
+            document.querySelectorAll('.route-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select the radio button
+            const radio = document.getElementById('route' + routeNum);
+            radio.checked = true;
+            
+            // Add selected class to clicked option
+            radio.closest('.route-option').classList.add('selected');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure safari section is hidden initially
+            const safariSection = document.getElementById('safariRouteSection');
+            if (safariSection) {
+                safariSection.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 
 </html>

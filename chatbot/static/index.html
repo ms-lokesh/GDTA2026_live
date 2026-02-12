@@ -492,6 +492,7 @@
                         headers: {
                             'Content-Type': 'application/json',
                         },
+                        credentials: 'include',
                         body: JSON.stringify({
                             message: message,
                             state: 'info_mode'
@@ -555,6 +556,7 @@
                 const response = await fetch(`${API_BASE}/api/register/start`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
                     body: JSON.stringify({})
                 });
                 
@@ -654,6 +656,7 @@
                 const response = await fetch(`${API_BASE}/api/register/answer`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
                     body: JSON.stringify({
                         session_id: registrationSessionId,
                         answer: answer

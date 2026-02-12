@@ -198,6 +198,8 @@
             letter-spacing: 0.5px;
             margin-bottom: 12px;
             transition: all 0.3s ease;
+            background-color: #ffffff;
+            border: 2px solid;
         }
 
         .timeline-content:hover .session-badge {
@@ -206,38 +208,67 @@
         }
 
         .badge-general {
-            background-color: #6c757d;
-            color: #ffffff;
+            border-color: #6c757d;
+            color: #6c757d;
         }
 
         .badge-keynote {
-            background-color: #0d6efd;
-            color: #ffffff;
+            border-color: #0d6efd;
+            color: #0d6efd;
         }
 
         .badge-workshop {
-            background-color: #6f42c1;
-            color: #ffffff;
+            border-color: #6f42c1;
+            color: #6f42c1;
         }
 
         .badge-break {
-            background-color: #20c997;
-            color: #ffffff;
+            border-color: #20c997;
+            color: #20c997;
         }
 
         .badge-panel {
-            background-color: #fd7e14;
-            color: #ffffff;
+            border-color: #fd7e14;
+            color: #fd7e14;
         }
 
         .badge-networking {
-            background-color: #d63384;
-            color: #ffffff;
+            border-color: #d63384;
+            color: #d63384;
         }
 
         .badge-experience {
-            background-color: #ffc107;
-            color: #000000;
+            border-color: #ffc107;
+            color: #f57c00;
+        }
+
+        /* Timeline content border colors for different session types */
+        .timeline-content.content-general {
+            border-left-color: #6c757d;
+        }
+
+        .timeline-content.content-keynote {
+            border-left-color: #0d6efd;
+        }
+
+        .timeline-content.content-workshop {
+            border-left-color: #6f42c1;
+        }
+
+        .timeline-content.content-break {
+            border-left-color: #20c997;
+        }
+
+        .timeline-content.content-panel {
+            border-left-color: #fd7e14;
+        }
+
+        .timeline-content.content-networking {
+            border-left-color: #d63384;
+        }
+
+        .timeline-content.content-experience {
+            border-left-color: #ffc107;
         }
 
         .timeline-content h4 {
@@ -376,7 +407,7 @@
                         <h5>09:00 AM</h5>
                         <div class="time-end">10:00 AM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-general">
                         <span class="session-badge badge-general">General</span>
                         <h4>Registration & Breakfast</h4>
                         <p>Collect your event kits, grab some fresh coffee and networking breakfast before we kick off the opening ceremony.</p>
@@ -389,7 +420,7 @@
                         <h5>10:00 AM</h5>
                         <div class="time-end">11:00 AM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-keynote">
                         <span class="session-badge badge-keynote">Keynote</span>
                         <h4>Opening Ceremony & Keynote Address</h4>
                         <p>Welcome address and keynote exploring the evolution of design thinking in the AI era.</p>
@@ -402,7 +433,7 @@
                         <h5>11:00 AM</h5>
                         <div class="time-end">01:00 PM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-workshop">
                         <span class="session-badge badge-workshop">Workshop</span>
                         <h4>Morning Sessions & Workshops</h4>
                         <p>Hands-on workshops focused on solving complex problems using rapid prototyping and user journey mapping techniques.</p>
@@ -415,7 +446,7 @@
                         <h5>01:00 PM</h5>
                         <div class="time-end">02:00 PM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-break">
                         <span class="session-badge badge-break">Break</span>
                         <h4>Lunch Break</h4>
                         <p>Relaxed buffet lunch with time to connect with peers from across the globe in our dedicated networking lounge.</p>
@@ -428,7 +459,7 @@
                         <h5>02:00 PM</h5>
                         <div class="time-end">05:00 PM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-panel">
                         <span class="session-badge badge-panel">Panel</span>
                         <h4>Afternoon Sessions & Panel Discussions</h4>
                         <p>A series of breakout sessions exploring regional design trends followed by spirited panel debates on ethics and innovation.</p>
@@ -441,7 +472,7 @@
                         <h5>05:00 PM</h5>
                         <div class="time-end">06:00 PM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-networking">
                         <span class="session-badge badge-networking">Networking</span>
                         <h4>Networking & Evening Tea</h4>
                         <p>Informal networking session with evening refreshments. Connect with fellow attendees and speakers.</p>
@@ -459,7 +490,7 @@
                         <h5>09:00 AM</h5>
                         <div class="time-end">10:00 AM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-general">
                         <span class="session-badge badge-general">General</span>
                         <h4>Registration & Breakfast</h4>
                         <p>Morning refreshments and final registrations for Day 2 participants.</p>
@@ -472,7 +503,7 @@
                         <h5>10:00 AM</h5>
                         <div class="time-end">12:00 PM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-experience">
                         <span class="session-badge badge-experience">Experience</span>
                         <h4>Design Safari (Optional Experience)</h4>
                         <p>Immersive cultural experience exploring local design inspiration and traditional craftsmanship.</p>
@@ -485,7 +516,7 @@
                         <h5>12:00 PM</h5>
                         <div class="time-end">01:00 PM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-workshop">
                         <span class="session-badge badge-workshop">Workshop</span>
                         <h4>Advanced Workshop Sessions</h4>
                         <p>Deep-dive workshops on advanced design methodologies and cutting-edge tools.</p>
@@ -498,7 +529,7 @@
                         <h5>01:00 PM</h5>
                         <div class="time-end">02:00 PM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-break">
                         <span class="session-badge badge-break">Break</span>
                         <h4>Lunch Break</h4>
                         <p>Final networking lunch with buffet service and refreshments.</p>
@@ -511,7 +542,7 @@
                         <h5>02:00 PM</h5>
                         <div class="time-end">04:00 PM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-keynote">
                         <span class="session-badge badge-keynote">Keynote</span>
                         <h4>Closing Keynote & Case Studies</h4>
                         <p>Inspiring closing keynote featuring real-world case studies and insights from leading design innovators.</p>
@@ -524,7 +555,7 @@
                         <h5>04:00 PM</h5>
                         <div class="time-end">05:00 PM</div>
                     </div>
-                    <div class="timeline-content">
+                    <div class="timeline-content content-networking">
                         <span class="session-badge badge-networking">Ceremony</span>
                         <h4>Closing Ceremony & Farewell</h4>
                         <p>Closing remarks, certificate distribution, and farewell messages. See you at GDTA 2027!</p>

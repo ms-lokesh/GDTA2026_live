@@ -34,10 +34,11 @@ def create_app():
     # Enable CORS for frontend integration
     CORS(app, resources={
         r"/api/*": {
-            "origins": "*",  # In production, specify your frontend URL
+            "origins": ["http://localhost:5000", "http://127.0.0.1:5000", "http://127.0.0.1:5500", "null"],  # Include common dev origins
             "methods": ["GET", "POST", "OPTIONS"],
             "allow_headers": ["Content-Type"],
-            "supports_credentials": True
+            "supports_credentials": True,
+            "expose_headers": ["Set-Cookie"]
         }
     }, supports_credentials=True)
     

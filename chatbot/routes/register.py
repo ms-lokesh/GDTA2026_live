@@ -3,8 +3,10 @@ Registration Route - API endpoints for registration management
 This route handles registration state and submissions
 """
 
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session as flask_session
 import json
+import pickle
+import base64
 
 from logic.registration import (
     start_registration,
@@ -20,19 +22,29 @@ register_bp = Blueprint('register', __name__)
 
 
 # In-memory storage for registration sessions
-# In production, use session or database
+# In production, use database
 registration_sessions = {}
 
 
-def get_session_id():
+def serialize_state(state):
+    """Serialize state object to store in session"""
+    return base64.b64encode(pickle.dumps(state)).decode('utf-8')
+
+
+def deserialize_state(state_str):
+    """Deserialize state object from session"""
+    return pickle.loads(base64.b64decode(state_str.encode('utf-8')))
+
+
+def get_or_create_session_id():
     """
     Get or create a session ID for the user
-    In production, use Flask session or authentication tokens
     """
-    if 'session_id' not in session:
+    if 'reg_session_id' not in flask_session:
         import uuid
-        session['session_id'] = str(uuid.uuid4())
-    return session['session_id']
+        flask_session['reg_session_id'] = str(uuid.uuid4())
+        flask_session.modified = True
+    return flask_session['reg_session_id']
 
 
 @register_bp.route('/api/register/start', methods=['POST'])
@@ -62,9 +74,20 @@ def start_registration_session():
         data = request.get_json() or {}
         session_id = data.get('session_id') or str(uuid.uuid4())
         
+        print(f"[DEBUG] Starting registration with session_id: {session_id}")
+        
         # Initialize registration state
         reg_state = start_registration()
+        
+        # Store in both memory and Flask session for redundancy
         registration_sessions[session_id] = reg_state
+        flask_session['reg_state'] = serialize_state(reg_state)
+        flask_session['reg_session_id'] = session_id
+        flask_session.modified = True
+        
+        print(f"[DEBUG] Registration session created. Active sessions: {list(registration_sessions.keys())}")
+        print(f"[DEBUG] Flask session ID: {flask_session.get('reg_session_id')}")
+        print(f"[DEBUG] Registration sessions dict id: {id(registration_sessions)}")
         
         # Get first question
         question = get_current_question(reg_state)
@@ -77,6 +100,9 @@ def start_registration_session():
         }), 200
         
     except Exception as e:
+        print(f"[ERROR] Failed to start registration: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({
             "error": "Failed to start registration",
             "details": str(e)
@@ -114,21 +140,39 @@ def submit_answer():
             return jsonify({"error": "Answer field required", "received": data}), 400
         
         # Use session_id from request body if provided, otherwise use Flask session
-        session_id = data.get('session_id') or get_session_id()
+        session_id = data.get('session_id') or flask_session.get('reg_session_id')
         user_answer = data['answer']
         
-        print(f"[DEBUG] Session ID: {session_id}")
-        print(f"[DEBUG] Active sessions: {list(registration_sessions.keys())}")
+        print(f"[DEBUG] Session ID from request: {data.get('session_id')}")
+        print(f"[DEBUG] Session ID from Flask session: {flask_session.get('reg_session_id')}")
+        print(f"[DEBUG] Using session ID: {session_id}")
+        print(f"[DEBUG] Active sessions in memory: {list(registration_sessions.keys())}")
+        print(f"[DEBUG] Registration sessions dict id: {id(registration_sessions)}")
+        print(f"[DEBUG] Flask session has reg_state: {'reg_state' in flask_session}")
         
-        # Get registration state
-        if session_id not in registration_sessions:
-            print(f"[ERROR] Session {session_id} not found in registration_sessions")
+        # Try to get registration state from memory first, then Flask session
+        reg_state = None
+        
+        if session_id and session_id in registration_sessions:
+            print(f"[DEBUG] Found session in memory")
+            reg_state = registration_sessions[session_id]
+        elif 'reg_state' in flask_session:
+            print(f"[DEBUG] Found session in Flask session, deserializing...")
+            try:
+                reg_state = deserialize_state(flask_session['reg_state'])
+                # Restore to memory
+                if session_id:
+                    registration_sessions[session_id] = reg_state
+                print(f"[DEBUG] Successfully restored from Flask session")
+            except Exception as e:
+                print(f"[ERROR] Failed to deserialize state: {e}")
+        
+        if not reg_state:
+            print(f"[ERROR] Session {session_id} not found in memory or Flask session")
             return jsonify({
                 "error": "No active registration session. Please start registration first.",
                 "action": "start_registration"
             }), 400
-        
-        reg_state = registration_sessions[session_id]
         
         if not reg_state.is_active:
             return jsonify({
@@ -139,8 +183,11 @@ def submit_answer():
         # Process the answer
         result = process_input(reg_state, user_answer)
         
-        # Update stored state
-        registration_sessions[session_id] = reg_state
+        # Update stored state in both places
+        if session_id:
+            registration_sessions[session_id] = reg_state
+        flask_session['reg_state'] = serialize_state(reg_state)
+        flask_session.modified = True
         
         # If at confirmation step, include summary
         if reg_state.current_step == RegistrationSteps.CONFIRMATION:
