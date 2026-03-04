@@ -1,52 +1,135 @@
-# GDTA 2026 Conference Website
+# GDTA 2026 Conference Platform
 
-A professional multi-page website for the Global Design Thinking Alliance (GDTA) 2026 Conference. The website features a modern dark theme design, smooth animations, and comprehensive information about the conference theme "Chaos & Clarity" taking place on September 29-30, 2026.
+A comprehensive conference management platform for the Global Design Thinking Alliance (GDTA) 2026 Conference. The platform combines a professional public-facing website with a powerful admin and registration system.
 
-## Project Overview
+## 🌟 Platform Overview
 
-This website was developed to promote the GDTA 2026 Conference hosted by SNS Institutions. The website combines modern web design with a sophisticated dark theme and smooth animations to create an engaging user experience for prospective attendees.
+This platform consists of two main components:
 
-### Key Features
+1. **Public Website** - Professional multi-page conference website
+2. **Admin System** - Advanced registration and event management system
 
-- Multi-page responsive design with 11 distinct pages
-- Modern dark theme with gold accent colors
-- Comprehensive conference information (schedule, sessions, speakers)
-- Registration form with dietary requirements and design safari options
-- Dropdown navigation menus for organized content
-- Social media integration (Instagram, YouTube, LinkedIn)
-- Smooth WOW.js animations throughout
-- Mobile-responsive layout
-- GDTA custom color scheme (#1F1F1F, #2B2B2B, #F2B705)
+### Conference Details
+- **Theme**: Chaos & Clarity
+- **Date**: September 29-30, 2026
+- **Host**: SNS Institutions
+- **Location**: India
 
-## Technology Stack
+## 📂 Project Structure
 
-### Frontend Framework
-- HTML5
-- CSS3
-- JavaScript (ES6)
-- Bootstrap 5.0.0
+```
+GDTA2026/
+├── admin_system/              # Admin & Registration System
+│   ├── app.py                 # Flask application
+│   ├── db/                    # Database models (Firebase)
+│   ├── routes/                # API endpoints
+│   ├── logic/                 # Business logic
+│   ├── llm/                   # AI chatbot integration
+│   ├── static/                # Frontend files
+│   └── README.md              # Detailed admin system docs
+│
+├── css/                       # Website stylesheets
+├── js/                        # Website JavaScript
+├── img/                       # Images and assets
+├── lib/                       # Third-party libraries
+│
+├── index.html                 # Homepage
+├── about-gdta-2026.html       # About GDTA 2026
+├── about-gdta.html            # About GDTA organization
+├── about-sns.html             # About SNS Institutions
+├── program-schedule.html      # Conference schedule
+├── program-sessions.html      # Session details
+├── program-safari.html        # Design safari information
+├── organizing-team.html       # Team members
+├── register.html              # Registration page
+├── register-safari.html       # Safari registration
+├── sponsors.html              # Sponsors
+├── travel-stay.html           # Travel information
+├── contact.html               # Contact page
+├── hackathon.html             # Hackathon details
+└── code.html                  # Code of conduct
+```
 
-### Libraries and Dependencies
-- jQuery 3.4.1
-- WOW.js (scroll animations)
-- Animate.css (animation library)
-- Easing.js (smooth scrolling effects)
-- Waypoints.js (scroll-triggered events)
-- Font Awesome 7.0.0 (icons)
-- Bootstrap Icons
-- Google Fonts (Montserrat, Open Sans)
+## 🚀 Quick Start
 
-### Theme Colors
-- Primary Background: #1F1F1F
-- Card Background: #2B2B2B
-- Accent Color: #F2B705 (Gold)
-- Text Primary: #FFFFFF
-- Text Secondary: #D1D1D1
-- Text Muted: #9CA3AF
+### Public Website
+Simply open `index.html` in a web browser or deploy to any web server.
 
-### Version Control
-- Git
-- GitHub Repository
+### Admin System
+See detailed instructions in `admin_system/README.md`
+
+```bash
+cd admin_system
+pip install -r requirements.txt
+python3 app.py
+```
+
+## 🎨 Website Features
+
+### Design & Theme
+- Modern dark theme (#1F1F1F, #2B2B2B)
+- Gold accent colors (#F2B705)
+- Smooth scroll animations (WOW.js)
+- Fully responsive design
+- Mobile-optimized navigation
+
+### Navigation
+- Multi-page structure with 14+ pages
+- Dropdown menus for complex content
+- Sticky navigation bar
+- Breadcrumb navigation
+- Quick links and social media integration
+
+### Content Pages
+- **Home**: Conference overview and highlights
+- **About**: GDTA 2026, GDTA organization, SNS Institutions
+- **Program**: Full schedule, session details, design safari
+- **Registration**: Online form with dietary preferences
+- **Team**: Organizing committee and advisors
+- **Sponsors**: Partner organizations
+- **Travel**: Accommodation and travel information
+- **Contact**: Contact form and location map
+- **Hackathon**: Hackathon competition details
+
+## 🔧 Admin System Features
+
+See `admin_system/README.md` for complete documentation.
+
+### Key Capabilities
+- Multi-event management
+- Role-based access (Super Admin / Admin)
+- Registration management with approval workflow
+- QR code ID card generation
+- Venue and volunteer management
+- AI-powered chatbot
+- Email system
+- Data export
+- Access logging
+
+## 🛠️ Technology Stack
+
+### Public Website
+- **Frontend**: HTML5, CSS3, JavaScript (ES6)
+- **Framework**: Bootstrap 5.0.0
+- **Libraries**: jQuery 3.4.1, WOW.js, Animate.css
+- **Icons**: Font Awesome 7.0.0, Bootstrap Icons
+- **Fonts**: Google Fonts (Montserrat, Open Sans)
+
+### Admin System
+- **Backend**: Python 3.8+, Flask
+- **Database**: Firebase Firestore
+- **AI**: Google Gemini API
+- **Authentication**: Session-based with role management
+- **Email**: SMTP (Gmail)
+- **Frontend**: Bootstrap 5, jQuery, DataTables
+
+## 📱 Responsive Design
+
+The website is fully responsive and optimized for:
+- Desktop (1920px+)
+- Laptop (1366px - 1920px)
+- Tablet (768px - 1366px)
+- Mobile (320px - 768px)
 
 ## Project Structure
 

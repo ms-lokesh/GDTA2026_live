@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Flask
+instance/
+.webassets-cache
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Firebase credentials (NEVER COMMIT THIS)
+firebase-credentials.json
+*firebase-adminsdk*.json
+admin_system/db/firebase-credentials.json
+
+# Generated ID Cards (Don't commit user data)
+admin_system/static/generated_ids/*.png
+!admin_system/static/generated_ids/.gitkeep
+
+# SQLite database (old - keeping for migration)
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Test files
+test_output*.txt
+
+# Backup HTML files
+*_backup.html
+*_old*.html
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini

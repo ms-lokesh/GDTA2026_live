@@ -1,0 +1,20 @@
+{
+  "name": {
+    "position": [40, 680],
+    "font_size": 68,
+    "color": "#000000",
+    "align": "left",
+    "font": "Helvetica-Bold"
+  },
+  "institution": {
+    "position": [40, 760],
+    "font_size": 44,
+    "color": "#000000",
+    "align": "left",
+    "font": "Helvetica-Bold"
+  },
+  "qr_code": {
+    "position": [40, 950],
+    "size": 200
+  }
+}

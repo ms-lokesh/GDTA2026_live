@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner - GDTA 2026</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #000000;
+            --accent-color: #F2B705;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --bg-gray: #F8F9FA;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #333 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .scanner-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .card-header {
+            background: white;
+            border-bottom: 3px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 15px 15px 0 0 !important;
+        }
+        
+        .card-header h2 {
+            margin: 0;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        .card-header .subtitle {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        #reader {
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .venue-selector {
+            background: var(--bg-gray);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .scanner-info {
+            background: #fff3cd;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .result-card {
+            margin-top: 20px;
+            padding: 25px;
+            border-radius: 10px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .result-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid var(--success-color);
+        }
+        
+        .result-error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 2px solid var(--danger-color);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .participant-info {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 1.1em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .access-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2em;
+            margin: 15px 0;
+        }
+        
+        .badge-granted {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .badge-denied {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-scan-again {
+            margin-top: 20px;
+            background: var(--accent-color);
+            border: none;
+            color: black;
+            font-weight: 600;
+            padding: 12px 30px;
+            border-radius: 50px;
+        }
+        
+        .btn-scan-again:hover {
+            background: #d9a604;
+            color: black;
+        }
+        
+        .scan-history {
+            margin-top: 30px;
+        }
+        
+        .history-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #6c757d;
+        }
+        
+        .history-item.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .history-item.denied {
+            border-left-color: var(--danger-color);
+        }
+        
+        .stats-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid var(--bg-gray);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .manual-entry {
+            background: var(--bg-gray);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanner-container">
+        <!-- Header Card -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2><i class="fas fa-qrcode"></i> QR Code Scanner</h2>
+                <p class="subtitle mb-0">GDTA 2026 - Volunteer Access Control</p>
+            </div>
+            <div class="card-body">
+                <!-- Venue Selection -->
+                <div class="venue-selector">
+                    <label for="venueSelect" class="form-label fw-bold">
+                        <i class="fas fa-map-marker-alt"></i> Select Venue
+                    </label>
+                    <select class="form-select form-select-lg" id="venueSelect">
+                        <option value="">Loading venues...</option>
+                    </select>
+                </div>
+
+                <!-- Volunteer Info -->
+                <div class="venue-selector" style="background: #e8f5e9; border-left: 4px solid #4caf50;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <label class="form-label fw-bold mb-1">
+                                <i class="fas fa-user-check"></i> Logged in as
+                            </label>
+                            <div class="fw-bold" style="font-size: 1.2em; color: #2e7d32;" id="volunteerDisplayName">Loading...</div>
+                            <small class="text-muted" id="volunteerDisplayUsername"></small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scanner Info -->
+                <div class="scanner-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Instructions:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>Select the venue you're managing</li>
+                        <li>Tap "Start Scanner" to begin scanning QR codes from ID cards</li>
+                        <li>Position the QR code within the camera frame</li>
+                        <li>Access will be validated automatically</li>
+                    </ul>
+                </div>
+
+                <!-- Start Scanner Button -->
+                <div class="text-center mt-3" id="startButtonContainer">
+                    <button class="btn btn-lg btn-primary" id="startScanButton" style="background: var(--accent-color); border: none; color: black; font-weight: 600; padding: 15px 40px; border-radius: 50px;">
+                        <i class="fas fa-camera"></i> Start Scanner
+                    </button>
+                </div>
+
+                <!-- QR Reader -->
+                <div id="reader" style="display: none;"></div>
+
+                <!-- Manual Entry -->
+                <div class="manual-entry" style="display: none;" id="manualEntryDiv">
+                    <h5 class="mb-3"><i class="fas fa-keyboard"></i> Manual Entry</h5>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="manualQRCode" 
+                               placeholder="Enter registration email or QR code">
+                        <button class="btn btn-primary" id="manualValidateBtn">
+                            <i class="fas fa-check"></i> Validate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar" id="statsBar" style="display: none;">
+            <div class="row">
+                <div class="col-4 stat-item">
+                    <div class="stat-value text-success" id="statsGranted">0</div>
+                    <div class="stat-label">Granted</div>
+                </div>
+                <div class="col-4 stat-item">
+                    <div class="stat-value text-danger" id="statsDenied">0</div>
+                    <div class="stat-label">Denied</div>
+                </div>
+                <div class="col-4 stat-item">
+                    <div class="stat-value text-primary" id="statsTotal">0</div>
+                    <div class="stat-label">Total Scans</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Display -->
+        <div id="resultDisplay"></div>
+
+        <!-- Scan History -->
+        <div class="scan-history" id="scanHistory" style="display: none;">
+            <h4 class="text-white mb-3"><i class="fas fa-history"></i> Recent Scans</h4>
+            <div id="historyList"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let html5QrCode = null;
+        let scanHistory = [];
+        let statsGranted = 0;
+        let statsDenied = 0;
+        let currentVolunteer = null;
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            await checkAuthentication();
+        });
+        
+        // Check if volunteer is logged in
+        async function checkAuthentication() {
+            try {
+                const response = await fetch('/api/volunteer/me', {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    currentVolunteer = data.volunteer;
+                    
+                    // Display volunteer info
+                    document.getElementById('volunteerDisplayName').textContent = currentVolunteer.name;
+                    document.getElementById('volunteerDisplayUsername').textContent = `@${currentVolunteer.username}`;
+                    
+                    // Load venues
+                    loadVenues();
+                } else {
+                    // Not authenticated - redirect to login
+                    window.location.href = '/static/volunteer-login.html';
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                window.location.href = '/static/volunteer-login.html';
+            }
+        }
+        
+        // Logout function
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    await fetch('/api/volunteer/logout', {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+                } catch (error) {
+                    console.error('Logout error:', error);
+                }
+                
+                window.location.href = '/static/volunteer-login.html';
+            }
+        });
+
+        // Load venues from API
+        async function loadVenues() {
+            try {
+                const response = await fetch('/api/admin/venues', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                const select = document.getElementById('venueSelect');
+                select.innerHTML = '<option value="">-- Select a Venue --</option>';
+                
+                if (data.success && data.venues) {
+                    // Filter venues based on volunteer's assignments
+                    let venuesToShow = data.venues.filter(v => v.is_active);
+                    
+                    // If volunteer has assigned venues, only show those
+                    if (currentVolunteer.assigned_venues && currentVolunteer.assigned_venues.length > 0) {
+                        venuesToShow = venuesToShow.filter(v => 
+                            currentVolunteer.assigned_venues.includes(v.id)
+                        );
+                    }
+                    
+                    if (venuesToShow.length === 0) {
+                        select.innerHTML = '<option value="">No venues assigned</option>';
+                        return;
+                    }
+                    
+                    venuesToShow.forEach(venue => {
+                        const option = document.createElement('option');
+                        option.value = venue.id;
+                        option.textContent = `${venue.name} (${venue.venue_type})`;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to load venues:', error);
+                alert('Failed to load venues. Please refresh the page.');
+            }
+        }
+
+        // Start scanner
+        document.getElementById('startScanButton').addEventListener('click', function() {
+            const venueId = document.getElementById('venueSelect').value;
+            
+            if (!venueId) {
+                alert('Please select a venue first');
+                return;
+            }
+            
+            if (!currentVolunteer) {
+                alert('Not authenticated. Please login again.');
+                window.location.href = '/static/volunteer-login.html';
+                return;
+            }
+            
+            startScanner();
+        });
+
+        // Start the QR scanner
+        function startScanner() {
+            document.getElementById('startButtonContainer').style.display = 'none';
+            document.getElementById('reader').style.display = 'block';
+            document.getElementById('manualEntryDiv').style.display = 'block';
+            document.getElementById('statsBar').style.display = 'block';
+            document.getElementById('scanHistory').style.display = 'block';
+            
+            html5QrCode = new Html5Qrcode("reader");
+            
+            const config = { 
+                fps: 10, 
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0
+            };
+            
+            html5QrCode.start(
+                { facingMode: "environment" },
+                config,
+                onScanSuccess,
+                onScanError
+            ).catch(err => {
+                console.error('Scanner start failed:', err);
+                alert('Failed to start camera. Please check permissions.');
+            });
+        }
+
+        // On successful QR scan
+        function onScanSuccess(qrCodeMessage) {
+            // Stop scanner temporarily
+            html5QrCode.pause();
+            
+            // Validate the QR code
+            validateQRCode(qrCodeMessage);
+        }
+
+        function onScanError(errorMessage) {
+            // Silently handle scan errors
+        }
+
+        // Validate QR code via API
+        async function validateQRCode(qrCode) {
+            const venueId = document.getElementById('venueSelect').value;
+            
+            if (!currentVolunteer) {
+                alert('Not authenticated. Please login again.');
+                window.location.href = '/static/volunteer-login.html';
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                const response = await fetch('/api/validate-qr', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        qr_code: qrCode,
+                        venue_id: venueId,
+                        scanned_by: currentVolunteer.username
+                    })
+                });
+                
+                const data = await response.json();
+                displayResult(data);
+                
+                // Update stats
+                if (data.success) {
+                    statsGranted++;
+                } else {
+                    statsDenied++;
+                }
+                updateStats();
+                
+                // Add to history
+                addToHistory(data, qrCode);
+                
+                // Resume scanner after 3 seconds
+                setTimeout(() => {
+                    if (html5QrCode && html5QrCode.getState() === Html5QrcodeScannerState.PAUSED) {
+                        html5QrCode.resume();
+                    }
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Validation failed:', error);
+                displayResult({
+                    success: false,
+                    message: '❌ Validation failed. Please try again.',
+                    error: error.message
+                });
+                
+                setTimeout(() => {
+                    if (html5QrCode && html5QrCode.getState() === Html5QrcodeScannerState.PAUSED) {
+                        html5QrCode.resume();
+                    }
+                }, 2000);
+            }
+        }
+
+        // Show loading state
+        function showLoading() {
+            const resultDiv = document.getElementById('resultDisplay');
+            resultDiv.innerHTML = `
+                <div class="result-card" style="background: white;">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p class="mt-3">Validating access...</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Display validation result
+        function displayResult(data) {
+            const resultDiv = document.getElementById('resultDisplay');
+            const resultClass = data.success ? 'result-success' : 'result-error';
+            const badgeClass = data.success ? 'badge-granted' : 'badge-denied';
+            
+            let html = `
+                <div class="result-card ${resultClass}">
+                    <div class="text-center">
+                        <div class="access-badge ${badgeClass}">
+                            ${data.message}
+                        </div>
+                    </div>
+            `;
+            
+            if (data.participant) {
+                html += `
+                    <div class="participant-info">
+                        <h5 class="mb-3">
+                            <i class="fas fa-user"></i> Participant Information
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-label">Name</div>
+                                <div class="info-value">${data.participant.name}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-label">Email</div>
+                                <div class="info-value">${data.participant.email}</div>
+                            </div>
+                            ${data.participant.institution ? `
+                            <div class="col-md-6">
+                                <div class="info-label">Institution</div>
+                                <div class="info-value">${data.participant.institution}</div>
+                            </div>
+                            ` : ''}
+                            ${data.participant.role ? `
+                            <div class="col-md-6">
+                                <div class="info-label">Role</div>
+                                <div class="info-value">${data.participant.role}</div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (data.venue) {
+                html += `
+                    <div class="participant-info mt-3">
+                        <h6><i class="fas fa-map-marker-alt"></i> Venue: ${data.venue.name}</h6>
+                        ${data.venue.location ? `<p class="mb-0 text-muted">${data.venue.location}</p>` : ''}
+                    </div>
+                `;
+            }
+            
+            html += `</div>`;
+            
+            resultDiv.innerHTML = html;
+        }
+
+        // Update stats display
+        function updateStats() {
+            document.getElementById('statsGranted').textContent = statsGranted;
+            document.getElementById('statsDenied').textContent = statsDenied;
+            document.getElementById('statsTotal').textContent = statsGranted + statsDenied;
+        }
+
+        // Add to scan history
+        function addToHistory(data, qrCode) {
+            const historyItem = {
+                timestamp: new Date(),
+                success: data.success,
+                participant: data.participant,
+                message: data.message
+            };
+            
+            scanHistory.unshift(historyItem);
+            if (scanHistory.length > 10) {
+                scanHistory.pop();
+            }
+            
+            updateHistoryDisplay();
+        }
+
+        // Update history display
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            
+            historyList.innerHTML = scanHistory.map(item => {
+                const statusClass = item.success ? 'success' : 'denied';
+                const time = item.timestamp.toLocaleTimeString();
+                const name = item.participant ? item.participant.name : 'Unknown';
+                
+                return `
+                    <div class="history-item ${statusClass}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${name}</strong>
+                                <div class="text-muted small">${item.message}</div>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted">${time}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Manual validation
+        document.getElementById('manualValidateBtn').addEventListener('click', function() {
+            const qrCode = document.getElementById('manualQRCode').value.trim();
+            
+            if (!qrCode) {
+                alert('Please enter a QR code or email');
+                return;
+            }
+            
+            validateQRCode(qrCode);
+            document.getElementById('manualQRCode').value = '';
+        });
+
+        // Handle Enter key in manual entry
+        document.getElementById('manualQRCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('manualValidateBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>
