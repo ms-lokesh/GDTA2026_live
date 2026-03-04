@@ -134,6 +134,10 @@ def create_app():
     return app
 
 
+# Create app instance for gunicorn
+app = create_app()
+
+
 if __name__ == '__main__':
     """
     Development server
@@ -142,7 +146,6 @@ if __name__ == '__main__':
     
     The server will start on http://localhost:5000
     """
-    app = create_app()
     
     # Development settings
     debug_mode = os.environ.get('FLASK_DEBUG', 'True') == 'True'
