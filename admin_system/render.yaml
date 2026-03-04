@@ -2,9 +2,11 @@ services:
   - type: web
     name: gdta-admin-system
     runtime: python
+    repo: https://github.com/SRAMBOT08/GDTA2026
     region: oregon
     plan: free
-    branch: main
+    branch: render-deployment
+    rootDir: admin_system
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
