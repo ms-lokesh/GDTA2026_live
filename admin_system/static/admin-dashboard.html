@@ -507,13 +507,71 @@
         <!-- Export View -->
         <div id="exportView" class="page-view hidden">
             <div class="data-table-container">
-                <h5 class="mb-4"><i class="fas fa-file-export me-2"></i>Export Registrations</h5>
+                <h5 class="mb-4"><i class="fas fa-file-export me-2"></i>Export Data</h5>
                 
-                <p>Export all registration data to CSV format for offline analysis.</p>
+                <p class="text-muted mb-4">Export conference data in various formats for offline analysis, reporting, and sharing.</p>
                 
-                <button class="btn btn-accent btn-lg" id="exportBtn">
-                    <i class="fas fa-download me-2"></i>Download CSV
-                </button>
+                <!-- Registrations Export -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h6 class="mb-0"><i class="fas fa-users me-2"></i>Registrations</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Export all conference registrations with complete participant details.</p>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary" onclick="exportData('registrations', 'csv')">
+                                <i class="fas fa-file-csv me-2"></i>CSV
+                            </button>
+                            <button class="btn btn-outline-success" onclick="exportData('registrations', 'excel')">
+                                <i class="fas fa-file-excel me-2"></i>Excel
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="exportData('registrations', 'pdf')">
+                                <i class="fas fa-file-pdf me-2"></i>PDF Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Venues Export -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h6 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Venues</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Export venue information including capacity, location, and access settings.</p>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary" onclick="exportData('venues', 'csv')">
+                                <i class="fas fa-file-csv me-2"></i>CSV
+                            </button>
+                            <button class="btn btn-outline-success" onclick="exportData('venues', 'excel')">
+                                <i class="fas fa-file-excel me-2"></i>Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Volunteers Export -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h6 class="mb-0"><i class="fas fa-hands-helping me-2"></i>Volunteers</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Export volunteer details including contact information and assigned venues.</p>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary" onclick="exportData('volunteers', 'csv')">
+                                <i class="fas fa-file-csv me-2"></i>CSV
+                            </button>
+                            <button class="btn btn-outline-success" onclick="exportData('volunteers', 'excel')">
+                                <i class="fas fa-file-excel me-2"></i>Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mt-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Note:</strong> Exports include data for the currently selected event. All files are timestamped for your records.
+                </div>
             </div>
         </div>
         

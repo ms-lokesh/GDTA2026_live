@@ -824,10 +824,31 @@ async function sendEmail() {
 
 // ========== EXPORT ==========
 
-function exportData() {
-    let url = `${API_BASE}/export`;
-    if (currentEventId) url += `?event_id=${currentEventId}`;
+function exportData(dataType, format) {
+    /**
+     * Export data in various formats
+     * @param {string} dataType - 'registrations', 'venues', or 'volunteers'
+     * @param {string} format - 'csv', 'excel', or 'pdf'
+     */
+    let url = `${API_BASE}/export/${dataType}?format=${format}`;
+    if (currentEventId) {
+        url += `&event_id=${currentEventId}`;
+    }
+    
+    // Show loading indicator
+    const btn = event.target;
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
+    
+    // Trigger download
     window.location.href = url;
+    
+    // Reset button after a delay
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+    }, 2000);
 }
 
 // ========== VENUE MANAGEMENT ==========
@@ -1472,8 +1493,8 @@ $(document).ready(function() {
     $('#emailRecipients').on('change', toggleCustomSelection);
     $('#loadRecipientsBtn').on('click', loadRecipientsList);
     
-    // Export
-    $('#exportBtn').on('click', exportData);
+    // Export - now using inline onclick handlers in HTML
+    // Removed: $('#exportBtn').on('click', exportData);
     
     // Venue management
     $('#addVenueBtn').on('click', function() {

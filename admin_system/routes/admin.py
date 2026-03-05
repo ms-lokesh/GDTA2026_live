@@ -658,56 +658,476 @@ def send_email_to_registrant():
         return jsonify({'error': 'Failed to send emails', 'details': str(e)}), 500
 
 
-@admin_bp.route('/api/admin/export', methods=['GET'])
+@admin_bp.route('/api/admin/export/registrations', methods=['GET'])
 @require_auth
 def export_registrations():
     """
-    GET /api/admin/export?format=csv
+    GET /api/admin/export/registrations?format=csv&event_id=gdta-2026
     
-    Export registrations to CSV
+    Export registrations to CSV, Excel, or PDF
+    
+    Query params:
+        - format: csv, excel, pdf (default: csv)
+        - event_id: filter by event
     """
     try:
-        import csv
-        from io import StringIO
+        from flask import Response
+        from io import BytesIO
         
-        # Get event_id filter
+        # Get parameters
+        export_format = request.args.get('format', 'csv').lower()
         event_id = request.args.get('event_id')
+        
+        # Get data
         filters = {}
         if event_id:
             filters['event_id'] = event_id
         
         registrations = Registration.get_all(limit=1000, filters=filters if filters else None)
         
-        # Create CSV
-        output = StringIO()
-        writer = csv.writer(output)
-        
-        # Header
-        writer.writerow([
-            'ID', 'Name', 'Email', 'Institution', 'Role', 
-            'GDTA Member', 'GDTA Affiliation', 'Country', 'State',
-            'Registration Source', 'Status', 'Created At'
-        ])
-        
-        # Data
-        for reg in registrations:
-            created_at = reg.created_at.isoformat() if isinstance(reg.created_at, datetime) else str(reg.created_at)
-            writer.writerow([
-                reg.id, reg.name, reg.email, reg.institution, reg.role,
-                reg.gdta_member, reg.gdta_affiliation or '', reg.country, reg.state or '',
-                reg.registration_source, reg.status, created_at
-            ])
-        
-        # Return CSV
-        from flask import Response
-        return Response(
-            output.getvalue(),
-            mimetype='text/csv',
-            headers={'Content-Disposition': 'attachment;filename=gdta2026_registrations.csv'}
-        )
+        if export_format == 'excel':
+            return _export_registrations_excel(registrations, event_id)
+        elif export_format == 'pdf':
+            return _export_registrations_pdf(registrations, event_id)
+        else:  # csv
+            return _export_registrations_csv(registrations, event_id)
         
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': 'Failed to export', 'details': str(e)}), 500
+
+
+def _export_registrations_csv(registrations, event_id=None):
+    """Export registrations to CSV"""
+    import csv
+    from io import StringIO
+    from flask import Response
+    
+    output = StringIO()
+    writer = csv.writer(output)
+    
+    # Header
+    writer.writerow([
+        'ID', 'Unique ID', 'Name', 'Email', 'Institution', 'Role', 
+        'GDTA Member', 'GDTA Affiliation', 'Country', 'State',
+        'Registration Source', 'Status', 'Created At'
+    ])
+    
+    # Data
+    for reg in registrations:
+        created_at = reg.created_at.isoformat() if isinstance(reg.created_at, datetime) else str(reg.created_at)
+        writer.writerow([
+            reg.id, reg.unique_id or '', reg.name, reg.email, reg.institution, reg.role,
+            reg.gdta_member, reg.gdta_affiliation or '', reg.country, reg.state or '',
+            reg.registration_source, reg.status, created_at
+        ])
+    
+    filename = f'registrations_{event_id or "all"}_{datetime.now().strftime("%Y%m%d")}.csv'
+    return Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': f'attachment;filename={filename}'}
+    )
+
+
+def _export_registrations_excel(registrations, event_id=None):
+    """Export registrations to Excel"""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment
+    from io import BytesIO
+    from flask import Response
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Registrations"
+    
+    # Header styling
+    header_fill = PatternFill(start_color="000000", end_color="000000", fill_type="solid")
+    header_font = Font(color="F2B705", bold=True, size=12)
+    
+    # Headers
+    headers = [
+        'ID', 'Unique ID', 'Name', 'Email', 'Institution', 'Role',
+        'GDTA Member', 'GDTA Affiliation', 'Country', 'State',
+        'Registration Source', 'Status', 'Created At'
+    ]
+    
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.value = header
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+    
+    # Data
+    for row_num, reg in enumerate(registrations, 2):
+        created_at = reg.created_at.isoformat() if isinstance(reg.created_at, datetime) else str(reg.created_at)
+        row_data = [
+            reg.id, reg.unique_id or '', reg.name, reg.email, reg.institution, reg.role,
+            reg.gdta_member, reg.gdta_affiliation or '', reg.country, reg.state or '',
+            reg.registration_source, reg.status, created_at
+        ]
+        
+        for col_num, value in enumerate(row_data, 1):
+            ws.cell(row=row_num, column=col_num).value = value
+    
+    # Adjust column widths
+    for col in ws.columns:
+        max_length = 0
+        column = col[0].column_letter
+        for cell in col:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(cell.value)
+            except:
+                pass
+        adjusted_width = min((max_length + 2), 50)
+        ws.column_dimensions[column].width = adjusted_width
+    
+    # Save to BytesIO
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    filename = f'registrations_{event_id or "all"}_{datetime.now().strftime("%Y%m%d")}.xlsx'
+    return Response(
+        output.getvalue(),
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers={'Content-Disposition': f'attachment;filename={filename}'}
+    )
+
+
+def _export_registrations_pdf(registrations, event_id=None):
+    """Export registrations to PDF"""
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import letter, landscape
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import inch
+    from io import BytesIO
+    from flask import Response
+    
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), topMargin=0.5*inch)
+    
+    # Container for elements
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Title
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=24,
+        textColor=colors.HexColor('#000000'),
+        spaceAfter=30,
+        alignment=1  # Center
+    )
+    elements.append(Paragraph("GDTA 2026 - Registration Report", title_style))
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # Summary
+    summary_style = styles['Normal']
+    elements.append(Paragraph(f"<b>Total Registrations:</b> {len(registrations)}", summary_style))
+    elements.append(Paragraph(f"<b>Generated:</b> {datetime.now().strftime('%B %d, %Y at %I:%M %p')}", summary_style))
+    if event_id:
+        elements.append(Paragraph(f"<b>Event:</b> {event_id}", summary_style))
+    elements.append(Spacer(1, 0.3*inch))
+    
+    # Table data
+    table_data = [['Name', 'Email', 'Institution', 'Role', 'Country', 'Status']]
+    
+    for reg in registrations:
+        table_data.append([
+            reg.name[:30],
+            reg.email[:35],
+            reg.institution[:30],
+            reg.role,
+            reg.country,
+            reg.status
+        ])
+    
+    # Create table
+    table = Table(table_data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#000000')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#F2B705')),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('FONTSIZE', (0, 1), (-1, -1), 8),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F8F9FA')])
+    ]))
+    
+    elements.append(table)
+    
+    # Build PDF
+    doc.build(elements)
+    buffer.seek(0)
+    
+    filename = f'registrations_{event_id or "all"}_{datetime.now().strftime("%Y%m%d")}.pdf'
+    return Response(
+        buffer.getvalue(),
+        mimetype='application/pdf',
+        headers={'Content-Disposition': f'attachment;filename={filename}'}
+    )
+
+
+@admin_bp.route('/api/admin/export/venues', methods=['GET'])
+@require_auth
+def export_venues():
+    """
+    GET /api/admin/export/venues?format=csv&event_id=gdta-2026
+    
+    Export venues to CSV or Excel
+    """
+    try:
+        from flask import Response
+        
+        # Get parameters
+        export_format = request.args.get('format', 'csv').lower()
+        event_id = request.args.get('event_id')
+        
+        # Get data
+        venues = Venue.get_all(event_id=event_id)
+        
+        if export_format == 'excel':
+            return _export_venues_excel(venues, event_id)
+        else:  # csv
+            return _export_venues_csv(venues, event_id)
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to export venues', 'details': str(e)}), 500
+
+
+def _export_venues_csv(venues, event_id=None):
+    """Export venues to CSV"""
+    import csv
+    from io import StringIO
+    from flask import Response
+    
+    output = StringIO()
+    writer = csv.writer(output)
+    
+    # Header
+    writer.writerow([
+        'ID', 'Name', 'Type', 'Description', 'Location', 'Capacity',
+        'Access Limit', 'Requires Approval', 'Active', 'Created At'
+    ])
+    
+    # Data
+    for venue in venues:
+        created_at = venue.created_at.isoformat() if isinstance(venue.created_at, datetime) else str(venue.created_at)
+        writer.writerow([
+            venue.id, venue.name, venue.venue_type, venue.description or '',
+            venue.location or '', venue.capacity or '',
+            venue.access_limit, venue.requires_approval, venue.is_active, created_at
+        ])
+    
+    filename = f'venues_{event_id or "all"}_{datetime.now().strftime("%Y%m%d")}.csv'
+    return Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': f'attachment;filename={filename}'}
+    )
+
+
+def _export_venues_excel(venues, event_id=None):
+    """Export venues to Excel"""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment
+    from io import BytesIO
+    from flask import Response
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Venues"
+    
+    # Header styling
+    header_fill = PatternFill(start_color="000000", end_color="000000", fill_type="solid")
+    header_font = Font(color="F2B705", bold=True, size=12)
+    
+    # Headers
+    headers = [
+        'ID', 'Name', 'Type', 'Description', 'Location', 'Capacity',
+        'Access Limit', 'Requires Approval', 'Active', 'Created At'
+    ]
+    
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.value = header
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+    
+    # Data
+    for row_num, venue in enumerate(venues, 2):
+        created_at = venue.created_at.isoformat() if isinstance(venue.created_at, datetime) else str(venue.created_at)
+        row_data = [
+            venue.id, venue.name, venue.venue_type, venue.description or '',
+            venue.location or '', venue.capacity or '',
+            venue.access_limit, 'Yes' if venue.requires_approval else 'No',
+            'Yes' if venue.is_active else 'No', created_at
+        ]
+        
+        for col_num, value in enumerate(row_data, 1):
+            ws.cell(row=row_num, column=col_num).value = value
+    
+    # Adjust column widths
+    for col in ws.columns:
+        max_length = 0
+        column = col[0].column_letter
+        for cell in col:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(cell.value)
+            except:
+                pass
+        adjusted_width = min((max_length + 2), 50)
+        ws.column_dimensions[column].width = adjusted_width
+    
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    filename = f'venues_{event_id or "all"}_{datetime.now().strftime("%Y%m%d")}.xlsx'
+    return Response(
+        output.getvalue(),
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers={'Content-Disposition': f'attachment;filename={filename}'}
+    )
+
+
+@admin_bp.route('/api/admin/export/volunteers', methods=['GET'])
+@require_auth
+def export_volunteers():
+    """
+    GET /api/admin/export/volunteers?format=csv&event_id=gdta-2026
+    
+    Export volunteers to CSV or Excel
+    """
+    try:
+        from flask import Response
+        
+        # Get parameters
+        export_format = request.args.get('format', 'csv').lower()
+        event_id = request.args.get('event_id')
+        
+        # Get data
+        volunteers = Volunteer.get_all(event_id=event_id)
+        
+        if export_format == 'excel':
+            return _export_volunteers_excel(volunteers, event_id)
+        else:  # csv
+            return _export_volunteers_csv(volunteers, event_id)
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to export volunteers', 'details': str(e)}), 500
+
+
+def _export_volunteers_csv(volunteers, event_id=None):
+    """Export volunteers to CSV"""
+    import csv
+    from io import StringIO
+    from flask import Response
+    
+    output = StringIO()
+    writer = csv.writer(output)
+    
+    # Header
+    writer.writerow([
+        'Username', 'Name', 'Email', 'Phone', 'Assigned Venues',
+        'Active', 'Created At'
+    ])
+    
+    # Data
+    for vol in volunteers:
+        created_at = vol.created_at.isoformat() if isinstance(vol.created_at, datetime) else str(vol.created_at)
+        assigned_venues = ', '.join(vol.assigned_venues) if vol.assigned_venues else ''
+        writer.writerow([
+            vol.username, vol.name, vol.email or '', vol.phone or '',
+            assigned_venues, vol.is_active, created_at
+        ])
+    
+    filename = f'volunteers_{event_id or "all"}_{datetime.now().strftime("%Y%m%d")}.csv'
+    return Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': f'attachment;filename={filename}'}
+    )
+
+
+def _export_volunteers_excel(volunteers, event_id=None):
+    """Export volunteers to Excel"""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment
+    from io import BytesIO
+    from flask import Response
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Volunteers"
+    
+    # Header styling
+    header_fill = PatternFill(start_color="000000", end_color="000000", fill_type="solid")
+    header_font = Font(color="F2B705", bold=True, size=12)
+    
+    # Headers
+    headers = [
+        'Username', 'Name', 'Email', 'Phone', 'Assigned Venues',
+        'Active', 'Created At'
+    ]
+    
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.value = header
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+    
+    # Data
+    for row_num, vol in enumerate(volunteers, 2):
+        created_at = vol.created_at.isoformat() if isinstance(vol.created_at, datetime) else str(vol.created_at)
+        assigned_venues = ', '.join(vol.assigned_venues) if vol.assigned_venues else ''
+        row_data = [
+            vol.username, vol.name, vol.email or '', vol.phone or '',
+            assigned_venues, 'Yes' if vol.is_active else 'No', created_at
+        ]
+        
+        for col_num, value in enumerate(row_data, 1):
+            ws.cell(row=row_num, column=col_num).value = value
+    
+    # Adjust column widths
+    for col in ws.columns:
+        max_length = 0
+        column = col[0].column_letter
+        for cell in col:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(cell.value)
+            except:
+                pass
+        adjusted_width = min((max_length + 2), 50)
+        ws.column_dimensions[column].width = adjusted_width
+    
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    filename = f'volunteers_{event_id or "all"}_{datetime.now().strftime("%Y%m%d")}.xlsx'
+    return Response(
+        output.getvalue(),
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers={'Content-Disposition': f'attachment;filename={filename}'}
+    )
 
 
 # ========== ID CARD GENERATION ==========
