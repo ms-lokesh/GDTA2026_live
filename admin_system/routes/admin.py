@@ -1136,15 +1136,17 @@ def _export_volunteers_excel(volunteers, event_id=None):
 @require_auth
 def export_bulk_id_cards():
     """
-    Generate and export all ID cards as a ZIP file
+    Generate and export QR codes with names as a ZIP file
+    Lightweight alternative to full ID cards - just QR code + name
     
     GET /api/admin/export/id-cards-bulk?event_id=xxx
     """
     try:
-        from logic.id_card_generator import IDCardGenerator
+        import qrcode
         import zipfile
         from io import BytesIO
         from flask import Response
+        from PIL import Image, ImageDraw, ImageFont
         
         event_id = request.args.get('event_id', session.get('event_id'))
         
@@ -1159,37 +1161,80 @@ def export_bulk_id_cards():
         
         # Create ZIP file in memory
         zip_buffer = BytesIO()
-        
-        generator = IDCardGenerator()
         generated_count = 0
         
         with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
             for reg in registrations:
                 try:
-                    # Generate ID card
-                    id_card_path = generator.generate_id_card(
-                        name=reg.name,
-                        institution=reg.institution,
-                        registration_id=reg.email,
-                        qr_data=reg.email  # QR contains email for scanning
+                    # Generate simple QR code with name
+                    # Create QR code
+                    qr = qrcode.QRCode(
+                        version=1,
+                        error_correction=qrcode.constants.ERROR_CORRECT_M,
+                        box_size=10,
+                        border=2,
                     )
+                    qr.add_data(reg.email)
+                    qr.make(fit=True)
+                    qr_img = qr.make_image(fill_color="black", back_color="white")
+                    
+                    # Create canvas with QR code and name
+                    canvas_width = 400
+                    canvas_height = 500
+                    canvas = Image.new('RGB', (canvas_width, canvas_height), 'white')
+                    draw = ImageDraw.Draw(canvas)
+                    
+                    # Resize QR code to fit
+                    qr_size = 350
+                    qr_img = qr_img.resize((qr_size, qr_size), Image.LANCZOS)
+                    
+                    # Paste QR code centered
+                    qr_x = (canvas_width - qr_size) // 2
+                    qr_y = 20
+                    canvas.paste(qr_img, (qr_x, qr_y))
+                    
+                    # Add name below QR code
+                    try:
+                        # Try to use system font
+                        font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 24)
+                        font_bold = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 28)
+                    except:
+                        font = ImageFont.load_default()
+                        font_bold = ImageFont.load_default()
+                    
+                    # Draw name (bold)
+                    name_text = reg.name.upper()
+                    bbox = draw.textbbox((0, 0), name_text, font=font_bold)
+                    text_width = bbox[2] - bbox[0]
+                    text_x = (canvas_width - text_width) // 2
+                    draw.text((text_x, 390), name_text, fill='black', font=font_bold)
+                    
+                    # Draw email (smaller)
+                    email_text = reg.email
+                    bbox = draw.textbbox((0, 0), email_text, font=font)
+                    text_width = bbox[2] - bbox[0]
+                    text_x = (canvas_width - text_width) // 2
+                    draw.text((text_x, 430), email_text, fill='gray', font=font)
+                    
+                    # Save to bytes
+                    img_buffer = BytesIO()
+                    canvas.save(img_buffer, 'PNG', optimize=True)
+                    img_buffer.seek(0)
                     
                     # Add to ZIP with clean filename
                     safe_name = reg.name.replace(' ', '_').replace('/', '_')
-                    zip_filename = f"{safe_name}_{reg.email.split('@')[0]}.png"
+                    zip_filename = f"QR_{safe_name}_{reg.email.split('@')[0]}.png"
                     
-                    with open(id_card_path, 'rb') as f:
-                        zip_file.writestr(zip_filename, f.read())
-                    
+                    zip_file.writestr(zip_filename, img_buffer.getvalue())
                     generated_count += 1
                     
                 except Exception as e:
-                    print(f"Error generating ID card for {reg.name}: {e}")
+                    print(f"Error generating QR code for {reg.name}: {e}")
                     continue
         
         zip_buffer.seek(0)
         
-        filename = f'id_cards_bulk_{event_id}_{datetime.now().strftime("%Y%m%d")}.zip'
+        filename = f'qr_codes_bulk_{event_id}_{datetime.now().strftime("%Y%m%d")}.zip'
         
         return Response(
             zip_buffer.getvalue(),
@@ -1201,8 +1246,8 @@ def export_bulk_id_cards():
         )
         
     except Exception as e:
-        print(f"Bulk ID card export error: {e}")
-        return jsonify({'error': 'Failed to generate bulk ID cards', 'details': str(e)}), 500
+        print(f"Bulk QR code export error: {e}")
+        return jsonify({'error': 'Failed to generate bulk QR codes', 'details': str(e)}), 500
 
 
 @admin_bp.route('/api/admin/export/badge-list', methods=['GET'])
