@@ -66,6 +66,16 @@ def create_app():
             print(f"⚠ Firebase initialization warning: {e}")
             print(f"   Make sure firebase-credentials.json exists or FIREBASE_CREDENTIALS env var is set")
     
+    # Ensure generated_ids directory exists
+    generated_ids_dir = os.path.join(os.path.dirname(__file__), 'static', 'generated_ids')
+    os.makedirs(generated_ids_dir, exist_ok=True)
+    print(f"✓ Generated IDs directory: {generated_ids_dir}")
+    
+    # Note: On Render free tier, filesystem is ephemeral
+    if os.environ.get('RENDER'):
+        print("⚠ WARNING: Running on Render - generated ID cards will be lost on restart")
+        print("   Consider using Firebase Storage or regenerating on-demand")
+    
     # API information endpoint
     @app.route('/api')
     def api_info():
@@ -97,10 +107,35 @@ def create_app():
             'architecture': 'Logic-controlled AI assistant with admin management'
         })
     
-    # Serve admin system's static files
+    # Serve admin system's static files (including generated ID cards)
     @app.route('/static/<path:filename>')
     def serve_static(filename):
-        return send_from_directory('static', filename)
+        """Serve static files from admin_system/static directory"""
+        import os
+        static_dir = os.path.join(os.path.dirname(__file__), 'static')
+        print(f"Serving static file: {filename} from {static_dir}")
+        return send_from_directory(static_dir, filename)
+    
+    # Dedicated route for generated ID cards with better error handling
+    @app.route('/static/generated_ids/<filename>')
+    def serve_id_card(filename):
+        """Serve generated ID card images"""
+        import os
+        generated_ids_dir = os.path.join(os.path.dirname(__file__), 'static', 'generated_ids')
+        file_path = os.path.join(generated_ids_dir, filename)
+        
+        print(f"ID Card request: {filename}")
+        print(f"Looking in: {generated_ids_dir}")
+        print(f"File exists: {os.path.exists(file_path)}")
+        
+        if os.path.exists(file_path):
+            return send_from_directory(generated_ids_dir, filename)
+        else:
+            return jsonify({
+                'error': 'ID card not found',
+                'message': f'The ID card "{filename}" does not exist or has not been generated yet.',
+                'note': 'Generated ID cards are stored temporarily. Please regenerate if needed.'
+            }), 404
     
     # Serve chatbot UI at /chatbot (was previously at root)
     @app.route('/chatbot')
