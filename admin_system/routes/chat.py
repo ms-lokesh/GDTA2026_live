@@ -5,11 +5,13 @@ This route handles chat messages and manages conversation state
 NOW ENHANCED WITH: LLM-based semantic intent resolution
 """
 
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session as flask_session
 import json
 import os
 import uuid
 import logging
+import pickle
+import base64
 
 # Import our logic modules
 from logic.planner import build_schedule, summarize_schedule
@@ -42,6 +44,16 @@ registration_sessions = {}
 conversation_contexts = {}
 
 
+def serialize_state(state):
+    """Serialize state object to store in session"""
+    return base64.b64encode(pickle.dumps(state)).decode('utf-8')
+
+
+def deserialize_state(state_str):
+    """Deserialize state object from session"""
+    return pickle.loads(base64.b64decode(state_str.encode('utf-8')))
+
+
 class ConversationContext:
     """Track conversation state and history"""
     def __init__(self):
@@ -60,9 +72,9 @@ class ConversationContext:
 
 def get_session_id():
     """Get or create a session ID for the user"""
-    if 'session_id' not in session:
-        session['session_id'] = str(uuid.uuid4())
-    return session['session_id']
+    if 'session_id' not in flask_session:
+        flask_session['session_id'] = str(uuid.uuid4())
+    return flask_session['session_id']
 
 
 def load_conference_data():
@@ -317,8 +329,14 @@ def chat():
             reg_state = start_registration()
             registration_sessions[session_id] = reg_state
             
+            # Store in Flask session too
+            flask_session['reg_state'] = serialize_state(reg_state)
+            flask_session['reg_session_id'] = session_id
+            flask_session.modified = True
+            
             question = get_current_question(reg_state)
             response['action'] = 'registration_started'
+            response['registration_session_id'] = session_id
             response['message'] = "I'll help you with registration. Please answer the following questions.\n\n"
             response['message'] += question['question']
             if question.get('options'):

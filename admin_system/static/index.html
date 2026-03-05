@@ -402,7 +402,7 @@
                     <p><strong>Welcome to GDTA 2026!</strong></p>
                     <p>I can help you with:</p>
                     <div class="quick-actions">
-                        <button class="quick-btn" onclick="sendQuickMessage('I want to register')">📝 Register</button>
+                        <button class="quick-btn" onclick="startRegistration()">📝 Register</button>
                         <button class="quick-btn" onclick="sendQuickMessage('Tell me about the conference')">ℹ️ About</button>
                         <button class="quick-btn" onclick="sendQuickMessage('Show me the schedule')">📅 Schedule</button>
                     </div>
@@ -513,7 +513,10 @@
                         
                         // Check if registration was started from chat
                         if (data.action === 'registration_started') {
+                            // Switch to registration mode
                             updateMode('registration');
+                            registrationSessionId = data.registration_session_id || data.session_id;
+                            console.log('Registration started with session ID:', registrationSessionId);
                         }
                     } else {
                         addMessage("Sorry, I encountered an error. Please try again.", false);
