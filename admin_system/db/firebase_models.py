@@ -171,45 +171,91 @@ class Registration(FirestoreModel):
     @classmethod
     def get_all(cls, limit=100, offset=0, filters=None):
         """Get all registrations with optional filters"""
-        db = get_firestore_db()
-        query = db.collection(COLLECTIONS['registrations'])
-        
-        # Apply filters
-        if filters:
-            if filters.get('event_id'):
-                query = query.where('event_id', '==', filters['event_id'])
-            if filters.get('status'):
-                query = query.where('status', '==', filters['status'])
-            if filters.get('country'):
-                query = query.where('country', '==', filters['country'])
-        
-        # Order by created_at descending
-        query = query.order_by('created_at', direction=firestore.Query.DESCENDING)
-        
-        # Pagination
-        if offset:
-            query = query.offset(offset)
-        if limit:
-            query = query.limit(limit)
-        
-        docs = query.stream()
-        return [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+        try:
+            db = get_firestore_db()
+            query = db.collection(COLLECTIONS['registrations'])
+            
+            # Apply filters
+            if filters:
+                if filters.get('event_id'):
+                    query = query.where('event_id', '==', filters['event_id'])
+                if filters.get('status'):
+                    query = query.where('status', '==', filters['status'])
+                if filters.get('country'):
+                    query = query.where('country', '==', filters['country'])
+            
+            # Try with ordering first, fall back to unordered if index not available
+            try:
+                # Order by created_at descending
+                query = query.order_by('created_at', direction=firestore.Query.DESCENDING)
+                
+                # Pagination
+                if offset:
+                    query = query.offset(offset)
+                if limit:
+                    query = query.limit(limit)
+                
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                print(f"✅ Retrieved {len(results)} registrations with ordering")
+                return results
+                
+            except Exception as order_error:
+                # If ordering fails (likely missing index), try without ordering
+                print(f"⚠️ Query with ordering failed: {order_error}")
+                print("Retrying without ordering...")
+                
+                # Rebuild query without ordering
+                query = db.collection(COLLECTIONS['registrations'])
+                if filters:
+                    if filters.get('event_id'):
+                        query = query.where('event_id', '==', filters['event_id'])
+                    if filters.get('status'):
+                        query = query.where('status', '==', filters['status'])
+                    if filters.get('country'):
+                        query = query.where('country', '==', filters['country'])
+                
+                if limit:
+                    query = query.limit(limit)
+                
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                # Sort in Python if we couldn't sort in Firestore
+                results.sort(key=lambda r: r.created_at if hasattr(r, 'created_at') and r.created_at else datetime.min, reverse=True)
+                if offset:
+                    results = results[offset:]
+                print(f"✅ Retrieved {len(results)} registrations without ordering")
+                return results
+                
+        except Exception as e:
+            print(f"❌ Error in Registration.get_all(): {type(e).__name__}: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return []  # Return empty list instead of None
     
     @classmethod
     def count(cls, filters=None):
         """Count registrations"""
-        db = get_firestore_db()
-        query = db.collection(COLLECTIONS['registrations'])
-        
-        if filters:
-            if filters.get('event_id'):
-                query = query.where('event_id', '==', filters['event_id'])
-            if filters.get('status'):
-                query = query.where('status', '==', filters['status'])
-            if filters.get('country'):
-                query = query.where('country', '==', filters['country'])
-        
-        return len(list(query.stream()))
+        try:
+            db = get_firestore_db()
+            query = db.collection(COLLECTIONS['registrations'])
+            
+            if filters:
+                if filters.get('event_id'):
+                    query = query.where('event_id', '==', filters['event_id'])
+                if filters.get('status'):
+                    query = query.where('status', '==', filters['status'])
+                if filters.get('country'):
+                    query = query.where('country', '==', filters['country'])
+            
+            result = len(list(query.stream()))
+            print(f"✅ Counted {result} registrations")
+            return result
+        except Exception as e:
+            print(f"❌ Error in Registration.count(): {type(e).__name__}: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return 0
     
     @classmethod
     def delete(cls, doc_id):
@@ -404,18 +450,40 @@ class Venue(FirestoreModel):
     @classmethod
     def get_all(cls, is_active=None, event_id=None):
         """Get all venues"""
-        db = get_firestore_db()
-        query = db.collection(COLLECTIONS['venues'])
-        
-        if event_id is not None:
-            query = query.where('event_id', '==', event_id)
-        
-        if is_active is not None:
-            query = query.where('is_active', '==', is_active)
-        
-        query = query.order_by('name')
-        docs = query.stream()
-        return [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+        try:
+            db = get_firestore_db()
+            query = db.collection(COLLECTIONS['venues'])
+            
+            if event_id is not None:
+                query = query.where('event_id', '==', event_id)
+            
+            if is_active is not None:
+                query = query.where('is_active', '==', is_active)
+            
+            try:
+                query = query.order_by('name')
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                print(f"✅ Retrieved {len(results)} venues with ordering")
+                return results
+            except Exception as order_error:
+                print(f"⚠️ Venue query with ordering failed: {order_error}")
+                # Retry without ordering
+                query = db.collection(COLLECTIONS['venues'])
+                if event_id is not None:
+                    query = query.where('event_id', '==', event_id)
+                if is_active is not None:
+                    query = query.where('is_active', '==', is_active)
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                results.sort(key=lambda v: v.name if hasattr(v, 'name') and v.name else '')
+                print(f"✅ Retrieved {len(results)} venues without ordering")
+                return results
+        except Exception as e:
+            print(f"❌ Error in Venue.get_all(): {type(e).__name__}: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return []
     
     @classmethod
     def delete(cls, doc_id):
@@ -494,15 +562,35 @@ class Volunteer(FirestoreModel):
     @classmethod
     def get_all(cls, event_id=None):
         """Get all volunteers"""
-        db = get_firestore_db()
-        query = db.collection(COLLECTIONS['volunteers'])
-        
-        if event_id is not None:
-            query = query.where('event_id', '==', event_id)
-        
-        query = query.order_by('name')
-        docs = query.stream()
-        return [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+        try:
+            db = get_firestore_db()
+            query = db.collection(COLLECTIONS['volunteers'])
+            
+            if event_id is not None:
+                query = query.where('event_id', '==', event_id)
+            
+            try:
+                query = query.order_by('name')
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                print(f"✅ Retrieved {len(results)} volunteers with ordering")
+                return results
+            except Exception as order_error:
+                print(f"⚠️ Volunteer query with ordering failed: {order_error}")
+                # Retry without ordering
+                query = db.collection(COLLECTIONS['volunteers'])
+                if event_id is not None:
+                    query = query.where('event_id', '==', event_id)
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                results.sort(key=lambda v: v.name if hasattr(v, 'name') and v.name else '')
+                print(f"✅ Retrieved {len(results)} volunteers without ordering")
+                return results
+        except Exception as e:
+            print(f"❌ Error in Volunteer.get_all(): {type(e).__name__}: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return []
     
     def check_password(self, password):
         """Check if password is correct"""

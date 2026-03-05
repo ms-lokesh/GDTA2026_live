@@ -288,9 +288,11 @@ def get_all_registrations():
         
         # Get registrations from Firebase
         registrations = Registration.get_all(limit=limit, offset=offset, filters=filters if filters else None)
+        print(f"Retrieved {len(registrations)} registrations from Firebase")
         
         # Get total count
         total_count = Registration.count(filters=filters if filters else None)
+        print(f"Total count: {total_count}")
         
         # Apply search filter post-query (Firebase doesn't support LIKE)
         search = request.args.get('search')
@@ -313,7 +315,10 @@ def get_all_registrations():
         return jsonify(result), 200
         
     except Exception as e:
-        return jsonify({'error': 'Failed to fetch registrations', 'details': str(e)}), 500
+        import traceback
+        print(f"❌ Error in get_all_registrations: {type(e).__name__}: {str(e)}")
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to fetch registrations', 'details': str(e), 'type': type(e).__name__}), 500
 
 
 @admin_bp.route('/api/admin/registrations/<registration_id>', methods=['GET'])
@@ -498,7 +503,10 @@ def get_statistics():
         }), 200
         
     except Exception as e:
-        return jsonify({'error': 'Failed to fetch statistics', 'details': str(e)}), 500
+        import traceback
+        print(f"❌ Error in get_statistics: {type(e).__name__}: {str(e)}")
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to fetch statistics', 'details': str(e), 'type': type(e).__name__}), 500
 
 
 # ========== EMAIL ENDPOINTS ==========
@@ -975,7 +983,10 @@ def get_all_venues():
         }), 200
         
     except Exception as e:
-        return jsonify({'error': 'Failed to fetch venues', 'details': str(e)}), 500
+        import traceback
+        print(f"❌ Error in get_all_venues: {type(e).__name__}: {str(e)}")
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to fetch venues', 'details': str(e), 'type': type(e).__name__}), 500
 
 
 @admin_bp.route('/api/admin/venues/<venue_id>', methods=['GET'])
@@ -1394,7 +1405,10 @@ def get_all_volunteers():
         }), 200
         
     except Exception as e:
-        return jsonify({'error': 'Failed to fetch volunteers', 'details': str(e)}), 500
+        import traceback
+        print(f"❌ Error in get_all_volunteers: {type(e).__name__}: {str(e)}")
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to fetch volunteers', 'details': str(e), 'type': type(e).__name__}), 500
 
 
 @admin_bp.route('/api/admin/volunteers/<username>', methods=['GET'])
