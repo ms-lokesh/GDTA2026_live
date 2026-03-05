@@ -79,18 +79,133 @@
 
     <div class="container-fluid py-5" style="background-color: #F8F9FA;">
         <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-12 wow fadeInRight" data-wow-delay="0.2s">
+            <div class="row g-5 justify-content-center">
+                <div class="col-lg-8 wow fadeInRight" data-wow-delay="0.2s">
                     <div class="content-card" style="padding: 40px;">
                         <h3 style="color: #000000 !important; font-weight: 700; margin-bottom: 30px;">Registration Form
                         </h3>
                         
-                        <!-- Embedded Chatbot Registration -->
-                        <iframe 
-                            src="/chatbot" 
-                            style="width: 100%; height: 700px; border: none; border-radius: 10px;"
-                            title="GDTA 2026 Registration">
-                        </iframe>
+                        <!-- Registration Form -->
+                        <form id="registrationForm">
+                            <!-- Data Consent -->
+                            <div class="mb-4">
+                                <label class="form-label" style="font-weight: 600;">
+                                    <span style="color: red;">*</span> Data Usage Consent
+                                </label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="consent" name="consent" required>
+                                    <label class="form-check-label" for="consent">
+                                        I consent to the collection and use of my personal data for GDTA 2026 conference purposes
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Full Name -->
+                            <div class="mb-3">
+                                <label for="name" class="form-label" style="font-weight: 600;">
+                                    <span style="color: red;">*</span> Full Name
+                                </label>
+                                <input type="text" class="form-control" id="name" name="name" required
+                                    placeholder="Enter your full name">
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label" style="font-weight: 600;">
+                                    <span style="color: red;">*</span> Email Address
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" required
+                                    placeholder="your.email@example.com">
+                            </div>
+
+                            <!-- Institution -->
+                            <div class="mb-3">
+                                <label for="institution" class="form-label" style="font-weight: 600;">
+                                    <span style="color: red;">*</span> Institution/Organization
+                                </label>
+                                <input type="text" class="form-control" id="institution" name="institution" required
+                                    placeholder="Your institution or organization">
+                            </div>
+
+                            <!-- Role -->
+                            <div class="mb-3">
+                                <label for="role" class="form-label" style="font-weight: 600;">
+                                    <span style="color: red;">*</span> Role/Position
+                                </label>
+                                <select class="form-select" id="role" name="role" required>
+                                    <option value="">Select your role</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Faculty">Faculty</option>
+                                    <option value="Researcher">Researcher</option>
+                                    <option value="Industry Professional">Industry Professional</option>
+                                    <option value="Designer">Designer</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <!-- GDTA Member -->
+                            <div class="mb-3">
+                                <label for="gdta_member" class="form-label" style="font-weight: 600;">
+                                    <span style="color: red;">*</span> Are you a GDTA member?
+                                </label>
+                                <select class="form-select" id="gdta_member" name="gdta_member" required>
+                                    <option value="">Select an option</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+
+                            <!-- GDTA Affiliation -->
+                            <div class="mb-3">
+                                <label for="gdta_affiliation" class="form-label" style="font-weight: 600;">
+                                    <span style="color: red;">*</span> GDTA Affiliation/Chapter
+                                </label>
+                                <select class="form-select" id="gdta_affiliation" name="gdta_affiliation" required>
+                                    <option value="">Select your affiliation</option>
+                                    <option value="Indian Chapter">Indian Chapter</option>
+                                    <option value="USA Chapter">USA Chapter</option>
+                                    <option value="European Chapter">European Chapter</option>
+                                    <option value="None">None</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <!-- Country -->
+                            <div class="mb-3">
+                                <label for="country" class="form-label" style="font-weight: 600;">
+                                    <span style="color: red;">*</span> Country
+                                </label>
+                                <input type="text" class="form-control" id="country" name="country" required
+                                    placeholder="Your country">
+                            </div>
+
+                            <!-- State/Province -->
+                            <div class="mb-3">
+                                <label for="state" class="form-label" style="font-weight: 600;">
+                                    State/Province
+                                </label>
+                                <input type="text" class="form-control" id="state" name="state"
+                                    placeholder="Your state or province (optional)">
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Registration
+                                </button>
+                            </div>
+
+                            <!-- Success/Error Messages -->
+                            <div id="alertContainer" class="mt-3"></div>
+                        </form>
+
+                        <!-- Chatbot Registration Option -->
+                        <div class="text-center mt-4 pt-4" style="border-top: 1px solid #dee2e6;">
+                            <p class="mb-2" style="color: #6c757d;">Prefer an interactive experience?</p>
+                            <a href="/chatbot" target="_blank" class="btn btn-outline-secondary">
+                                <i class="fas fa-comments me-2"></i>Register via Chatbot
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -147,7 +262,95 @@
     <script src="lib/easing/easing.min.js"></script>
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/chatbot-widget.js"></script>
+    
+    <!-- Registration Form Handler -->
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const alertContainer = document.getElementById('alertContainer');
+            const form = e.target;
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+            
+            // Clear previous alerts
+            alertContainer.innerHTML = '';
+            
+            // Get form data
+            const formData = {
+                name: form.name.value,
+                email: form.email.value,
+                institution: form.institution.value,
+                role: form.role.value,
+                gdta_member: form.gdta_member.value,
+                gdta_affiliation: form.gdta_affiliation.value,
+                country: form.country.value,
+                state: form.state.value,
+                consent: form.consent.checked ? 'Yes' : 'No'
+            };
+            
+            try {
+                // Submit registration
+                const response = await fetch('/api/register/submit-form', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success message
+                    alertContainer.innerHTML = `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>Success!</strong> ${result.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                    
+                    // Reset form
+                    form.reset();
+                    
+                    // Scroll to success message
+                    alertContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                } else {
+                    // Show error message
+                    alertContainer.innerHTML = `
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <strong>Error!</strong> ${result.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                    
+                    // Scroll to error message
+                    alertContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                alertContainer.innerHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Error!</strong> Unable to submit registration. Please check your connection and try again.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                alertContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Registration';
+            }
+        });
+    </script>
 </body>
 
 </html>

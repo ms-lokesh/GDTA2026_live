@@ -797,7 +797,7 @@ def submit_registration(registration_data):
                 country=registration_data.get("country"),
                 state=registration_data.get("state"),
                 consent=registration_data.get("consent"),
-                registration_source='chatbot',
+                registration_source=registration_data.get("registration_source", "chatbot"),
                 session_id=registration_data.get("session_id"),
                 status='pending'
             )

@@ -288,3 +288,74 @@ def get_registration_status():
             "error": "Failed to get registration status",
             "details": str(e)
         }), 500
+
+
+@register_bp.route('/api/register/submit-form', methods=['POST'])
+def submit_form_registration():
+    """
+    POST /api/register/submit-form
+    
+    Direct form-based registration submission
+    Accepts all registration data at once and submits to the same backend as chatbot
+    
+    Body:
+    {
+        "name": "...",
+        "email": "...",
+        "institution": "...",
+        "role": "...",
+        "gdta_member": "Yes/No",
+        "gdta_affiliation": "...",
+        "country": "...",
+        "state": "...",
+        "consent": "Yes"
+    }
+    
+    Returns:
+        {
+            "success": true/false,
+            "message": "...",
+            "registration_id": "..." (if successful)
+        }
+    """
+    try:
+        from logic.registration import submit_registration
+        
+        # Get form data from request
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({
+                "success": False,
+                "message": "No data provided"
+            }), 400
+        
+        # Prepare registration data with form source
+        registration_data = {
+            "name": data.get("name", "").strip(),
+            "email": data.get("email", "").strip(),
+            "institution": data.get("institution", "").strip(),
+            "role": data.get("role", "").strip(),
+            "gdta_member": data.get("gdta_member", "").strip(),
+            "gdta_affiliation": data.get("gdta_affiliation", "").strip(),
+            "country": data.get("country", "").strip(),
+            "state": data.get("state", "").strip(),
+            "consent": data.get("consent", "").strip(),
+            "registration_source": "form"  # Mark as form registration
+        }
+        
+        # Submit registration using the same backend logic
+        result = submit_registration(registration_data)
+        
+        if result.get("success"):
+            return jsonify(result), 200
+        else:
+            return jsonify(result), 400
+            
+    except Exception as e:
+        print(f"Form registration error: {e}")
+        return jsonify({
+            "success": False,
+            "message": "An error occurred during registration. Please try again.",
+            "error": str(e)
+        }), 500
