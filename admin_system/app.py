@@ -66,9 +66,9 @@ def create_app():
             print(f"⚠ Firebase initialization warning: {e}")
             print(f"   Make sure firebase-credentials.json exists or FIREBASE_CREDENTIALS env var is set")
     
-    # Serve main chatbot UI
-    @app.route('/')
-    def index():
+    # Serve chatbot UI
+    @app.route('/chatbot')
+    def chatbot():
         return send_from_directory('static', 'index.html')
     
     # Serve admin dashboard
@@ -115,6 +115,22 @@ def create_app():
     @app.route('/static/<path:filename>')
     def serve_static(filename):
         return send_from_directory('static', filename)
+    
+    # Serve main website files (HTML, CSS, JS, images) - catch-all for other files
+    @app.route('/<path:filename>')
+    def serve_website_files(filename):
+        """Serve files from the parent directory (main website)"""
+        try:
+            return send_from_directory('..', filename)
+        except:
+            # If file not found, let the 404 handler take over
+            return not_found(None)
+    
+    # Serve main website at root - this should be defined last so specific routes are matched first
+    @app.route('/')
+    def index():
+        """Serve the main website's index.html from parent directory"""
+        return send_from_directory('..', 'index.html')
     
     # Error handlers
     @app.errorhandler(404)
