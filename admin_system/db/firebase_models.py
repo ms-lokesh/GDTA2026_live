@@ -661,44 +661,98 @@ class AccessLog(FirestoreModel):
     @classmethod
     def get_by_registration(cls, registration_id, limit=50):
         """Get access logs for a registration"""
-        db = get_firestore_db()
-        query = db.collection(COLLECTIONS['access_logs'])\
-            .where('registration_id', '==', registration_id)\
-            .order_by('timestamp', direction=firestore.Query.DESCENDING)\
-            .limit(limit)
-        
-        docs = query.stream()
-        return [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+        try:
+            db = get_firestore_db()
+            try:
+                query = db.collection(COLLECTIONS['access_logs'])\
+                    .where('registration_id', '==', registration_id)\
+                    .order_by('timestamp', direction=firestore.Query.DESCENDING)\
+                    .limit(limit)
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                return results
+            except Exception as order_error:
+                # Retry without ordering
+                query = db.collection(COLLECTIONS['access_logs'])\
+                    .where('registration_id', '==', registration_id)\
+                    .limit(limit)
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                results.sort(key=lambda log: log.timestamp if hasattr(log, 'timestamp') and log.timestamp else datetime.min, reverse=True)
+                return results
+        except Exception as e:
+            print(f"❌ Error in AccessLog.get_by_registration(): {str(e)}")
+            return []
     
     @classmethod
     def get_by_venue(cls, venue_id, limit=100):
         """Get access logs for a venue"""
-        db = get_firestore_db()
-        query = db.collection(COLLECTIONS['access_logs'])\
-            .where('venue_id', '==', venue_id)\
-            .order_by('timestamp', direction=firestore.Query.DESCENDING)\
-            .limit(limit)
-        
-        docs = query.stream()
-        return [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+        try:
+            db = get_firestore_db()
+            try:
+                query = db.collection(COLLECTIONS['access_logs'])\
+                    .where('venue_id', '==', venue_id)\
+                    .order_by('timestamp', direction=firestore.Query.DESCENDING)\
+                    .limit(limit)
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                return results
+            except Exception as order_error:
+                # Retry without ordering
+                query = db.collection(COLLECTIONS['access_logs'])\
+                    .where('venue_id', '==', venue_id)\
+                    .limit(limit)
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                results.sort(key=lambda log: log.timestamp if hasattr(log, 'timestamp') and log.timestamp else datetime.min, reverse=True)
+                return results
+        except Exception as e:
+            print(f"❌ Error in AccessLog.get_by_venue(): {str(e)}")
+            return []
     
     @classmethod
     def get_all(cls, limit=100, filters=None):
         """Get all access logs with filters"""
-        db = get_firestore_db()
-        query = db.collection(COLLECTIONS['access_logs'])
-        
-        if filters:
-            if filters.get('event_id'):
-                query = query.where('event_id', '==', filters['event_id'])
-            if filters.get('venue_id'):
-                query = query.where('venue_id', '==', filters['venue_id'])
-            if filters.get('action_type'):
-                query = query.where('action_type', '==', filters['action_type'])
-        
-        query = query.order_by('timestamp', direction=firestore.Query.DESCENDING).limit(limit)
-        docs = query.stream()
-        return [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+        try:
+            db = get_firestore_db()
+            query = db.collection(COLLECTIONS['access_logs'])
+            
+            if filters:
+                if filters.get('event_id'):
+                    query = query.where('event_id', '==', filters['event_id'])
+                if filters.get('venue_id'):
+                    query = query.where('venue_id', '==', filters['venue_id'])
+                if filters.get('action_type'):
+                    query = query.where('action_type', '==', filters['action_type'])
+            
+            try:
+                query = query.order_by('timestamp', direction=firestore.Query.DESCENDING).limit(limit)
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                print(f"✅ Retrieved {len(results)} access logs with ordering")
+                return results
+            except Exception as order_error:
+                print(f"⚠️ AccessLog query with ordering failed: {order_error}")
+                # Retry without ordering
+                query = db.collection(COLLECTIONS['access_logs'])
+                if filters:
+                    if filters.get('event_id'):
+                        query = query.where('event_id', '==', filters['event_id'])
+                    if filters.get('venue_id'):
+                        query = query.where('venue_id', '==', filters['venue_id'])
+                    if filters.get('action_type'):
+                        query = query.where('action_type', '==', filters['action_type'])
+                query = query.limit(limit)
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                results.sort(key=lambda log: log.timestamp if hasattr(log, 'timestamp') and log.timestamp else datetime.min, reverse=True)
+                print(f"✅ Retrieved {len(results)} access logs without ordering")
+                return results
+        except Exception as e:
+            print(f"❌ Error in AccessLog.get_all(): {type(e).__name__}: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return []
 
 
 # Helper functions
