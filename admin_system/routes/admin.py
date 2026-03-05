@@ -772,7 +772,75 @@ def generate_id_card(registration_id):
         return jsonify({'error': 'Failed to generate ID card', 'details': str(e)}), 500
 
 
+@admin_bp.route('/api/admin/id-card/view/<unique_id>', methods=['GET'])
+def view_id_card(unique_id):
+    """
+    View/Download ID card by unique_id
+    Regenerates on-the-fly if file is missing (handles ephemeral storage)
+    
+    GET /api/admin/id-card/view/<unique_id>
+    
+    This endpoint does not require authentication to allow easy public access
+    via QR codes or email links.
+    """
+    try:
+        from flask import send_file
+        import os
+        
+        # Find registration by unique_id
+        registrations = Registration.get_all(limit=1000)  # TODO: Add query by unique_id
+        registration = None
+        for reg in registrations:
+            if reg.unique_id == unique_id:
+                registration = reg
+                break
+        
+        if not registration:
+            return jsonify({'error': 'Registration not found'}), 404
+        
+        if not registration.id_card_generated:
+            return jsonify({
+                'error': 'ID card not generated yet',
+                'message': 'Please contact admin to generate your ID card'
+            }), 404
+        
+        # Check if file exists
+        base_dir = os.path.dirname(os.path.dirname(__file__))
+        safe_id = unique_id.replace('@', '_at_').replace('.', '_')
+        filename = f"id_card_{safe_id}.png"
+        file_path = os.path.join(base_dir, 'static', 'generated_ids', filename)
+        
+        # Regenerate if missing (handles ephemeral storage on Render)
+        if not os.path.exists(file_path):
+            print(f"⚠ ID card file missing for {unique_id}, regenerating...")
+            generator = IDCardGenerator()
+            output_path = generator.generate_id_card(
+                name=registration.name,
+                institution=registration.institution,
+                registration_id=unique_id,
+                qr_data=unique_id
+            )
+            file_path = output_path
+            print(f"✓ Regenerated ID card at {file_path}")
+        
+        # Serve the file
+        return send_file(
+            file_path,
+            mimetype='image/png',
+            as_attachment=True,
+            download_name=filename
+        )
+        
+    except Exception as e:
+        import traceback
+        print(f"❌ Error serving ID card: {type(e).__name__}: {str(e)}")
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to retrieve ID card', 'details': str(e)}), 500
+
+
 @admin_bp.route('/api/admin/id-card/batch', methods=['POST'])
+@require_auth
+def batch_generate_id_cards():
 @require_auth
 def generate_id_cards_batch():
     """

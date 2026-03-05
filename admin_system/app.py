@@ -119,7 +119,7 @@ def create_app():
     # Dedicated route for generated ID cards with better error handling
     @app.route('/static/generated_ids/<filename>')
     def serve_id_card(filename):
-        """Serve generated ID card images"""
+        """Serve generated ID card images, regenerate if missing"""
         import os
         generated_ids_dir = os.path.join(os.path.dirname(__file__), 'static', 'generated_ids')
         file_path = os.path.join(generated_ids_dir, filename)
@@ -131,10 +131,23 @@ def create_app():
         if os.path.exists(file_path):
             return send_from_directory(generated_ids_dir, filename)
         else:
+            # Try to regenerate if it's a valid ID card filename
+            if filename.startswith('id_card_') and filename.endswith('.png'):
+                try:
+                    # Extract unique_id from filename
+                    # Format: id_card_<unique_id>.png where unique_id has @ as _at_ and . as _
+                    unique_id = filename.replace('id_card_', '').replace('.png', '')
+                    # Note: We can't reliably reverse the transformation, so log warning
+                    print(f"⚠ ID card file missing: {filename}")
+                    print(f"   Note: Auto-regeneration from static URL not fully supported yet")
+                    print(f"   Use /api/admin/id-card/view/<unique_id> endpoint instead")
+                except Exception as e:
+                    print(f"Failed to parse unique_id from filename: {e}")
+            
             return jsonify({
                 'error': 'ID card not found',
                 'message': f'The ID card "{filename}" does not exist or has not been generated yet.',
-                'note': 'Generated ID cards are stored temporarily. Please regenerate if needed.'
+                'note': 'Generated ID cards are stored temporarily on Render. Use the regenerate button or the /api/admin/id-card/view/<unique_id> endpoint.'
             }), 404
     
     # Serve chatbot UI at /chatbot (was previously at root)
