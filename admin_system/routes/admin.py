@@ -841,8 +841,6 @@ def view_id_card(unique_id):
 @admin_bp.route('/api/admin/id-card/batch', methods=['POST'])
 @require_auth
 def batch_generate_id_cards():
-@require_auth
-def generate_id_cards_batch():
     """
     Generate ID cards for multiple registrations
     
