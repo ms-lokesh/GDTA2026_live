@@ -1047,7 +1047,12 @@ class Event(FirestoreModel):
         
         if self.id:
             doc_ref = db.collection(COLLECTIONS['events']).document(self.id)
-            doc_ref.update(self.to_dict())
+            # Check if document exists
+            if doc_ref.get().exists:
+                doc_ref.update(self.to_dict())
+            else:
+                # Document doesn't exist yet, create it with set()
+                doc_ref.set(self.to_dict())
         else:
             doc_ref = db.collection(COLLECTIONS['events']).document()
             self.id = doc_ref.id
