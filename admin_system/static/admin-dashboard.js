@@ -73,18 +73,18 @@ async function checkAuth() {
             currentUser = data.user;
             updateUserInfo();
             
-            // Show/hide super admin features
+            // Show/hide features based on role
             if (currentUser.role === 'super_admin') {
-                // Super admin: show only event/admin management
+                // Super admin: show ALL features including event/admin management
                 $('.super_admin_only').show();
-                $('.admin_only').hide();
+                $('.admin_only').show();
                 $('#eventSelectorContainer').hide(); // Super admin sees all events by default
                 currentEventId = null; // No filter, show all events
                 await loadEventSelector();
                 // Update sidebar branding for super admin
                 $('.sidebar-brand h4').html('<i class="fas fa-crown me-2"></i>Super Admin');
             } else {
-                // Regular admin: show registration management features
+                // Regular admin: show registration management features only
                 $('.super_admin_only').hide();
                 $('.admin_only').show();
                 $('#eventSelectorContainer').hide();
