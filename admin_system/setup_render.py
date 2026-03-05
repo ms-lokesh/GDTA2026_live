@@ -10,7 +10,7 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from db.firebase_models import Event, Registration, AdminUser, init_firebase
+from db.firebase_models import Event, Registration, AdminUser, Venue, Volunteer, init_firebase
 from datetime import datetime
 
 def main():
@@ -73,12 +73,46 @@ def main():
         else:
             print("⚠ Admin user not found (will be created on first run)")
         
+        # Migrate venues
+        print("\n5. Migrating venues...")
+        all_venues = Venue.get_all()
+        print(f"  Found {len(all_venues)} venues")
+        
+        venues_need_migration = [v for v in all_venues if v.event_id != 'gdta-2026']
+        if venues_need_migration:
+            print(f"  Migrating {len(venues_need_migration)} venues...")
+            for venue in venues_need_migration:
+                venue.event_id = 'gdta-2026'
+                venue.save()
+            print(f"✓ Migrated {len(venues_need_migration)} venues")
+        else:
+            print("✓ All venues already have correct event_id")
+        
+        # Migrate volunteers
+        print("\n6. Migrating volunteers...")
+        all_volunteers = Volunteer.get_all()
+        print(f"  Found {len(all_volunteers)} volunteers")
+        
+        volunteers_need_migration = [v for v in all_volunteers if v.event_id != 'gdta-2026']
+        if volunteers_need_migration:
+            print(f"  Migrating {len(volunteers_need_migration)} volunteers...")
+            for volunteer in volunteers_need_migration:
+                volunteer.event_id = 'gdta-2026'
+                volunteer.save()
+            print(f"✓ Migrated {len(volunteers_need_migration)} volunteers")
+        else:
+            print("✓ All volunteers already have correct event_id")
+        
         # Summary
         print("\n" + "=" * 60)
         print("Setup Complete!")
         print("=" * 60)
         regs_gdta = Registration.get_all(limit=1000, filters={'event_id': 'gdta-2026'})
-        print(f"✓ Total registrations with event_id='gdta-2026': {len(regs_gdta)}")
+        venues_gdta = Venue.get_all(event_id='gdta-2026')
+        volunteers_gdta = Volunteer.get_all(event_id='gdta-2026')
+        print(f"✓ Registrations with event_id='gdta-2026': {len(regs_gdta)}")
+        print(f"✓ Venues with event_id='gdta-2026': {len(venues_gdta)}")
+        print(f"✓ Volunteers with event_id='gdta-2026': {len(volunteers_gdta)}")
         print(f"✓ Event 'GDTA 2026' is active")
         print(f"✓ Admin dashboard ready")
         print("=" * 60)
