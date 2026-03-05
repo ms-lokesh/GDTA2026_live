@@ -370,11 +370,13 @@ function displayRegistrations(registrations) {
         const date = new Date(reg.created_at).toLocaleDateString();
         const uniqueId = reg.unique_id ? `<code class="text-primary">${reg.unique_id}</code>` : '<span class="text-muted">-</span>';
         
-        // ID Card button - download if exists, generate if not
+        // ID Card button - use smart endpoint that regenerates if needed
         let idCardButton = '';
-        if (reg.id_card_generated && reg.id_card_url) {
+        if (reg.id_card_generated && reg.unique_id) {
+            // Use the smart view endpoint that will regenerate if file is missing
+            const viewUrl = `${API_BASE}/id-card/view/${encodeURIComponent(reg.unique_id)}`;
             idCardButton = `
-                <a href="${reg.id_card_url}" target="_blank" class="btn btn-sm btn-success me-1" title="View/Download ID Card">
+                <a href="${viewUrl}" target="_blank" class="btn btn-sm btn-success me-1" title="View/Download ID Card">
                     <i class="fas fa-id-card"></i>
                 </a>`;
         } else if (reg.status === 'approved') {
@@ -487,8 +489,8 @@ async function viewDetails(registrationId) {
                             ` : ''}
                         </div>
                         <div class="mt-3">
-                            ${cardStatus.id_card_generated && reg.id_card_url ? 
-                                `<a href="${reg.id_card_url}" target="_blank" class="btn btn-sm btn-success me-2">
+                            ${cardStatus.id_card_generated && reg.unique_id ? 
+                                `<a href="${API_BASE}/id-card/view/${encodeURIComponent(reg.unique_id)}" target="_blank" class="btn btn-sm btn-success me-2">
                                     <i class="fas fa-download"></i> View/Download ID Card
                                 </a>` : ''
                             }
@@ -644,8 +646,8 @@ async function generateIDCardFromDetail(registrationId) {
         
         if (response.ok) {
             alert(`ID Card generated successfully!\nUnique ID: ${data.unique_id}\n\nDownloading...`);
-            // Download the ID card
-            window.open(data.download_url, '_blank');
+            // Use the smart view endpoint that will regenerate if needed
+            window.open(`${API_BASE}/id-card/view/${encodeURIComponent(data.unique_id)}`, '_blank');
             // Refresh the modal to show updated status
             viewDetails(registrationId);
         } else {
@@ -1566,8 +1568,8 @@ async function generateIDCard(registrationId) {
         if (response.ok && data.success) {
             alert(`✅ ID Card generated successfully!\n\nUnique ID: ${data.unique_id}\n\nOpening card in new tab...`);
             
-            // Open the ID card in a new tab
-            window.open(data.download_url, '_blank');
+            // Use the smart view endpoint that will regenerate if needed
+            window.open(`${API_BASE}/id-card/view/${encodeURIComponent(data.unique_id)}`, '_blank');
             
             // Reload the registrations table to update the button
             loadRegistrations();
