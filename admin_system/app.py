@@ -66,16 +66,6 @@ def create_app():
             print(f"⚠ Firebase initialization warning: {e}")
             print(f"   Make sure firebase-credentials.json exists or FIREBASE_CREDENTIALS env var is set")
     
-    # Serve chatbot UI
-    @app.route('/chatbot')
-    def chatbot():
-        return send_from_directory('static', 'index.html')
-    
-    # Serve admin dashboard
-    @app.route('/admin')
-    def admin_dashboard():
-        return send_from_directory('static', 'admin-dashboard.html')
-    
     # API information endpoint
     @app.route('/api')
     def api_info():
@@ -107,37 +97,61 @@ def create_app():
             'architecture': 'Logic-controlled AI assistant with admin management'
         })
     
-    # Serve registration UI
-    @app.route('/register')
-    def registration_ui():
-        return send_from_directory('static', 'registration.html')
-    
+    # Serve admin system's static files
     @app.route('/static/<path:filename>')
     def serve_static(filename):
         return send_from_directory('static', filename)
     
-    # Serve main website files (HTML, CSS, JS, images) - catch-all for other files
-    @app.route('/<path:filename>')
-    def serve_website_files(filename):
-        """Serve files from the parent directory (main website)"""
-        try:
-            return send_from_directory('..', filename)
-        except:
-            # If file not found, let the 404 handler take over
-            return not_found(None)
+    # Serve chatbot UI at /chatbot (was previously at root)
+    @app.route('/chatbot')
+    def chatbot_route():
+        return send_from_directory('static', 'index.html')
     
-    # Serve main website at root - this should be defined last so specific routes are matched first
+    # Serve admin dashboard
+    @app.route('/admin')
+    def admin_route():
+        return send_from_directory('static', 'admin-dashboard.html')
+    
+    # Serve admin system registration UI at /register (different from main site register.html)
+    @app.route('/register')
+    def registration_ui():
+        return send_from_directory('static', 'registration.html')
+    
+    # Serve main website at root
     @app.route('/')
     def index():
         """Serve the main website's index.html from parent directory"""
         return send_from_directory('..', 'index.html')
+    
+    # Catch-all route for main website files (HTML, CSS, JS, images, etc.)
+    # This must be defined LAST so specific routes above are matched first
+    @app.route('/<path:filename>')
+    def serve_website_files(filename):
+        """Serve files from the parent directory (main website)"""
+        import os
+        parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        file_path = os.path.join(parent_dir, filename)
+        
+        # Security check: ensure the file is within the parent directory
+        if not file_path.startswith(parent_dir):
+            return jsonify({'error': 'Access denied'}), 403
+        
+        # Check if file exists
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return send_from_directory(parent_dir, filename)
+        else:
+            return jsonify({
+                'error': 'File not found',
+                'message': f'The requested file "{filename}" does not exist',
+                'available_endpoints': '/api, /chatbot, /admin, /register'
+            }), 404
     
     # Error handlers
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
             'error': 'Endpoint not found',
-            'message': 'Check /api/chat or /api/plan'
+            'message': 'Available endpoints: /api, /chatbot, /admin, /register, or any main website file'
         }), 404
     
     @app.errorhandler(500)
