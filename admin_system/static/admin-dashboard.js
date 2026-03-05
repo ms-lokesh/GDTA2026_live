@@ -851,6 +851,52 @@ function exportData(dataType, format) {
     }, 2000);
 }
 
+function exportIDCards(exportType, format) {
+    /**
+     * Export ID cards, badge lists, or QR codes
+     * @param {string} exportType - 'bulk', 'badge-list', or 'qr-codes'
+     * @param {string} format - 'csv' or 'excel' (not used for bulk)
+     */
+    let url = '';
+    
+    if (exportType === 'bulk') {
+        // Bulk ID cards as ZIP
+        url = `${API_BASE}/export/id-cards-bulk`;
+    } else if (exportType === 'badge-list') {
+        // Badge printing list
+        url = `${API_BASE}/export/badge-list?format=${format}`;
+    } else if (exportType === 'qr-codes') {
+        // QR code list
+        url = `${API_BASE}/export/qr-codes?format=${format}`;
+    }
+    
+    if (currentEventId) {
+        url += url.includes('?') ? '&' : '?';
+        url += `event_id=${currentEventId}`;
+    }
+    
+    // Show loading indicator
+    const btn = event.target;
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    
+    if (exportType === 'bulk') {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating ID Cards...';
+    } else {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
+    }
+    
+    // Trigger download
+    window.location.href = url;
+    
+    // Reset button after a delay (longer for bulk generation)
+    const resetDelay = exportType === 'bulk' ? 5000 : 2000;
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+    }, resetDelay);
+}
+
 // ========== VENUE MANAGEMENT ==========
 
 let venuesTable = null;

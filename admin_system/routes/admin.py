@@ -1130,6 +1130,330 @@ def _export_volunteers_excel(volunteers, event_id=None):
     )
 
 
+# ========== ID CARDS & BADGES EXPORT ==========
+
+@admin_bp.route('/api/admin/export/id-cards-bulk', methods=['GET'])
+@require_auth
+def export_bulk_id_cards():
+    """
+    Generate and export all ID cards as a ZIP file
+    
+    GET /api/admin/export/id-cards-bulk?event_id=xxx
+    """
+    try:
+        from logic.id_card_generator import IDCardGenerator
+        import zipfile
+        from io import BytesIO
+        from flask import Response
+        
+        event_id = request.args.get('event_id', session.get('event_id'))
+        
+        if not event_id:
+            return jsonify({'error': 'Event ID required'}), 400
+        
+        # Get all registrations for the event
+        registrations = Registration.get_all(limit=1000, filters={'event_id': event_id})
+        
+        if not registrations:
+            return jsonify({'error': 'No registrations found'}), 404
+        
+        # Create ZIP file in memory
+        zip_buffer = BytesIO()
+        
+        generator = IDCardGenerator()
+        generated_count = 0
+        
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for reg in registrations:
+                try:
+                    # Generate ID card
+                    id_card_path = generator.generate_id_card(
+                        name=reg.name,
+                        institution=reg.institution,
+                        registration_id=reg.email,
+                        qr_data=reg.email  # QR contains email for scanning
+                    )
+                    
+                    # Add to ZIP with clean filename
+                    safe_name = reg.name.replace(' ', '_').replace('/', '_')
+                    zip_filename = f"{safe_name}_{reg.email.split('@')[0]}.png"
+                    
+                    with open(id_card_path, 'rb') as f:
+                        zip_file.writestr(zip_filename, f.read())
+                    
+                    generated_count += 1
+                    
+                except Exception as e:
+                    print(f"Error generating ID card for {reg.name}: {e}")
+                    continue
+        
+        zip_buffer.seek(0)
+        
+        filename = f'id_cards_bulk_{event_id}_{datetime.now().strftime("%Y%m%d")}.zip'
+        
+        return Response(
+            zip_buffer.getvalue(),
+            mimetype='application/zip',
+            headers={
+                'Content-Disposition': f'attachment;filename={filename}',
+                'X-Generated-Count': str(generated_count)
+            }
+        )
+        
+    except Exception as e:
+        print(f"Bulk ID card export error: {e}")
+        return jsonify({'error': 'Failed to generate bulk ID cards', 'details': str(e)}), 500
+
+
+@admin_bp.route('/api/admin/export/badge-list', methods=['GET'])
+@require_auth
+def export_badge_list():
+    """
+    Export badge printing list - simple name list for badge printing
+    
+    GET /api/admin/export/badge-list?event_id=xxx&format=csv
+    """
+    try:
+        event_id = request.args.get('event_id', session.get('event_id'))
+        export_format = request.args.get('format', 'csv').lower()
+        
+        if not event_id:
+            return jsonify({'error': 'Event ID required'}), 400
+        
+        registrations = Registration.get_all(limit=1000, filters={'event_id': event_id})
+        
+        if not registrations:
+            return jsonify({'error': 'No registrations found'}), 404
+        
+        if export_format == 'csv':
+            return _export_badge_list_csv(registrations, event_id)
+        elif export_format == 'excel':
+            return _export_badge_list_excel(registrations, event_id)
+        else:
+            return jsonify({'error': 'Invalid format. Use csv or excel'}), 400
+            
+    except Exception as e:
+        print(f"Badge list export error: {e}")
+        return jsonify({'error': 'Failed to export badge list', 'details': str(e)}), 500
+
+
+def _export_badge_list_csv(registrations, event_id=None):
+    """Generate CSV badge printing list"""
+    import csv
+    from io import StringIO
+    from flask import Response
+    
+    output = StringIO()
+    writer = csv.writer(output)
+    
+    # Headers
+    writer.writerow(['#', 'Full Name', 'Institution', 'Role', 'Country'])
+    
+    # Data rows
+    for idx, reg in enumerate(registrations, 1):
+        writer.writerow([
+            idx,
+            reg.name,
+            reg.institution,
+            reg.role or 'Participant',
+            reg.country
+        ])
+    
+    output.seek(0)
+    filename = f'badge_printing_list_{event_id or "all"}_{datetime.now().strftime("%Y%m%d")}.csv'
+    
+    return Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': f'attachment;filename={filename}'}
+    )
+
+
+def _export_badge_list_excel(registrations, event_id=None):
+    """Generate Excel badge printing list with formatting"""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, Alignment, PatternFill
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = 'Badge Printing List'
+    
+    # Header row with styling
+    headers = ['#', 'Full Name', 'Institution', 'Role', 'Country']
+    header_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
+    header_font = Font(bold=True, color='FFFFFF', size=12)
+    
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.value = header
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+    
+    # Data rows
+    for idx, reg in enumerate(registrations, 1):
+        row_num = idx + 1
+        row_data = [
+            idx,
+            reg.name,
+            reg.institution,
+            reg.role or 'Participant',
+            reg.country
+        ]
+        
+        for col_num, value in enumerate(row_data, 1):
+            cell = ws.cell(row=row_num, column=col_num)
+            cell.value = value
+            
+            # Alternate row coloring
+            if idx % 2 == 0:
+                cell.fill = PatternFill(start_color='F2F2F2', end_color='F2F2F2', fill_type='solid')
+    
+    # Adjust column widths
+    ws.column_dimensions['A'].width = 8
+    ws.column_dimensions['B'].width = 30
+    ws.column_dimensions['C'].width = 35
+    ws.column_dimensions['D'].width = 20
+    ws.column_dimensions['E'].width = 15
+    
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    filename = f'badge_printing_list_{event_id or "all"}_{datetime.now().strftime("%Y%m%d")}.xlsx'
+    return Response(
+        output.getvalue(),
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers={'Content-Disposition': f'attachment;filename={filename}'}
+    )
+
+
+@admin_bp.route('/api/admin/export/qr-codes', methods=['GET'])
+@require_auth
+def export_qr_code_list():
+    """
+    Export QR code list - all unique IDs for verification scanning
+    
+    GET /api/admin/export/qr-codes?event_id=xxx&format=csv
+    """
+    try:
+        event_id = request.args.get('event_id', session.get('event_id'))
+        export_format = request.args.get('format', 'csv').lower()
+        
+        if not event_id:
+            return jsonify({'error': 'Event ID required'}), 400
+        
+        registrations = Registration.get_all(limit=1000, filters={'event_id': event_id})
+        
+        if not registrations:
+            return jsonify({'error': 'No registrations found'}), 404
+        
+        if export_format == 'csv':
+            return _export_qr_codes_csv(registrations, event_id)
+        elif export_format == 'excel':
+            return _export_qr_codes_excel(registrations, event_id)
+        else:
+            return jsonify({'error': 'Invalid format. Use csv or excel'}), 400
+            
+    except Exception as e:
+        print(f"QR code list export error: {e}")
+        return jsonify({'error': 'Failed to export QR code list', 'details': str(e)}), 500
+
+
+def _export_qr_codes_csv(registrations, event_id=None):
+    """Generate CSV QR code list"""
+    import csv
+    from io import StringIO
+    from flask import Response
+    
+    output = StringIO()
+    writer = csv.writer(output)
+    
+    # Headers
+    writer.writerow(['Unique ID', 'Name', 'Email', 'Institution', 'Status'])
+    
+    # Data rows
+    for reg in registrations:
+        unique_id = reg.email  # Using email as unique identifier
+        writer.writerow([
+            unique_id,
+            reg.name,
+            reg.email,
+            reg.institution,
+            reg.status or 'pending'
+        ])
+    
+    output.seek(0)
+    filename = f'qr_code_list_{event_id or "all"}_{datetime.now().strftime("%Y%m%d")}.csv'
+    
+    return Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': f'attachment;filename={filename}'}
+    )
+
+
+def _export_qr_codes_excel(registrations, event_id=None):
+    """Generate Excel QR code list with formatting"""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, Alignment, PatternFill
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = 'QR Code List'
+    
+    # Header row with styling
+    headers = ['Unique ID', 'Name', 'Email', 'Institution', 'Status']
+    header_fill = PatternFill(start_color='28A745', end_color='28A745', fill_type='solid')
+    header_font = Font(bold=True, color='FFFFFF', size=12)
+    
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.value = header
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+    
+    # Data rows
+    for idx, reg in enumerate(registrations, 1):
+        row_num = idx + 1
+        unique_id = reg.email  # Using email as unique identifier
+        
+        row_data = [
+            unique_id,
+            reg.name,
+            reg.email,
+            reg.institution,
+            reg.status or 'pending'
+        ]
+        
+        for col_num, value in enumerate(row_data, 1):
+            cell = ws.cell(row=row_num, column=col_num)
+            cell.value = value
+            
+            # Alternate row coloring
+            if idx % 2 == 0:
+                cell.fill = PatternFill(start_color='D4EDDA', end_color='D4EDDA', fill_type='solid')
+    
+    # Adjust column widths
+    ws.column_dimensions['A'].width = 35
+    ws.column_dimensions['B'].width = 30
+    ws.column_dimensions['C'].width = 35
+    ws.column_dimensions['D'].width = 35
+    ws.column_dimensions['E'].width = 15
+    
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    filename = f'qr_code_list_{event_id or "all"}_{datetime.now().strftime("%Y%m%d")}.xlsx'
+    return Response(
+        output.getvalue(),
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers={'Content-Disposition': f'attachment;filename={filename}'}
+    )
+
+
 # ========== ID CARD GENERATION ==========
 
 @admin_bp.route('/api/admin/id-card/generate/<registration_id>', methods=['POST'])
