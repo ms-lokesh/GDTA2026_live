@@ -203,7 +203,7 @@ def validate_input(user_input, current_step):
         elif normalized in ["no", "n", "decline"]:
             return True, "No", None
         else:
-            return False, None, "Please answer: Yes or No."
+            return False, None, "Invalid response. Please answer 'Yes' or 'No' to the consent question."
     
     elif current_step == RegistrationSteps.NAME:
         # Any non-empty text, minimum 2 characters
@@ -237,7 +237,7 @@ def validate_input(user_input, current_step):
         elif normalized in ["no", "n"]:
             return True, "No", None
         else:
-            return False, None, "Please answer: Yes or No."
+            return False, None, "Invalid response. Please answer 'Yes' or 'No'."
     
     elif current_step == RegistrationSteps.GDTA_AFFILIATION:
         # Must be one of the three options

@@ -40,6 +40,11 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             flex-shrink: 0;
         }
+        
+        /* Hide header when embedded in iframe (widget already has header) */
+        body.in-iframe .chat-header {
+            display: none;
+        }
 
         .chat-header h1 {
             font-size: 1.1em;
@@ -574,9 +579,14 @@
         function displayRegistrationQuestion(data) {
             const question = data.next_question || data.question;
             
-            if (!question) return;
+            if (!question) {
+                console.error('No question found in data:', data);
+                return;
+            }
             
-            let html = `<p><strong>${question.question}</strong></p>`;
+            // Display the question text
+            const questionText = question.question || question.text || 'Please provide your answer';
+            let html = `<p><strong>${questionText}</strong></p>`;
             
             if (question.validation_type === 'review') {
                 html += generateReviewHTML(data);
@@ -689,10 +699,13 @@
                         displayRegistrationQuestion(data);
                     }
                 } else {
-                    addMessage(`⚠️ ${data.message}`, false);
-                    // Redisplay question
+                    // Validation error - show error and redisplay question
+                    if (data.message) {
+                        addMessage(`❌ ${data.message}`, false);
+                    }
+                    // Always redisplay the question after an error
                     if (data.next_question) {
-                        displayRegistrationQuestion(data);
+                        displayRegistrationQuestion({ next_question: data.next_question, state: data.state });
                     }
                 }
             } catch (error) {
@@ -707,6 +720,11 @@
             }
         }
 
+        // Detect if we're in an iframe and hide header
+        if (window.self !== window.top) {
+            document.body.classList.add('in-iframe');
+        }
+        
         // Focus input on load
         window.onload = () => {
             document.getElementById('chatInput').focus();
