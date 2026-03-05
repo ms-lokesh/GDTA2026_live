@@ -785,7 +785,9 @@ def submit_registration(registration_data):
             from db.firebase_models import Registration
             
             # Create new registration record
+            # Note: Using default event_id for GDTA 2026
             new_registration = Registration(
+                event_id='gdta-2026',  # Default event ID
                 name=registration_data.get("name"),
                 email=registration_data.get("email"),
                 institution=registration_data.get("institution"),

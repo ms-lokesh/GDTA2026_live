@@ -19,6 +19,7 @@ from routes.plan import plan_bp
 from routes.register import register_bp
 from routes.cleanup import cleanup_bp
 from routes.admin import admin_bp
+from routes.hackathon import hackathon_bp
 
 # Import database initialization
 from db.firebase_models import init_firebase, create_default_admin
@@ -55,6 +56,7 @@ def create_app():
     app.register_blueprint(register_bp)
     app.register_blueprint(cleanup_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(hackathon_bp)
     
     # Initialize Firebase Firestore
     with app.app_context():

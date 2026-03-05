@@ -264,6 +264,236 @@ class Registration(FirestoreModel):
         db.collection(COLLECTIONS['registrations']).document(doc_id).delete()
 
 
+class HackathonRegistration(FirestoreModel):
+    """Hackathon Registration model - stores GDTA Challenge 2026 participants"""
+    
+    def __init__(self, **kwargs):
+        self.id = kwargs.get('id')
+        self.name = kwargs.get('name')
+        self.email = kwargs.get('email')
+        self.phone = kwargs.get('phone')
+        self.institution = kwargs.get('institution')
+        self.role = kwargs.get('role')  # student, professional, researcher
+        self.country = kwargs.get('country')
+        self.state = kwargs.get('state')
+        
+        # Hackathon-specific fields
+        self.participation_type = kwargs.get('participation_type')  # student_innovator, developer_professional
+        self.challenge_track = kwargs.get('challenge_track')  # healthcare, edtech, sustainability
+        self.team_name = kwargs.get('team_name')
+        self.team_size = kwargs.get('team_size', 1)
+        self.team_members = kwargs.get('team_members', [])  # List of team member names
+        
+        # Technical details
+        self.github_username = kwargs.get('github_username')
+        self.linkedin_url = kwargs.get('linkedin_url')
+        self.portfolio_url = kwargs.get('portfolio_url')
+        self.technical_skills = kwargs.get('technical_skills', [])  # List of skills
+        self.experience_level = kwargs.get('experience_level')  # beginner, intermediate, advanced, expert
+        
+        # Project details
+        self.project_idea = kwargs.get('project_idea')
+        self.project_description = kwargs.get('project_description')
+        self.why_participate = kwargs.get('why_participate')
+        
+        # Additional info
+        self.previous_hackathons = kwargs.get('previous_hackathons')
+        self.need_mentorship = kwargs.get('need_mentorship', False)
+        self.can_mentor = kwargs.get('can_mentor', False)
+        self.consent = kwargs.get('consent', False)
+        
+        # Status tracking
+        self.status = kwargs.get('status', 'pending')  # pending, approved, rejected, submitted, qualified, winner
+        self.submission_url = kwargs.get('submission_url')
+        self.submission_date = kwargs.get('submission_date')
+        self.score = kwargs.get('score')
+        self.judge_notes = kwargs.get('judge_notes')
+        self.admin_notes = kwargs.get('admin_notes')
+        
+        # Timestamps
+        self.created_at = kwargs.get('created_at', datetime.utcnow())
+        self.updated_at = kwargs.get('updated_at', datetime.utcnow())
+        
+        # Unique ID for tracking
+        self.unique_id = kwargs.get('unique_id')
+        if not self.unique_id:
+            self.unique_id = self._generate_and_check_unique_id()
+    
+    def to_dict(self):
+        """Convert to dictionary for Firestore"""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'phone': self.phone,
+            'institution': self.institution,
+            'role': self.role,
+            'country': self.country,
+            'state': self.state,
+            'participation_type': self.participation_type,
+            'challenge_track': self.challenge_track,
+            'team_name': self.team_name,
+            'team_size': self.team_size,
+            'team_members': self.team_members,
+            'github_username': self.github_username,
+            'linkedin_url': self.linkedin_url,
+            'portfolio_url': self.portfolio_url,
+            'technical_skills': self.technical_skills,
+            'experience_level': self.experience_level,
+            'project_idea': self.project_idea,
+            'project_description': self.project_description,
+            'why_participate': self.why_participate,
+            'previous_hackathons': self.previous_hackathons,
+            'need_mentorship': self.need_mentorship,
+            'can_mentor': self.can_mentor,
+            'consent': self.consent,
+            'status': self.status,
+            'submission_url': self.submission_url,
+            'submission_date': self._serialize_datetime(self.submission_date),
+            'score': self.score,
+            'judge_notes': self.judge_notes,
+            'admin_notes': self.admin_notes,
+            'created_at': self._serialize_datetime(self.created_at),
+            'updated_at': self._serialize_datetime(self.updated_at),
+            'unique_id': self.unique_id
+        }
+    
+    @classmethod
+    def from_dict(cls, doc_id, data):
+        """Create HackathonRegistration from Firestore document"""
+        data['id'] = doc_id
+        data['created_at'] = cls._deserialize_datetime(data.get('created_at'))
+        data['updated_at'] = cls._deserialize_datetime(data.get('updated_at'))
+        data['submission_date'] = cls._deserialize_datetime(data.get('submission_date'))
+        return cls(**data)
+    
+    @staticmethod
+    def _generate_and_check_unique_id():
+        """Generate a unique 8-character ID and check for duplicates"""
+        db = get_firestore_db()
+        max_attempts = 10
+        
+        for _ in range(max_attempts):
+            new_id = generate_unique_id(8)
+            
+            # Check if this ID already exists
+            existing = db.collection(COLLECTIONS['hackathon_registrations']).where('unique_id', '==', new_id).limit(1).get()
+            
+            if not existing:
+                return new_id
+        
+        # Fallback: use longer ID if collision persists
+        return generate_unique_id(10)
+    
+    def save(self):
+        """Save hackathon registration to Firestore"""
+        db = get_firestore_db()
+        self.updated_at = datetime.utcnow()
+        
+        if self.id:
+            # Update existing
+            doc_ref = db.collection(COLLECTIONS['hackathon_registrations']).document(self.id)
+            doc_ref.update(self.to_dict())
+        else:
+            # Create new - use email as document ID for easy duplicate checking
+            doc_ref = db.collection(COLLECTIONS['hackathon_registrations']).document(self.email)
+            self.id = self.email
+            doc_ref.set(self.to_dict())
+        
+        return self.id
+    
+    @classmethod
+    def get_by_id(cls, doc_id):
+        """Get hackathon registration by ID"""
+        db = get_firestore_db()
+        doc = db.collection(COLLECTIONS['hackathon_registrations']).document(doc_id).get()
+        
+        if doc.exists:
+            return cls.from_dict(doc.id, doc.to_dict())
+        return None
+    
+    @classmethod
+    def get_by_email(cls, email):
+        """Get hackathon registration by email"""
+        return cls.get_by_id(email)
+    
+    @classmethod
+    def get_all(cls, limit=100, offset=0, filters=None):
+        """Get all hackathon registrations with optional filters"""
+        try:
+            db = get_firestore_db()
+            query = db.collection(COLLECTIONS['hackathon_registrations'])
+            
+            # Apply filters
+            if filters:
+                if filters.get('status'):
+                    query = query.where('status', '==', filters['status'])
+                if filters.get('challenge_track'):
+                    query = query.where('challenge_track', '==', filters['challenge_track'])
+                if filters.get('participation_type'):
+                    query = query.where('participation_type', '==', filters['participation_type'])
+            
+            # Try with ordering first, fall back to unordered if index not available
+            try:
+                query = query.order_by('created_at', direction=firestore.Query.DESCENDING)
+                
+                if offset:
+                    query = query.offset(offset)
+                if limit:
+                    query = query.limit(limit)
+                
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                print(f"✅ Retrieved {len(results)} hackathon registrations with ordering")
+                return results
+                
+            except Exception as e:
+                # Fallback: get without ordering
+                print(f"⚠️  Firestore ordering not available (may need index), fetching unordered: {e}")
+                
+                if offset:
+                    query = query.offset(offset)
+                if limit:
+                    query = query.limit(limit)
+                
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                print(f"✅ Retrieved {len(results)} hackathon registrations (unordered)")
+                return results
+                
+        except Exception as e:
+            print(f"❌ Error in HackathonRegistration.get_all(): {type(e).__name__}: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return []
+    
+    @classmethod
+    def count(cls, filters=None):
+        """Count hackathon registrations"""
+        try:
+            db = get_firestore_db()
+            query = db.collection(COLLECTIONS['hackathon_registrations'])
+            
+            if filters:
+                if filters.get('status'):
+                    query = query.where('status', '==', filters['status'])
+                if filters.get('challenge_track'):
+                    query = query.where('challenge_track', '==', filters['challenge_track'])
+            
+            result = len(list(query.stream()))
+            print(f"✅ Counted {result} hackathon registrations")
+            return result
+        except Exception as e:
+            print(f"❌ Error in HackathonRegistration.count(): {type(e).__name__}: {str(e)}")
+            return 0
+    
+    @classmethod
+    def delete(cls, doc_id):
+        """Delete hackathon registration"""
+        db = get_firestore_db()
+        db.collection(COLLECTIONS['hackathon_registrations']).document(doc_id).delete()
+
+
 class AdminUser(FirestoreModel):
     """Admin user model"""
     

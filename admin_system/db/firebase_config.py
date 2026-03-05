@@ -71,6 +71,7 @@ def get_firestore_db():
 COLLECTIONS = {
     'events': 'events',
     'registrations': 'registrations',
+    'hackathon_registrations': 'hackathon_registrations',
     'admin_users': 'admin_users',
     'email_logs': 'email_logs',
     'venues': 'venues',
