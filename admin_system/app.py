@@ -153,17 +153,23 @@ def create_app():
     # Serve chatbot UI at /chatbot (was previously at root)
     @app.route('/chatbot')
     def chatbot_route():
-        return send_from_directory('static', 'index.html')
+        import os
+        static_dir = os.path.join(os.path.dirname(__file__), 'static')
+        return send_from_directory(static_dir, 'index.html')
     
     # Serve admin dashboard
     @app.route('/admin')
     def admin_route():
-        return send_from_directory('static', 'admin-dashboard.html')
+        import os
+        static_dir = os.path.join(os.path.dirname(__file__), 'static')
+        return send_from_directory(static_dir, 'admin-dashboard.html')
     
     # Serve admin system registration UI at /register (different from main site register.html)
     @app.route('/register')
     def registration_ui():
-        return send_from_directory('static', 'registration.html')
+        import os
+        static_dir = os.path.join(os.path.dirname(__file__), 'static')
+        return send_from_directory(static_dir, 'registration.html')
     
     # Serve main website at root
     @app.route('/')
