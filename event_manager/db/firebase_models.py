@@ -1179,20 +1179,57 @@ class EmailTemplate(FirestoreModel):
     def get_all(cls, filters=None):
         """Get all templates with optional filters"""
         db = get_firestore_db()
-        query = db.collection(COLLECTIONS['email_templates'])
         
-        if filters:
-            if filters.get('is_active') is not None:
-                query = query.where('is_active', '==', filters['is_active'])
-            if filters.get('category'):
-                query = query.where('category', '==', filters['category'])
-            if filters.get('event_id'):
-                query = query.where('event_id', '==', filters['event_id'])
-        
-        query = query.order_by('created_at', direction=firestore.Query.DESCENDING)
-        
-        docs = query.get()
-        return [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+        try:
+            # If filtering by event_id, use simple query to avoid composite index requirement
+            if filters and filters.get('event_id'):
+                query = db.collection(COLLECTIONS['email_templates']).where('event_id', '==', filters['event_id'])
+                docs = query.get()
+                templates = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                
+                # Apply other filters in memory
+                if filters.get('is_active') is not None:
+                    templates = [t for t in templates if t.is_active == filters['is_active']]
+                if filters.get('category'):
+                    templates = [t for t in templates if t.category == filters['category']]
+                
+                # Sort by created_at descending
+                templates.sort(key=lambda t: t.created_at, reverse=True)
+                return templates
+            
+            else:
+                # No event_id filter, use standard query with ordering
+                query = db.collection(COLLECTIONS['email_templates'])
+                
+                if filters:
+                    if filters.get('is_active') is not None:
+                        query = query.where('is_active', '==', filters['is_active'])
+                    if filters.get('category'):
+                        query = query.where('category', '==', filters['category'])
+                
+                query = query.order_by('created_at', direction=firestore.Query.DESCENDING)
+                docs = query.get()
+                return [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                
+        except Exception as e:
+            print(f"❌ Error in EmailTemplate.get_all(): {type(e).__name__}: {str(e)}")
+            # Fallback: get all templates and filter in memory
+            query = db.collection(COLLECTIONS['email_templates'])
+            docs = query.get()
+            templates = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+            
+            # Apply filters in memory
+            if filters:
+                if filters.get('event_id'):
+                    templates = [t for t in templates if t.event_id == filters['event_id']]
+                if filters.get('is_active') is not None:
+                    templates = [t for t in templates if t.is_active == filters['is_active']]
+                if filters.get('category'):
+                    templates = [t for t in templates if t.category == filters['category']]
+            
+            # Sort by created_at descending
+            templates.sort(key=lambda t: t.created_at, reverse=True)
+            return templates
     
     @classmethod
     def delete(cls, doc_id):
@@ -1221,29 +1258,36 @@ class EmailTemplate(FirestoreModel):
         return subject, body
 
 
-def create_default_admin():
-    """Create default admin user if none exists"""
+def create_default_admin(username='admin', password='admin123', name='Administrator', email='admin@example.com'):
+    """Create default admin user if none exists
+    
+    Args:
+        username: Admin username (default: 'admin')
+        password: Admin password (default: 'admin123')
+        name: Admin display name (default: 'Administrator')
+        email: Admin email (default: 'admin@example.com')
+    """
     try:
-        admin = AdminUser.get_by_username('admin')
+        admin = AdminUser.get_by_username(username)
         
         if admin is None:
-            # Create default admin
+            # Create default admin as super_admin role
             admin = AdminUser(
-                username='admin',
-                email='admin@gdta2026.com',
-                name='Administrator',
-                role='admin',
+                username=username,
+                email=email,
+                name=name,
+                role='super_admin',  # Changed to super_admin for event_manager
                 is_active=True
             )
-            admin.set_password('admin123')
+            admin.set_password(password)
             admin.save()
             
-            print("✅ Default admin created")
-            print("   Username: admin")
-            print("   Password: admin123")
+            print("✅ Default super admin created")
+            print(f"   Username: {username}")
+            print(f"   Password: {password}")
             print("   ⚠️  IMPORTANT: Change password in production!")
         else:
-            print("ℹ️  Admin user already exists")
+            print(f"ℹ️  Admin user '{username}' already exists")
     
     except Exception as e:
         print(f"❌ Failed to create admin: {e}")

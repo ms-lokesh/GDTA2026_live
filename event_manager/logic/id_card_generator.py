@@ -44,22 +44,22 @@ class IDCardGenerator:
         """Load configuration from JSON file or use defaults"""
         default_config = {
             "name": {
-                "position": [40, 680],
-                "font_size": 68,
+                "position": [384, 400],  # Center horizontally, middle vertically
+                "font_size": 50,
                 "color": "#000000",
-                "align": "left",
-                "font": "Helvetica-Bold"
+                "align": "center",
+                "font": "Arial Bold"
             },
             "institution": {
-                "position": [40, 760],
-                "font_size": 44,
-                "color": "#000000",
-                "align": "left",
-                "font": "Helvetica-Bold"
+                "position": [384, 480],
+                "font_size": 28,
+                "color": "#333333",
+                "align": "center",
+                "font": "Arial"
             },
             "qr_code": {
-                "position": [40, 1050],
-                "size": 200
+                "position": [50, 900],  # Bottom left
+                "size": 150
             }
         }
         
@@ -122,88 +122,6 @@ class IDCardGenerator:
             print(f"Warning: Could not load font '{font_name}': {e}")
             return ImageFont.load_default()
     
-    def _wrap_text_to_lines(self, draw, text: str, font_name: str, font_size: int, max_width: int, max_lines: int = 3):
-        """
-        Wrap text into multiple lines that fit within the given width
-        Returns (font, lines_list, line_height)
-        """
-        font = self._get_font(font_name, font_size)
-        words = text.split()
-        lines = []
-        current_line = ""
-        
-        # Try to fit text with current font size
-        for word in words:
-            # Check if this single word is too long for the line
-            bbox = draw.textbbox((0, 0), word, font=font)
-            word_width = bbox[2] - bbox[0]
-            
-            if word_width > max_width:
-                # Word is too long, need to break it
-                if current_line:
-                    lines.append(current_line)
-                    current_line = ""
-                
-                # Break the long word into chunks
-                char_chunks = []
-                temp_chunk = ""
-                for char in word:
-                    test_chunk = temp_chunk + char
-                    bbox = draw.textbbox((0, 0), test_chunk, font=font)
-                    if (bbox[2] - bbox[0]) <= max_width:
-                        temp_chunk = test_chunk
-                    else:
-                        if temp_chunk:
-                            char_chunks.append(temp_chunk)
-                        temp_chunk = char
-                if temp_chunk:
-                    char_chunks.append(temp_chunk)
-                
-                # Add the chunks as separate lines
-                for chunk in char_chunks[:-1]:
-                    lines.append(chunk)
-                # Start new line with the last chunk
-                current_line = char_chunks[-1] if char_chunks else ""
-            else:
-                # Regular word processing
-                test_line = current_line + (" " if current_line else "") + word
-                bbox = draw.textbbox((0, 0), test_line, font=font)
-                test_width = bbox[2] - bbox[0]
-                
-                if test_width <= max_width:
-                    current_line = test_line
-                else:
-                    # Current line is full, start a new line
-                    if current_line:
-                        lines.append(current_line)
-                        current_line = word
-                    else:
-                        # This shouldn't happen as we checked word width above
-                        lines.append(word)
-        
-        # Add the last line
-        if current_line:
-            lines.append(current_line)
-        
-        # If we have too many lines, reduce font size and try again
-        if len(lines) > max_lines and font_size > 12:
-            return self._wrap_text_to_lines(draw, text, font_name, font_size - 2, max_width, max_lines)
-        
-        # If still too many lines, truncate
-        if len(lines) > max_lines:
-            lines = lines[:max_lines]
-            if len(lines) == max_lines and len(lines) > 0:
-                # Add ellipsis to last line if truncated
-                last_line = lines[-1]
-                if len(last_line) > 3:
-                    lines[-1] = last_line[:-3] + "..."
-        
-        # Calculate line height
-        bbox = draw.textbbox((0, 0), "Ag", font=font)
-        line_height = (bbox[3] - bbox[1]) + 4  # Add 4px spacing between lines
-        
-        return font, lines, line_height
-    
     def _generate_qr_code(self, data: str, size: int) -> Image:
         """Generate QR code image"""
         qr = qrcode.QRCode(
@@ -248,65 +166,59 @@ class IDCardGenerator:
         name = name.upper()
         institution = institution.upper()
         
-        # Draw name with automatic line wrapping
+        # Draw name
         name_config = self.config['name']
+        name_font = self._get_font(name_config.get('font', 'Arial Bold'), name_config['font_size'])
         name_x, name_y = name_config['position']
         
-        # Calculate available width for text (reduced margin for more text space)
-        available_width = template.width - name_x - 180  # Reduced from 200px to 180px margin
+        # Get text size for alignment calculations
+        bbox = draw.textbbox((0, 0), name, font=name_font)
+        text_width = bbox[2] - bbox[0]
         
-        # Wrap text into multiple lines that fit
-        name_font, name_lines, name_line_height = self._wrap_text_to_lines(
-            draw, name, 
-            name_config.get('font', 'Helvetica-Bold'), 
-            name_config['font_size'],
-            available_width,
-            max_lines=2  # Allow max 2 lines for names
-        )
+        align_mode = name_config.get('align', 'left')
+        if align_mode == 'center':
+            # Center based on full template width
+            name_x = (template.width - text_width) // 2
+        elif align_mode == 'center_whitespace':
+            # Center within white space area (excluding right border)
+            # Assuming white space is approximately 680px wide (template is ~768px, border ~88px)
+            whitespace_width = 680
+            name_x = (whitespace_width - text_width) // 2 + name_config['position'][0]
+        elif align_mode == 'right':
+            name_x = template.width - text_width - name_config['position'][0]
+        # For 'left' or 'free' mode, use position as-is
         
-        # Draw each line of the name
-        for i, line in enumerate(name_lines):
-            draw.text((name_x, name_y + i * name_line_height), line, 
-                     fill=name_config['color'], font=name_font)
+        draw.text((name_x, name_y), name, fill=name_config['color'], font=name_font)
         
-        # Draw institution with automatic line wrapping
+        # Draw institution
         inst_config = self.config['institution']
+        inst_font = self._get_font(inst_config.get('font', 'Arial'), inst_config['font_size'])
         inst_x, inst_y = inst_config['position']
         
-        # For institution, start after the name text (if name has multiple lines)
-        if len(name_lines) > 1:
-            # Adjust institution Y position to account for multi-line name
-            inst_y = name_y + len(name_lines) * name_line_height + 20  # 20px gap
+        # Get text size for alignment calculations
+        bbox = draw.textbbox((0, 0), institution, font=inst_font)
+        text_width = bbox[2] - bbox[0]
         
-        # Wrap institution text into multiple lines with smaller font size for better fit
-        inst_font_size = min(inst_config['font_size'], 26)  # Cap institution font at 26px for even better wrapping
-        inst_font, inst_lines, inst_line_height = self._wrap_text_to_lines(
-            draw, institution,
-            inst_config.get('font', 'Helvetica-Bold'),
-            inst_font_size,
-            available_width + 120,  # Allow even more width for institution
-            max_lines=6  # Allow max 6 lines for institutions
-        )
+        align_mode = inst_config.get('align', 'left')
+        if align_mode == 'center':
+            # Center based on full template width
+            inst_x = (template.width - text_width) // 2
+        elif align_mode == 'center_whitespace':
+            # Center within white space area (excluding right border)
+            whitespace_width = 680
+            inst_x = (whitespace_width - text_width) // 2
+        elif align_mode == 'right':
+            inst_x = template.width - text_width - inst_config['position'][0]
+        # For 'left' or 'free' mode, use position as-is
         
-        # Draw each line of the institution
-        for i, line in enumerate(inst_lines):
-            draw.text((inst_x, inst_y + i * inst_line_height), line,
-                     fill=inst_config['color'], font=inst_font)
+        draw.text((inst_x, inst_y), institution, fill=inst_config['color'], font=inst_font)
         
-        # Generate and add QR code with dynamic positioning
+        # Generate and add QR code
         qr_config = self.config['qr_code']
         qr_data = qr_data or registration_id
         qr_img = self._generate_qr_code(qr_data, qr_config['size'])
         
-        # Calculate QR position - place below institution text with large margin
-        inst_text_bottom = inst_y + len(inst_lines) * inst_line_height + 80  # 80px margin (increased for more space)
-        qr_y = max(qr_config['position'][1], inst_text_bottom)  # Use whichever is lower
-        qr_x = qr_config['position'][0]
-        
-        # Ensure QR code doesn't go off the bottom of the template
-        if qr_y + qr_config['size'] > template.height - 20:
-            qr_y = template.height - qr_config['size'] - 20  # Reduced margin to allow lower positioning
-        
+        qr_x, qr_y = qr_config['position']
         template.paste(qr_img, (qr_x, qr_y))
         
         # Save generated ID card

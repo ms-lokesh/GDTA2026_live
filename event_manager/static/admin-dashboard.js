@@ -38,8 +38,10 @@ async function login(username, password) {
         if (response.ok) {
             currentUser = data.user;
             
-            // Redirect super admin to their dashboard
-            if (currentUser.role === 'super_admin') {
+            // Redirect super admin to their dashboard (unless stay=true)
+            const urlParams = new URLSearchParams(window.location.search);
+            const stayOnAdmin = urlParams.get('stay') === 'true';
+            if (currentUser.role === 'super_admin' && !stayOnAdmin) {
                 window.location.href = '/static/super-admin-dashboard.html';
                 return { success: true };
             }
@@ -80,8 +82,10 @@ async function checkAuth() {
             const data = await response.json();
             currentUser = data.user;
             
-            // Redirect super admin to their dashboard
-            if (currentUser.role === 'super_admin') {
+            // Redirect super admin to their dashboard (unless stay=true)
+            const urlParams = new URLSearchParams(window.location.search);
+            const stayOnAdmin = urlParams.get('stay') === 'true';
+            if (currentUser.role === 'super_admin' && !stayOnAdmin) {
                 window.location.href = '/static/super-admin-dashboard.html';
                 return;
             }

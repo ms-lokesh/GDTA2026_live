@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in Scanner - GDTA Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .scanner-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        
+        #reader {
+            border-radius: 10px;
+            overflow: hidden;
+            max-width: 100%;
+        }
+        
+        .success-alert {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .error-alert {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .recent-checkin {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        
+        .scanner-status {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .status-active {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanner-container">
+        <!-- Header -->
+        <div class="text-center text-white mb-4">
+            <h1><i class="fas fa-qrcode me-2"></i>Check-in Scanner</h1>
+            <p class="lead">Scan participant QR codes for event check-in</p>
+            <button class="btn btn-light btn-sm" onclick="window.location.href='admin-dashboard.html'">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </button>
+        </div>
+
+        <!-- Scanner Status -->
+        <div class="scanner-status" id="scannerStatus">
+            <i class="fas fa-circle-notch fa-spin"></i> Initializing camera...
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alertContainer"></div>
+
+        <!-- QR Scanner Card -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="fas fa-camera me-2"></i>QR Code Scanner
+                </h5>
+                <div id="reader"></div>
+                <div class="mt-3 text-center">
+                    <button class="btn btn-primary" id="startScanBtn" onclick="startScanner()">
+                        <i class="fas fa-play me-2"></i>Start Scanner
+                    </button>
+                    <button class="btn btn-danger d-none" id="stopScanBtn" onclick="stopScanner()">
+                        <i class="fas fa-stop me-2"></i>Stop Scanner
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Entry Card -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="fas fa-keyboard me-2"></i>Manual Entry
+                </h5>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="manualUniqueId" 
+                           placeholder="Enter Unique ID (e.g., ABC123)" maxlength="6"
+                           style="text-transform: uppercase;">
+                    <button class="btn btn-primary" onclick="manualCheckIn()">
+                        <i class="fas fa-check me-2"></i>Check In
+                    </button>
+                </div>
+                <small class="text-muted">Use this if QR code scanning is not available</small>
+            </div>
+        </div>
+
+        <!-- Check-in Statistics -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <i class="fas fa-chart-bar me-2"></i>Check-in Statistics
+                    <button class="btn btn-sm btn-outline-primary float-end" onclick="loadStats()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </h5>
+                
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-number" id="statCheckedIn">-</div>
+                            <div class="stat-label">Checked In</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-number" id="statPending">-</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-number" id="statPercentage">-</div>
+                            <div class="stat-label">Percentage</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="mb-3">Recent Check-ins</h6>
+                <div id="recentCheckins">
+                    <p class="text-muted">Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio for success beep -->
+    <audio id="successBeep" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZijcIHWm98OScTgwPUKni77RgGwU7kdny0HwuBS1+zPLaizsKGGS56+mmVBMLSpziw7pqJAYtfsvy2os7ChhlvO3knE4MD1Cp4u+zYBsGOpHa8898LgUtfsyy2os7ChhlvO3knE4MD1Cp4u+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Cp4u+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Cp4u+0YBsGOpHa8tB8LgUtfsyy2os8ChhlvO3jnE4MD1Cp4u+0YBsGOpHa8tB8LgUtfsyy2os8ChhlvO3knE4MD1Cp4u+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4ND1Cp4u+zYBwGOpHa8tB8LgUtfsyy2os8ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Cp4u+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Co4e+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Co4e+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Co4e+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Co4e+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Co4e+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Co4e+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Co4e+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Co4e+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Co4e+0YBsGO5HZ8tB8LgUtfsyy2os8ChhlvO3knE4MD1Co4e+0YBsGOpHZ8s98LgUtfsyy2Ys8ChhlvO3knE4MD1Co4e+0YBsGOpHZ8s98LgUtfsyy2Ys8ChhlvO3knE4MD1Co4e+0YBsGOpHZ8s98LgUtfsyy2Ys8ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8s98LgUtfsyy2Ys8ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys8ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys8ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsGOpHZ8tB8LgUtfsyy2Ys7ChhlvO3knE4MD1Cp4u+0YBsG" type="audio/wav">
+    </audio>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <script>
+        const API_BASE = '/api/admin';
+        let html5QrCode = null;
+        let isScanning = false;
+        let lastScannedCode = null;
+        let lastScanTime = 0;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadStats();
+            
+            // Auto-uppercase manual entry
+            document.getElementById('manualUniqueId').addEventListener('input', function(e) {
+                this.value = this.value.toUpperCase();
+            });
+
+            // Allow Enter key for manual check-in
+            document.getElementById('manualUniqueId').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    manualCheckIn();
+                }
+            });
+        });
+
+        async function checkAuth() {
+            try {
+                // Try admin auth first
+                let response = await fetch(`${API_BASE}/me`, { credentials: 'include' });
+                if (response.ok) {
+                    return; // Admin authenticated
+                }
+                
+                // Try volunteer auth
+                response = await fetch('/api/volunteer/me', { credentials: 'include' });
+                if (response.ok) {
+                    return; // Volunteer authenticated
+                }
+                
+                // Not authenticated - redirect to volunteer login
+                window.location.href = 'volunteer-login.html';
+            } catch (error) {
+                window.location.href = 'volunteer-login.html';
+            }
+        }
+
+        async function startScanner() {
+            if (isScanning) return;
+
+            try {
+                html5QrCode = new Html5Qrcode("reader");
+                
+                await html5QrCode.start(
+                    { facingMode: "environment" },
+                    {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 }
+                    },
+                    onScanSuccess,
+                    onScanFailure
+                );
+
+                isScanning = true;
+                updateScannerStatus('active', 'Scanner Active - Point camera at QR code');
+                document.getElementById('startScanBtn').classList.add('d-none');
+                document.getElementById('stopScanBtn').classList.remove('d-none');
+
+            } catch (err) {
+                showAlert('error', `Failed to start camera: ${err}`);
+                updateScannerStatus('error', 'Camera access denied or not available');
+            }
+        }
+
+        async function stopScanner() {
+            if (!isScanning || !html5QrCode) return;
+
+            try {
+                await html5QrCode.stop();
+                isScanning = false;
+                updateScannerStatus('stopped', 'Scanner Stopped');
+                document.getElementById('startScanBtn').classList.remove('d-none');
+                document.getElementById('stopScanBtn').classList.add('d-none');
+            } catch (err) {
+                console.error('Error stopping scanner:', err);
+            }
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Prevent duplicate scans within 2 seconds
+            const now = Date.now();
+            if (decodedText === lastScannedCode && (now - lastScanTime) < 2000) {
+                return;
+            }
+
+            lastScannedCode = decodedText;
+            lastScanTime = now;
+
+            // Process check-in
+            processCheckIn(decodedText);
+        }
+
+        function onScanFailure(error) {
+            // Ignore scan failures (they happen frequently)
+        }
+
+        async function processCheckIn(uniqueId) {
+            try {
+                const response = await fetch(`${API_BASE}/check-in`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ unique_id: uniqueId })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.already_checked_in) {
+                        showAlert('warning', `⚠️ ${data.message}`);
+                        playBeep();
+                    } else {
+                        showAlert('success', `✅ ${data.message}`);
+                        playBeep();
+                        // Flash screen green
+                        flashScreen('#28a745');
+                    }
+                    loadStats();
+                } else {
+                    showAlert('error', `❌ ${data.error}`);
+                }
+
+            } catch (error) {
+                showAlert('error', `Network error: ${error.message}`);
+            }
+        }
+
+        async function manualCheckIn() {
+            const uniqueId = document.getElementById('manualUniqueId').value.trim();
+            
+            if (!uniqueId) {
+                showAlert('error', 'Please enter a Unique ID');
+                return;
+            }
+
+            if (uniqueId.length !== 6) {
+                showAlert('error', 'Unique ID must be 6 characters');
+                return;
+            }
+
+            await processCheckIn(uniqueId);
+            document.getElementById('manualUniqueId').value = '';
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/check-in/stats?event_id=gdta-2026`, {
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('statCheckedIn').textContent = data.stats.checked_in;
+                    document.getElementById('statPending').textContent = data.stats.not_checked_in;
+                    document.getElementById('statPercentage').textContent = data.stats.percentage + '%';
+
+                    // Display recent check-ins
+                    const recentDiv = document.getElementById('recentCheckins');
+                    if (data.recent_checkins.length === 0) {
+                        recentDiv.innerHTML = '<p class="text-muted">No check-ins yet</p>';
+                    } else {
+                        recentDiv.innerHTML = data.recent_checkins.map(c => `
+                            <div class="recent-checkin">
+                                <strong>${c.name}</strong> (${c.unique_id})
+                                <br>
+                                <small class="text-muted">
+                                    ${new Date(c.checked_in_at).toLocaleString()} by ${c.checked_in_by}
+                                </small>
+                            </div>
+                        `).join('');
+                    }
+                }
+
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+
+        function showAlert(type, message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${type === 'success' ? 'success-alert' : 'error-alert'} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.getElementById('alertContainer');
+            container.appendChild(alertDiv);
+
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        function updateScannerStatus(status, message) {
+            const statusDiv = document.getElementById('scannerStatus');
+            statusDiv.textContent = message;
+            
+            if (status === 'active') {
+                statusDiv.className = 'scanner-status status-active';
+            } else {
+                statusDiv.className = 'scanner-status';
+            }
+        }
+
+        function playBeep() {
+            const audio = document.getElementById('successBeep');
+            audio.currentTime = 0;
+            audio.play().catch(err => console.log('Beep audio error:', err));
+        }
+
+        function flashScreen(color) {
+            const flash = document.createElement('div');
+            flash.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: ${color};
+                opacity: 0.5;
+                pointer-events: none;
+                z-index: 9999;
+                animation: fadeOut 0.5s ease-out;
+            `;
+            document.body.appendChild(flash);
+            
+            setTimeout(() => flash.remove(), 500);
+        }
+    </script>
+    
+    <style>
+        @keyframes fadeOut {
+            from { opacity: 0.5; }
+            to { opacity: 0; }
+        }
+    </style>
+</body>
+</html>

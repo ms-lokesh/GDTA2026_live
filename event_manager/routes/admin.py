@@ -12,6 +12,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 from dotenv import load_dotenv
+import uuid
 
 from db.firebase_models import (
     Registration, AdminUser, EmailLog, Venue, AccessLog, Volunteer, Event, EmailTemplate
@@ -25,6 +26,79 @@ load_dotenv()
 
 admin_bp = Blueprint('admin', __name__)
 
+# Demo mode storage for when Firebase is disabled
+DEMO_TEMPLATES = {}
+DEMO_REGISTRATIONS = {}
+DEMO_MODE = os.getenv('FIREBASE_DISABLED', 'false').lower() == 'true'
+
+# Initialize demo templates if in demo mode
+if DEMO_MODE:
+    DEMO_TEMPLATES = {
+        'demo-welcome-1': {
+            'id': 'demo-welcome-1',
+            'name': 'Welcome Email',
+            'subject': 'Welcome to GDTA 2026!',
+            'body': 'Dear {{name}},\n\nWelcome to GDTA 2026! We are excited to have you join us.\n\nBest regards,\nGDTA Team',
+            'category': 'welcome',
+            'variables': ['name', 'event_name'],
+            'event_id': 'gdta-2026',
+            'is_active': True,
+            'created_by': 'demo_admin',
+            'created_at': '2026-03-06T10:00:00Z',
+            'updated_at': '2026-03-06T10:00:00Z'
+        },
+        'demo-confirmation-1': {
+            'id': 'demo-confirmation-1',
+            'name': 'Registration Confirmation',
+            'subject': 'Registration Confirmed - GDTA 2026',
+            'body': 'Dear {{name}},\n\nYour registration for GDTA 2026 has been confirmed.\n\nUnique ID: {{unique_id}}\nEmail: {{email}}\n\nSee you at the conference!\n\nBest regards,\nGDTA Team',
+            'category': 'confirmation',
+            'variables': ['name', 'email', 'unique_id'],
+            'event_id': 'gdta-2026',
+            'is_active': True,
+            'created_by': 'demo_admin',
+            'created_at': '2026-03-06T10:30:00Z',
+            'updated_at': '2026-03-06T10:30:00Z'
+        }
+    }
+    
+    # Demo registrations for testing email functionality
+    DEMO_REGISTRATIONS = {
+        'demo1': {
+            'id': 'demo1',
+            'name': 'John Doe',
+            'email': 'john.doe@example.com',
+            'institution': 'Demo University',
+            'role': 'student',
+            'country': 'United States',
+            'unique_id': 'GDTA2026-001',
+            'status': 'approved',
+            'created_at': '2026-03-06T08:00:00Z'
+        },
+        'demo2': {
+            'id': 'demo2', 
+            'name': 'Jane Smith',
+            'email': 'jane.smith@example.com',
+            'institution': 'Design Institute',
+            'role': 'industry',
+            'country': 'Canada',
+            'unique_id': 'GDTA2026-002',
+            'status': 'approved',
+            'created_at': '2026-03-06T09:00:00Z'
+        },
+        'demo3': {
+            'id': 'demo3',
+            'name': 'Alex Chen',
+            'email': 'alex.chen@example.com',
+            'institution': 'Tech Corp',
+            'role': 'industry',
+            'country': 'Singapore',
+            'unique_id': 'GDTA2026-003', 
+            'status': 'pending',
+            'created_at': '2026-03-06T10:00:00Z'
+        }
+    }
+
 
 # Email configuration
 EMAIL_CONFIG = {
@@ -33,13 +107,14 @@ EMAIL_CONFIG = {
     'use_tls': os.getenv('EMAIL_USE_TLS', 'True').lower() == 'true',
     'username': os.getenv('EMAIL_USERNAME', ''),
     'password': os.getenv('EMAIL_PASSWORD', ''),
-    'from_name': os.getenv('EMAIL_FROM_NAME', 'GDTA 2026 Team')
+    'from_name': os.getenv('EMAIL_FROM_NAME', 'GDTA 2026 Team'),
+    'test_mode': os.getenv('EMAIL_TEST_MODE', 'False').lower() == 'true'
 }
 
 
 def send_smtp_email(to_email, subject, body, attachment_path=None):
     """
-    Send email using SMTP (Gmail)
+    Send email using SMTP (Gmail) or test mode
     
     Args:
         to_email: Recipient email address
@@ -50,6 +125,17 @@ def send_smtp_email(to_email, subject, body, attachment_path=None):
     Returns:
         (success, error_message)
     """
+    # Check if we're in test mode
+    if EMAIL_CONFIG['test_mode']:
+        print(f"\n📧 [TEST EMAIL MODE] Email would be sent:")
+        print(f"   To: {to_email}")
+        print(f"   Subject: {subject}")
+        print(f"   Body: {body[:100]}{'...' if len(body) > 100 else ''}")
+        if attachment_path:
+            print(f"   Attachment: {attachment_path}")
+        print(f"   ✅ Email simulated successfully\n")
+        return True, None
+    
     if not EMAIL_CONFIG['username'] or not EMAIL_CONFIG['password'] or EMAIL_CONFIG['password'] == 'your_app_password_here':
         return False, "Email not configured. Please set EMAIL_USERNAME and EMAIL_PASSWORD in .env file"
     
@@ -132,6 +218,9 @@ def require_auth(f):
     """Decorator to require authentication for admin routes"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        if DEMO_MODE:
+            # In demo mode, bypass authentication
+            return f(*args, **kwargs)
         if 'admin_user_id' not in session:
             return jsonify({'error': 'Authentication required', 'code': 'AUTH_REQUIRED'}), 401
         return f(*args, **kwargs)
@@ -142,6 +231,9 @@ def require_super_admin(f):
     """Decorator to require super admin authentication"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        if DEMO_MODE:
+            # In demo mode, bypass authentication
+            return f(*args, **kwargs)
         if 'admin_user_id' not in session:
             return jsonify({'error': 'Authentication required', 'code': 'AUTH_REQUIRED'}), 401
         
@@ -157,6 +249,9 @@ def require_admin_or_volunteer_auth(f):
     """Decorator to require either admin or volunteer authentication"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        if DEMO_MODE:
+            # In demo mode, bypass authentication
+            return f(*args, **kwargs)
         if 'admin_user_id' not in session and 'volunteer_user_id' not in session:
             return jsonify({'error': 'Authentication required', 'code': 'AUTH_REQUIRED'}), 401
         return f(*args, **kwargs)
@@ -165,6 +260,36 @@ def require_admin_or_volunteer_auth(f):
 
 def get_current_admin():
     """Get the currently logged in admin user"""
+    if DEMO_MODE:
+        # Check for demo admin type in query params or default to admin
+        from flask import request
+        admin_type = request.args.get('demo_role', 'admin')  # Default to regular admin
+        
+        # Return different demo admin based on type
+        class DemoAdmin:
+            def __init__(self, role='admin'):
+                if role == 'super_admin':
+                    self.username = 'demo_super_admin'
+                    self.name = 'Demo Super Admin'
+                    self.email = 'super@example.com'
+                    self.role = 'super_admin'
+                else:
+                    self.username = 'demo_admin'
+                    self.name = 'Demo Admin'
+                    self.email = 'admin@example.com'
+                    self.role = 'admin'
+                self.is_active = True
+                
+            def to_dict(self):
+                return {
+                    'username': self.username,
+                    'name': self.name,
+                    'email': self.email,
+                    'role': self.role,
+                    'is_active': self.is_active
+                }
+        return DemoAdmin(admin_type)
+    
     if 'admin_user_id' not in session:
         return None
     
@@ -273,6 +398,24 @@ def get_all_registrations():
         - checked_in: true/false filter
     """
     try:
+        if DEMO_MODE:
+            # Return demo registrations
+            registrations = []
+            for reg_id, reg_data in DEMO_REGISTRATIONS.items():
+                registrations.append(reg_data)
+            
+            # Simple filtering for demo
+            status_filter = request.args.get('status')
+            if status_filter:
+                registrations = [r for r in registrations if r['status'] == status_filter]
+            
+            return jsonify({
+                'success': True,
+                'registrations': registrations,
+                'total': len(registrations),
+                'demo_mode': True
+            }), 200
+        
         from datetime import datetime
         
         # Get query parameters
@@ -724,9 +867,34 @@ def bulk_send_email():
         
         if use_template:
             template_id = data['template_id']
-            template = EmailTemplate.get_by_id(template_id)
-            if not template:
-                return jsonify({'error': 'Template not found'}), 404
+            if DEMO_MODE:
+                # Get template from demo storage
+                template = DEMO_TEMPLATES.get(template_id)
+                if not template:
+                    return jsonify({'error': 'Template not found'}), 404
+                # Convert to object for compatibility
+                class DemoTemplate:
+                    def __init__(self, template_data):
+                        self.id = template_data['id']
+                        self.name = template_data['name']
+                        self.subject = template_data['subject']
+                        self.body = template_data['body']
+                        self.variables = template_data.get('variables', [])
+                    
+                    def render(self, context):
+                        # Simple template variable replacement
+                        rendered_subject = self.subject
+                        rendered_body = self.body
+                        for var, value in context.items():
+                            rendered_subject = rendered_subject.replace('{{' + var + '}}', str(value))
+                            rendered_body = rendered_body.replace('{{' + var + '}}', str(value))
+                        return rendered_subject, rendered_body
+                
+                template = DemoTemplate(DEMO_TEMPLATES[template_id])
+            else:
+                template = EmailTemplate.get_by_id(template_id)
+                if not template:
+                    return jsonify({'error': 'Template not found'}), 404
         else:
             # Direct content
             if 'subject' not in data or 'message' not in data:
@@ -737,9 +905,28 @@ def bulk_send_email():
         # Get registrations by IDs
         recipients = []
         for reg_id in registration_ids:
-            reg = Registration.get_by_id(reg_id)
-            if reg:
-                recipients.append(reg)
+            if DEMO_MODE:
+                # Get from demo storage
+                reg_data = DEMO_REGISTRATIONS.get(reg_id)
+                if reg_data:
+                    # Convert to object for compatibility
+                    class DemoRegistration:
+                        def __init__(self, data):
+                            self.id = data['id']
+                            self.name = data['name']
+                            self.email = data['email']
+                            self.institution = data['institution']
+                            self.role = data['role']
+                            self.country = data['country']
+                            self.unique_id = data['unique_id']
+                            self.status = data['status']
+                            self.created_at = data['created_at']
+                    
+                    recipients.append(DemoRegistration(reg_data))
+            else:
+                reg = Registration.get_by_id(reg_id)
+                if reg:
+                    recipients.append(reg)
         
         if not recipients:
             return jsonify({'error': 'No valid registrations found'}), 404
@@ -771,31 +958,38 @@ def bulk_send_email():
                     email_subject = subject
                     email_body = message
                 
-                success, error = send_smtp_email(
-                    to_email=recipient.email,
-                    subject=email_subject,
-                    body=email_body
-                )
-                
-                if success:
-                    # Log successful email
-                    email_log = EmailLog(
-                        registration_id=recipient.id,
-                        recipient_email=recipient.email,
-                        subject=email_subject,
-                        body=email_body,
-                        sent_by=admin.username,
-                        status='sent'
-                    )
-                    email_log.save()
+                if DEMO_MODE:
+                    # In demo mode, just simulate sending
                     sent_count += 1
+                    print(f"[DEMO EMAIL] To: {recipient.email}")
+                    print(f"[DEMO EMAIL] Subject: {email_subject}")
+                    print(f"[DEMO EMAIL] Body: {email_body[:100]}...")
                 else:
-                    failed_emails.append({
-                        'email': recipient.email,
-                        'name': recipient.name,
-                        'error': error
-                    })
-                    failed_count += 1
+                    success, error = send_smtp_email(
+                        to_email=recipient.email,
+                        subject=email_subject,
+                        body=email_body
+                    )
+                    
+                    if success:
+                        # Log successful email
+                        email_log = EmailLog(
+                            registration_id=recipient.id,
+                            recipient_email=recipient.email,
+                            subject=email_subject,
+                            body=email_body,
+                            sent_by=admin.username,
+                            status='sent'
+                        )
+                        email_log.save()
+                        sent_count += 1
+                    else:
+                        failed_emails.append({
+                            'email': recipient.email,
+                            'name': recipient.name,
+                            'error': error
+                        })
+                        failed_count += 1
                     
                     # Log failed email
                     email_log = EmailLog(
@@ -966,6 +1160,18 @@ def get_email_templates():
     GET /api/admin/email-templates?event_id=xxx&category=xxx
     """
     try:
+        if DEMO_MODE:
+            # Return demo templates
+            templates = []
+            for template_id, template_data in DEMO_TEMPLATES.items():
+                templates.append(template_data)
+            
+            return jsonify({
+                'success': True,
+                'templates': templates,
+                'demo_mode': True
+            }), 200
+        
         filters = {}
         
         # Optional filters
@@ -1036,6 +1242,33 @@ def create_email_template():
         
         if not data or 'name' not in data or 'subject' not in data or 'body' not in data:
             return jsonify({'error': 'name, subject, and body are required'}), 400
+        
+        if DEMO_MODE:
+            # Create demo template
+            template_id = str(uuid.uuid4())
+            template_data = {
+                'id': template_id,
+                'name': data['name'],
+                'subject': data['subject'],
+                'body': data['body'],
+                'category': data.get('category', 'custom'),
+                'variables': data.get('variables', []),
+                'event_id': data.get('event_id'),
+                'is_active': data.get('is_active', True),
+                'created_by': admin.username,
+                'created_at': datetime.now().isoformat(),
+                'updated_at': datetime.now().isoformat()
+            }
+            
+            DEMO_TEMPLATES[template_id] = template_data
+            
+            return jsonify({
+                'success': True,
+                'message': 'Template created successfully',
+                'template_id': template_id,
+                'template': template_data,
+                'demo_mode': True
+            }), 201
         
         # Create template
         template = EmailTemplate(
