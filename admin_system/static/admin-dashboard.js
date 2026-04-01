@@ -24,6 +24,30 @@ function showDashboard() {
     loadDashboard();
 }
 
+function applyRoleBasedUI() {
+    if (!currentUser) return;
+
+    if (currentUser.role === 'super_admin') {
+        $('.super_admin_only').show();
+        $('.admin_only').show();
+        $('#eventSelectorContainer').show();
+        $('.sidebar-brand h4').html('<i class="fas fa-crown me-2"></i>Super Admin');
+    } else {
+        // Regular admin: show registration management features only
+        $('.super_admin_only').hide();
+        $('.admin_only').show();
+        $('#eventSelectorContainer').hide();
+
+        // Set event to first assigned event for regular admins
+        if (currentUser.assigned_events && currentUser.assigned_events.length > 0) {
+            currentEventId = currentUser.assigned_events[0];
+        }
+
+        // Update sidebar branding for regular admin
+        $('.sidebar-brand h4').html('<i class="fas fa-chart-line me-2"></i>GDTA Admin');
+    }
+}
+
 async function login(username, password) {
     try {
         const response = await fetch(`${API_BASE}/login`, {
@@ -45,6 +69,7 @@ async function login(username, password) {
             }
             
             updateUserInfo();
+            applyRoleBasedUI();
             showDashboard();
             return { success: true };
         } else {
@@ -87,19 +112,7 @@ async function checkAuth() {
             }
             
             updateUserInfo();
-            
-            // Regular admin: show registration management features only
-            $('.super_admin_only').hide();
-            $('.admin_only').show();
-            $('#eventSelectorContainer').hide();
-            
-            // Set event to first assigned event for regular admins
-            if (currentUser.assigned_events && currentUser.assigned_events.length > 0) {
-                currentEventId = currentUser.assigned_events[0];
-            }
-            
-            // Update sidebar branding for regular admin
-            $('.sidebar-brand h4').html('<i class="fas fa-chart-line me-2"></i>GDTA Admin');
+            applyRoleBasedUI();
             
             showDashboard();
         } else {
@@ -667,6 +680,10 @@ function displayRegistrations(registrations) {
         const statusBadge = `<span class="badge badge-${reg.status}">${reg.status}</span>`;
         const date = new Date(reg.created_at).toLocaleDateString();
         const uniqueId = reg.unique_id ? `<code class="text-primary">${reg.unique_id}</code>` : '<span class="text-muted">-</span>';
+        const feeDisplay = (reg.fee_currency && reg.total_fee !== null && reg.total_fee !== undefined)
+            ? (reg.fee_currency === 'USD' ? `$${reg.total_fee}` : `Rs.${reg.total_fee}`)
+            : 'N/A';
+        const safariRouteInline = reg.safari_route ? `<br><small class="text-muted">Safari: ${reg.safari_route}</small>` : '';
         
         // ID Card button - use smart endpoint that regenerates if needed
         let idCardButton = '';
@@ -698,7 +715,11 @@ function displayRegistrations(registrations) {
                 <td>${reg.email}</td>
                 <td>${reg.institution}</td>
                 <td>${reg.country}</td>
-                <td>${reg.role}</td>
+                <td>
+                    <div>${reg.role}</div>
+                    <small class="text-muted">Fee: ${feeDisplay}</small>
+                    ${safariRouteInline}
+                </td>
                 <td>${statusBadge}</td>
                 <td>${date}</td>
                 <td>
@@ -813,6 +834,10 @@ async function viewDetails(registrationId) {
             `;
         }
         
+        const feeDisplay = (reg.fee_currency && reg.total_fee !== null && reg.total_fee !== undefined)
+            ? (reg.fee_currency === 'USD' ? `$${reg.total_fee}` : `Rs.${reg.total_fee}`)
+            : 'N/A';
+
         let html = `
             <div class="row g-3">
                 ${idCardStatusHtml}
@@ -845,6 +870,23 @@ async function viewDetails(registrationId) {
                 </div>
                 <div class="col-md-6">
                     <strong>Source:</strong> ${reg.registration_source}
+                </div>
+                <div class="col-md-6">
+                    <strong>Registration Category:</strong> ${reg.registration_category || 'N/A'}
+                </div>
+                <div class="col-md-6">
+                    <strong>Total Fee:</strong> ${feeDisplay}
+                </div>
+                <div class="col-md-6">
+                    <strong>Base Fee:</strong> ${reg.base_fee ? (reg.fee_currency === 'USD' ? `$${reg.base_fee}` : `Rs.${reg.base_fee}`) : 'N/A'}
+                </div>
+                <div class="col-md-6">
+                    <strong>Add-ons:</strong>
+                    Food/Acc ${reg.addon_food_accommodation_fee ? (reg.fee_currency === 'USD' ? `$${reg.addon_food_accommodation_fee}` : `Rs.${reg.addon_food_accommodation_fee}`) : '0'},
+                    Safari ${reg.addon_safari_fee ? (reg.fee_currency === 'USD' ? `$${reg.addon_safari_fee}` : `Rs.${reg.addon_safari_fee}`) : '0'}
+                </div>
+                <div class="col-md-6">
+                    <strong>Safari Route:</strong> ${reg.safari_route || 'N/A'}
                 </div>
             </div>
         `;
@@ -2281,7 +2323,7 @@ async function updateTemplatePreview() {
 
 async function loadEventSelector() {
     try {
-        const response = await fetch('/api/superadmin/events', {
+        const response = await fetch('/api/admin/events', {
             credentials: 'include'
         });
         
@@ -2474,13 +2516,13 @@ async function deleteEvent(eventId) {
     }
 }
 
-// ========== ADMIN MANAGEMENT (SUPER ADMIN) ==========
+// ========== ADMIN MANAGEMENT ==========
 
 let allAdmins = [];
 
 async function loadAdmins() {
     try {
-        const response = await fetch('/api/superadmin/admins', {
+        const response = await fetch('/api/admin/admins', {
             credentials: 'include'
         });
         
@@ -2552,6 +2594,7 @@ async function showCreateAdminModal() {
     $('#adminPasswordHint').text('(min 8 characters) *');
     $('#adminActive').prop('checked', true);
     $('#adminRole').val('admin');
+    constrainAdminRoleOptions();
     
     // Load event checkboxes
     await loadEventCheckboxes([]);
@@ -2571,6 +2614,7 @@ async function editAdmin(username) {
     $('#adminFullName').val(admin.name);
     $('#adminEmail').val(admin.email || '');
     $('#adminRole').val(admin.role);
+    constrainAdminRoleOptions();
     $('#adminPassword').val('');
     $('#adminPassword').prop('required', false);
     $('#adminPasswordHint').text('(leave blank to keep current)');
@@ -2622,6 +2666,21 @@ function updateEventAssignmentVisibility() {
     }
 }
 
+function constrainAdminRoleOptions() {
+    const roleSelect = $('#adminRole');
+    const isSuperAdmin = currentUser && currentUser.role === 'super_admin';
+
+    if (isSuperAdmin) {
+        roleSelect.find('option[value="super_admin"]').prop('disabled', false).show();
+    } else {
+        // Regular admins can only create/manage regular admin accounts
+        if (roleSelect.val() === 'super_admin') {
+            roleSelect.val('admin');
+        }
+        roleSelect.find('option[value="super_admin"]').prop('disabled', true).hide();
+    }
+}
+
 async function saveAdmin() {
     const originalUsername = $('#adminIdOriginal').val();
     const isEdit = !!originalUsername;
@@ -2663,8 +2722,8 @@ async function saveAdmin() {
     
     try {
         const url = isEdit 
-            ? `/api/superadmin/admins/${originalUsername}` 
-            : '/api/superadmin/admins';
+            ? `/api/admin/admins/${originalUsername}` 
+            : '/api/admin/admins';
         
         const method = isEdit ? 'PUT' : 'POST';
         
@@ -2704,7 +2763,7 @@ async function deleteAdmin(username) {
     }
     
     try {
-        const response = await fetch(`/api/superadmin/admins/${username}`, {
+        const response = await fetch(`/api/admin/admins/${username}`, {
             method: 'DELETE',
             credentials: 'include'
         });

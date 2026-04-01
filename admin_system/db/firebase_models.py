@@ -55,6 +55,16 @@ class Registration(FirestoreModel):
         self.consent = kwargs.get('consent')
         self.registration_source = kwargs.get('registration_source', 'chatbot')
         self.session_id = kwargs.get('session_id')
+        self.registration_category = kwargs.get('registration_category')
+        self.addon_food_accommodation = kwargs.get('addon_food_accommodation')
+        self.addon_safari = kwargs.get('addon_safari')
+        self.safari_route = kwargs.get('safari_route')
+        self.fee_currency = kwargs.get('fee_currency')
+        self.base_fee = kwargs.get('base_fee')
+        self.addon_food_accommodation_fee = kwargs.get('addon_food_accommodation_fee')
+        self.addon_safari_fee = kwargs.get('addon_safari_fee')
+        self.total_fee = kwargs.get('total_fee')
+        self.fixed_all_inclusive = kwargs.get('fixed_all_inclusive', False)
         self.created_at = kwargs.get('created_at', datetime.utcnow())
         self.updated_at = kwargs.get('updated_at', datetime.utcnow())
         self.status = kwargs.get('status', 'pending')
@@ -92,6 +102,16 @@ class Registration(FirestoreModel):
             'consent': self.consent,
             'registration_source': self.registration_source,
             'session_id': self.session_id,
+            'registration_category': self.registration_category,
+            'addon_food_accommodation': self.addon_food_accommodation,
+            'addon_safari': self.addon_safari,
+            'safari_route': self.safari_route,
+            'fee_currency': self.fee_currency,
+            'base_fee': self.base_fee,
+            'addon_food_accommodation_fee': self.addon_food_accommodation_fee,
+            'addon_safari_fee': self.addon_safari_fee,
+            'total_fee': self.total_fee,
+            'fixed_all_inclusive': self.fixed_all_inclusive,
             'created_at': self._serialize_datetime(self.created_at),
             'updated_at': self._serialize_datetime(self.updated_at),
             'status': self.status,

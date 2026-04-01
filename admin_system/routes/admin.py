@@ -8,10 +8,14 @@ from functools import wraps
 from datetime import datetime, timedelta
 from werkzeug.security import check_password_hash, generate_password_hash
 import smtplib
+import json
+import urllib.request
+import urllib.error
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 from dotenv import load_dotenv
+from firebase_admin import auth as firebase_auth
 
 from db.firebase_models import (
     Registration, AdminUser, EmailLog, Venue, AccessLog, Volunteer, Event, EmailTemplate
@@ -35,6 +39,103 @@ EMAIL_CONFIG = {
     'password': os.getenv('EMAIL_PASSWORD', ''),
     'from_name': os.getenv('EMAIL_FROM_NAME', 'GDTA 2026 Team')
 }
+
+# Firebase Auth configuration
+FIREBASE_WEB_API_KEY = os.getenv('FIREBASE_WEB_API_KEY', '').strip()
+FIREBASE_AUTH_REQUIRED = os.getenv('FIREBASE_AUTH_REQUIRED', 'False').lower() == 'true'
+
+
+def _firebase_sign_in_with_email_password(email, password):
+    """Validate credentials against Firebase Authentication via Identity Toolkit REST API."""
+    if not FIREBASE_WEB_API_KEY:
+        return False, 'Firebase Auth not configured (missing FIREBASE_WEB_API_KEY).'
+
+    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={FIREBASE_WEB_API_KEY}"
+    payload = {
+        'email': email,
+        'password': password,
+        'returnSecureToken': True
+    }
+
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode('utf-8'),
+        headers={'Content-Type': 'application/json'},
+        method='POST'
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=10) as response:
+            response_data = json.loads(response.read().decode('utf-8'))
+            return bool(response_data.get('idToken')), None
+    except urllib.error.HTTPError as e:
+        try:
+            err_payload = json.loads(e.read().decode('utf-8'))
+            firebase_msg = err_payload.get('error', {}).get('message', 'AUTH_ERROR')
+        except Exception:
+            firebase_msg = 'AUTH_ERROR'
+
+        if firebase_msg in ['INVALID_LOGIN_CREDENTIALS', 'EMAIL_NOT_FOUND', 'INVALID_PASSWORD', 'USER_DISABLED']:
+            return False, 'Invalid email or password.'
+        return False, f'Firebase Auth error: {firebase_msg}'
+    except Exception as e:
+        return False, f'Firebase Auth request failed: {str(e)}'
+
+
+def _sync_firebase_auth_user(uid, email, password=None, display_name=None, disabled=False):
+    """Create or update Firebase Auth user for admin/volunteer identities."""
+    if not FIREBASE_WEB_API_KEY:
+        return True, None  # Firebase Auth sync disabled by configuration
+
+    if not email:
+        if FIREBASE_AUTH_REQUIRED:
+            return False, 'Email is required when FIREBASE_AUTH_REQUIRED=True.'
+        return True, None
+
+    try:
+        try:
+            user = firebase_auth.get_user(uid)
+            update_kwargs = {
+                'uid': user.uid,
+                'email': email,
+                'disabled': bool(disabled)
+            }
+            if display_name:
+                update_kwargs['display_name'] = display_name
+            if password:
+                update_kwargs['password'] = password
+            firebase_auth.update_user(**update_kwargs)
+        except firebase_auth.UserNotFoundError:
+            create_kwargs = {
+                'uid': uid,
+                'email': email,
+                'disabled': bool(disabled)
+            }
+            if display_name:
+                create_kwargs['display_name'] = display_name
+            if password:
+                create_kwargs['password'] = password
+            else:
+                if FIREBASE_AUTH_REQUIRED:
+                    return False, 'Password is required to create Firebase Auth user when auth is enabled.'
+            firebase_auth.create_user(**create_kwargs)
+
+        return True, None
+    except Exception as e:
+        return False, f'Failed to sync Firebase Auth user: {str(e)}'
+
+
+def _delete_firebase_auth_user(uid):
+    """Delete Firebase Auth user if present (best effort)."""
+    if not FIREBASE_WEB_API_KEY:
+        return True, None
+    try:
+        firebase_auth.delete_user(uid)
+        return True, None
+    except firebase_auth.UserNotFoundError:
+        return True, None
+    except Exception as e:
+        return False, f'Failed to delete Firebase Auth user: {str(e)}'
 
 
 def send_smtp_email(to_email, subject, body, attachment_path=None):
@@ -127,6 +228,22 @@ def send_smtp_email(to_email, subject, body, attachment_path=None):
         return False, f"Failed to send email: {str(e)}"
 
 
+def format_fee_display(currency, total_fee):
+    """Format total fee for display in emails and ID card metadata."""
+    if currency and total_fee is not None:
+        if currency == 'USD':
+            return f"${total_fee}"
+        return f"Rs.{total_fee}"
+    return ""
+
+
+def format_safari_route_display(safari_route):
+    """Format safari route text for display in templates and ID cards."""
+    if safari_route:
+        return str(safari_route)
+    return ""
+
+
 # Authentication decorator
 def require_auth(f):
     """Decorator to require authentication for admin routes"""
@@ -197,13 +314,34 @@ def admin_login():
         
         if not data or 'username' not in data or 'password' not in data:
             return jsonify({'error': 'Username and password required'}), 400
+
+        if FIREBASE_AUTH_REQUIRED and (not FIREBASE_WEB_API_KEY or FIREBASE_WEB_API_KEY == 'YOUR_FIREBASE_WEB_API_KEY_HERE'):
+            return jsonify({'error': 'Server config error: FIREBASE_WEB_API_KEY is required when FIREBASE_AUTH_REQUIRED=True'}), 500
         
         username = data['username']
         password = data['password']
         
         admin = AdminUser.get_by_username(username)
-        
-        if not admin or not admin.is_active or not admin.check_password(password):
+
+        if not admin or not admin.is_active:
+            return jsonify({'error': 'Invalid username or password'}), 401
+
+        authenticated = False
+        firebase_error = None
+
+        # Preferred path: Firebase Auth (email/password)
+        if admin.email and FIREBASE_WEB_API_KEY:
+            authenticated, firebase_error = _firebase_sign_in_with_email_password(admin.email, password)
+            if not authenticated and FIREBASE_AUTH_REQUIRED:
+                return jsonify({'error': 'Invalid username or password'}), 401
+        elif FIREBASE_AUTH_REQUIRED:
+            return jsonify({'error': 'Admin account missing email required for Firebase Auth'}), 400
+
+        # Backward-compatible fallback: existing local password hash
+        if not authenticated:
+            authenticated = admin.check_password(password)
+
+        if not authenticated:
             return jsonify({'error': 'Invalid username or password'}), 401
         
         # Update last login
@@ -454,7 +592,9 @@ def update_registration(registration_id):
                     name=registration.name,
                     institution=registration.institution,
                     registration_id=registration.unique_id,  # Use unique_id
-                    qr_data=registration.unique_id
+                    qr_data=registration.unique_id,
+                    fee_text=format_fee_display(getattr(registration, 'fee_currency', None), getattr(registration, 'total_fee', None)),
+                    safari_route_text=format_safari_route_display(getattr(registration, 'safari_route', None))
                 )
                 
                 filename = os.path.basename(output_path)
@@ -761,6 +901,11 @@ def bulk_send_email():
                         'role': recipient.role,
                         'country': recipient.country,
                         'unique_id': recipient.unique_id,
+                        'registration_category': getattr(recipient, 'registration_category', None),
+                        'safari_route': getattr(recipient, 'safari_route', None),
+                        'fee_currency': getattr(recipient, 'fee_currency', None),
+                        'total_fee': getattr(recipient, 'total_fee', None),
+                        'fee_display': format_fee_display(getattr(recipient, 'fee_currency', None), getattr(recipient, 'total_fee', None)),
                         'event_name': 'GDTA 2026',
                         'event_year': '2026',
                         'event_location': 'Sri Nakhon Pathom, Thailand'
@@ -1163,6 +1308,11 @@ def preview_email_template(template_id):
                     'role': registration.role,
                     'country': registration.country,
                     'unique_id': registration.unique_id,
+                    'registration_category': getattr(registration, 'registration_category', None),
+                    'safari_route': getattr(registration, 'safari_route', None),
+                    'fee_currency': getattr(registration, 'fee_currency', None),
+                    'total_fee': getattr(registration, 'total_fee', None),
+                    'fee_display': format_fee_display(getattr(registration, 'fee_currency', None), getattr(registration, 'total_fee', None)),
                     'event_name': 'GDTA 2026',
                     'event_year': '2026',
                     'event_location': 'Sri Nakhon Pathom, Thailand'
@@ -1179,6 +1329,11 @@ def preview_email_template(template_id):
                 'role': 'Educator',
                 'country': 'Thailand',
                 'unique_id': 'ABC123',
+                'registration_category': 'Student',
+                'safari_route': 'Route 02 - Urban Pulse & Living Heritage',
+                'fee_currency': 'INR',
+                'total_fee': 500,
+                'fee_display': 'Rs.500',
                 'event_name': 'GDTA 2026',
                 'event_year': '2026',
                 'event_location': 'Sri Nakhon Pathom, Thailand'
@@ -1349,7 +1504,9 @@ def send_email_to_registrant():
                             name=recipient.name,
                             institution=recipient.institution,
                             registration_id=recipient.unique_id,  # Use unique_id for registration_id too
-                            qr_data=recipient.unique_id
+                            qr_data=recipient.unique_id,
+                            fee_text=format_fee_display(getattr(recipient, 'fee_currency', None), getattr(recipient, 'total_fee', None)),
+                            safari_route_text=format_safari_route_display(getattr(recipient, 'safari_route', None))
                         )
                         
                         if id_card_path and os.path.exists(id_card_path):
@@ -2295,7 +2452,9 @@ def generate_id_card(registration_id):
             name=registration.name,
             institution=registration.institution,
             registration_id=registration.unique_id,  # Use unique_id
-            qr_data=registration.unique_id  # QR contains unique_id
+            qr_data=registration.unique_id,  # QR contains unique_id
+            fee_text=format_fee_display(getattr(registration, 'fee_currency', None), getattr(registration, 'total_fee', None)),
+            safari_route_text=format_safari_route_display(getattr(registration, 'safari_route', None))
         )
         
         # Return the relative path for downloading
@@ -2367,7 +2526,9 @@ def view_id_card(unique_id):
                 name=registration.name,
                 institution=registration.institution,
                 registration_id=unique_id,
-                qr_data=unique_id
+                qr_data=unique_id,
+                fee_text=format_fee_display(getattr(registration, 'fee_currency', None), getattr(registration, 'total_fee', None)),
+                safari_route_text=format_safari_route_display(getattr(registration, 'safari_route', None))
             )
             file_path = output_path
             print(f"✓ Regenerated ID card at {file_path}")
@@ -2460,7 +2621,9 @@ def batch_generate_id_cards():
                     name=reg.name,
                     institution=reg.institution,
                     registration_id=reg.unique_id,  # Use unique_id
-                    qr_data=reg.unique_id  # Use unique_id in QR code
+                    qr_data=reg.unique_id,  # Use unique_id in QR code
+                    fee_text=format_fee_display(getattr(reg, 'fee_currency', None), getattr(reg, 'total_fee', None)),
+                    safari_route_text=format_safari_route_display(getattr(reg, 'safari_route', None))
                 )
                 
                 filename = os.path.basename(output_path)
@@ -2933,13 +3096,33 @@ def volunteer_login():
         
         if not data or 'username' not in data or 'password' not in data:
             return jsonify({'error': 'Username and password required'}), 400
+
+        if FIREBASE_AUTH_REQUIRED and (not FIREBASE_WEB_API_KEY or FIREBASE_WEB_API_KEY == 'YOUR_FIREBASE_WEB_API_KEY_HERE'):
+            return jsonify({'error': 'Server config error: FIREBASE_WEB_API_KEY is required when FIREBASE_AUTH_REQUIRED=True'}), 500
         
         username = data['username']
         password = data['password']
         
         volunteer = Volunteer.get_by_username(username)
-        
-        if not volunteer or not volunteer.is_active or not volunteer.check_password(password):
+
+        if not volunteer or not volunteer.is_active:
+            return jsonify({'error': 'Invalid username or password'}), 401
+
+        authenticated = False
+
+        # Preferred path: Firebase Auth (email/password)
+        if volunteer.email and FIREBASE_WEB_API_KEY:
+            authenticated, _ = _firebase_sign_in_with_email_password(volunteer.email, password)
+            if not authenticated and FIREBASE_AUTH_REQUIRED:
+                return jsonify({'error': 'Invalid username or password'}), 401
+        elif FIREBASE_AUTH_REQUIRED:
+            return jsonify({'error': 'Volunteer account missing email required for Firebase Auth'}), 400
+
+        # Backward-compatible fallback: existing local password hash
+        if not authenticated:
+            authenticated = volunteer.check_password(password)
+
+        if not authenticated:
             return jsonify({'error': 'Invalid username or password'}), 401
         
         # Update last login
@@ -3077,6 +3260,9 @@ def create_volunteer():
         
         if not data.get('name'):
             return jsonify({'error': 'Name is required'}), 400
+
+        if FIREBASE_AUTH_REQUIRED and not data.get('email'):
+            return jsonify({'error': 'Email is required when Firebase Auth is enabled'}), 400
         
         # Check if username already exists
         existing = Volunteer.get_by_username(data['username'])
@@ -3096,6 +3282,17 @@ def create_volunteer():
         
         volunteer.set_password(data['password'])
         volunteer_id = volunteer.save()
+
+        # Sync Firebase Auth identity (uses deterministic UID)
+        sync_ok, sync_error = _sync_firebase_auth_user(
+            uid=f"volunteer:{volunteer.username}",
+            email=volunteer.email,
+            password=data['password'],
+            display_name=volunteer.name,
+            disabled=not volunteer.is_active
+        )
+        if not sync_ok:
+            return jsonify({'error': f'Volunteer created but Firebase Auth sync failed: {sync_error}'}), 500
         
         volunteer_dict = volunteer.to_dict()
         volunteer_dict.pop('password_hash', None)
@@ -3136,6 +3333,17 @@ def update_volunteer(username):
             volunteer.set_password(data['password'])
         
         volunteer.save()
+
+        # Sync Firebase Auth identity
+        sync_ok, sync_error = _sync_firebase_auth_user(
+            uid=f"volunteer:{volunteer.username}",
+            email=volunteer.email,
+            password=data.get('password'),
+            display_name=volunteer.name,
+            disabled=not volunteer.is_active
+        )
+        if not sync_ok:
+            return jsonify({'error': f'Volunteer updated but Firebase Auth sync failed: {sync_error}'}), 500
         
         volunteer_dict = volunteer.to_dict()
         volunteer_dict.pop('password_hash', None)
@@ -3160,6 +3368,11 @@ def delete_volunteer(username):
         if not volunteer:
             return jsonify({'error': 'Volunteer not found'}), 404
         
+        # Delete Firebase Auth user (best effort)
+        delete_ok, delete_error = _delete_firebase_auth_user(f"volunteer:{volunteer.username}")
+        if not delete_ok:
+            return jsonify({'error': f'Failed to delete volunteer auth user: {delete_error}'}), 500
+
         Volunteer.delete(username)
         
         return jsonify({
@@ -3172,6 +3385,29 @@ def delete_volunteer(username):
 
 
 # ========== SUPER ADMIN - EVENT MANAGEMENT ==========
+
+@admin_bp.route('/api/admin/events', methods=['GET'])
+@require_auth
+def get_accessible_events():
+    """Get events accessible to the current admin."""
+    try:
+        admin = get_current_admin()
+        if not admin:
+            return jsonify({'error': 'Not authenticated'}), 401
+
+        if admin.role == 'super_admin':
+            events = Event.get_all(limit=100)
+        else:
+            assigned = admin.assigned_events or []
+            events = []
+            for event_id in assigned:
+                event = Event.get_by_id(event_id)
+                if event:
+                    events.append(event)
+
+        return jsonify({'events': [event.to_dict() for event in events]}), 200
+    except Exception as e:
+        return jsonify({'error': 'Failed to load events', 'details': str(e)}), 500
 
 @admin_bp.route('/api/superadmin/events', methods=['GET'])
 @require_super_admin
@@ -3294,6 +3530,205 @@ def delete_event(event_id):
 
 # ========== SUPER ADMIN - ADMIN MANAGEMENT ==========
 
+@admin_bp.route('/api/admin/admins', methods=['GET'])
+@require_auth
+def get_all_admins_manageable():
+    """Get admins list for admin management UI.
+
+    - super_admin: returns all admins
+    - admin: returns only non-super-admin users
+    """
+    try:
+        current = get_current_admin()
+        if not current:
+            return jsonify({'error': 'Not authenticated'}), 401
+
+        db = get_firestore_db()
+        docs = db.collection('admin_users').stream()
+        admins = [AdminUser.from_dict(doc.id, doc.to_dict()) for doc in docs]
+
+        if current.role != 'super_admin':
+            admins = [a for a in admins if a.role != 'super_admin']
+
+        admin_list = []
+        for admin in admins:
+            admin_dict = admin.to_dict()
+            admin_dict.pop('password_hash', None)
+            admin_list.append(admin_dict)
+
+        return jsonify({'admins': admin_list}), 200
+    except Exception as e:
+        return jsonify({'error': 'Failed to load admins', 'details': str(e)}), 500
+
+
+@admin_bp.route('/api/admin/admins', methods=['POST'])
+@require_auth
+def create_admin_manageable():
+    """Create admin user.
+
+    - super_admin: can create admin/super_admin
+    - admin: can create only admin
+    """
+    try:
+        current = get_current_admin()
+        if not current:
+            return jsonify({'error': 'Not authenticated'}), 401
+
+        data = request.get_json() or {}
+
+        if not data.get('username') or not data.get('password') or not data.get('name'):
+            return jsonify({'error': 'Username, password, and name are required'}), 400
+
+        if FIREBASE_AUTH_REQUIRED and not data.get('email'):
+            return jsonify({'error': 'Email is required when Firebase Auth is enabled'}), 400
+
+        requested_role = data.get('role', 'admin')
+        if current.role != 'super_admin' and requested_role != 'admin':
+            return jsonify({'error': 'Regular admins can only create admin users'}), 403
+
+        existing = AdminUser.get_by_username(data['username'])
+        if existing:
+            return jsonify({'error': 'Username already exists'}), 400
+
+        assigned_events = data.get('assigned_events', [])
+        if requested_role == 'admin':
+            if current.role == 'super_admin':
+                if not assigned_events:
+                    return jsonify({'error': 'Please assign at least one event to this admin'}), 400
+            else:
+                # For regular admins, bound event assignments to their own scope
+                current_events = set(current.assigned_events or [])
+                assigned_events = [eid for eid in assigned_events if eid in current_events]
+                if not assigned_events:
+                    assigned_events = list(current_events)
+                if not assigned_events:
+                    return jsonify({'error': 'Your account has no assigned events to delegate'}), 400
+
+        admin = AdminUser(
+            username=data['username'],
+            email=data.get('email'),
+            name=data['name'],
+            role=requested_role,
+            assigned_events=assigned_events,
+            is_active=data.get('is_active', True)
+        )
+        admin.set_password(data['password'])
+        admin.save()
+
+        sync_ok, sync_error = _sync_firebase_auth_user(
+            uid=f"admin:{admin.username}",
+            email=admin.email,
+            password=data['password'],
+            display_name=admin.name,
+            disabled=not admin.is_active
+        )
+        if not sync_ok:
+            return jsonify({'error': f'Admin created but Firebase Auth sync failed: {sync_error}'}), 500
+
+        admin_dict = admin.to_dict()
+        admin_dict.pop('password_hash', None)
+        return jsonify({'success': True, 'message': 'Admin created successfully', 'admin': admin_dict}), 201
+    except Exception as e:
+        return jsonify({'error': 'Failed to create admin', 'details': str(e)}), 500
+
+
+@admin_bp.route('/api/admin/admins/<username>', methods=['PUT'])
+@require_auth
+def update_admin_manageable(username):
+    """Update admin user with role-aware restrictions."""
+    try:
+        current = get_current_admin()
+        if not current:
+            return jsonify({'error': 'Not authenticated'}), 401
+
+        data = request.get_json() or {}
+        admin = AdminUser.get_by_username(username)
+
+        if not admin:
+            return jsonify({'error': 'Admin not found'}), 404
+
+        if current.role != 'super_admin':
+            if admin.role == 'super_admin':
+                return jsonify({'error': 'Regular admins cannot modify super admins'}), 403
+            if 'role' in data and data['role'] != 'admin':
+                return jsonify({'error': 'Regular admins cannot assign super admin role'}), 403
+
+        if 'name' in data:
+            admin.name = data['name']
+        if 'email' in data:
+            admin.email = data['email']
+        if 'role' in data and current.role == 'super_admin':
+            admin.role = data['role']
+        if 'assigned_events' in data:
+            if current.role == 'super_admin':
+                admin.assigned_events = data['assigned_events']
+            else:
+                current_events = set(current.assigned_events or [])
+                bounded = [eid for eid in (data['assigned_events'] or []) if eid in current_events]
+                if not bounded:
+                    bounded = list(current_events)
+                admin.assigned_events = bounded
+        if 'is_active' in data:
+            admin.is_active = data['is_active']
+        if 'password' in data and data['password']:
+            admin.set_password(data['password'])
+
+        admin.save()
+
+        sync_ok, sync_error = _sync_firebase_auth_user(
+            uid=f"admin:{admin.username}",
+            email=admin.email,
+            password=data.get('password'),
+            display_name=admin.name,
+            disabled=not admin.is_active
+        )
+        if not sync_ok:
+            return jsonify({'error': f'Admin updated but Firebase Auth sync failed: {sync_error}'}), 500
+
+        admin_dict = admin.to_dict()
+        admin_dict.pop('password_hash', None)
+
+        return jsonify({'success': True, 'message': 'Admin updated successfully', 'admin': admin_dict}), 200
+    except Exception as e:
+        return jsonify({'error': 'Failed to update admin', 'details': str(e)}), 500
+
+
+@admin_bp.route('/api/admin/admins/<username>', methods=['DELETE'])
+@require_auth
+def delete_admin_manageable(username):
+    """Delete admin user with role-aware restrictions."""
+    try:
+        current = get_current_admin()
+        if not current:
+            return jsonify({'error': 'Not authenticated'}), 401
+
+        admin = AdminUser.get_by_username(username)
+        if not admin:
+            return jsonify({'error': 'Admin not found'}), 404
+
+        if current.role != 'super_admin':
+            if admin.role == 'super_admin':
+                return jsonify({'error': 'Regular admins cannot delete super admins'}), 403
+            if username == current.username:
+                return jsonify({'error': 'Regular admins cannot delete their own account'}), 400
+        else:
+            if admin.role == 'super_admin':
+                db = get_firestore_db()
+                super_admins = db.collection('admin_users').where('role', '==', 'super_admin').stream()
+                if len(list(super_admins)) <= 1:
+                    return jsonify({'error': 'Cannot delete the last super admin'}), 400
+
+        delete_ok, delete_error = _delete_firebase_auth_user(f"admin:{admin.username}")
+        if not delete_ok:
+            return jsonify({'error': f'Failed to delete admin auth user: {delete_error}'}), 500
+
+        db = get_firestore_db()
+        db.collection('admin_users').document(username).delete()
+
+        return jsonify({'success': True, 'message': 'Admin deleted successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': 'Failed to delete admin', 'details': str(e)}), 500
+
 @admin_bp.route('/api/superadmin/admins', methods=['GET'])
 @require_super_admin
 def get_all_admins():
@@ -3324,6 +3759,9 @@ def create_admin():
         # Validate required fields
         if not data.get('username') or not data.get('password') or not data.get('name'):
             return jsonify({'error': 'Username, password, and name are required'}), 400
+
+        if FIREBASE_AUTH_REQUIRED and not data.get('email'):
+            return jsonify({'error': 'Email is required when Firebase Auth is enabled'}), 400
         
         # Check if username already exists
         existing = AdminUser.get_by_username(data['username'])
@@ -3341,6 +3779,17 @@ def create_admin():
         )
         admin.set_password(data['password'])
         admin.save()
+
+        # Sync Firebase Auth identity
+        sync_ok, sync_error = _sync_firebase_auth_user(
+            uid=f"admin:{admin.username}",
+            email=admin.email,
+            password=data['password'],
+            display_name=admin.name,
+            disabled=not admin.is_active
+        )
+        if not sync_ok:
+            return jsonify({'error': f'Admin created but Firebase Auth sync failed: {sync_error}'}), 500
         
         admin_dict = admin.to_dict()
         admin_dict.pop('password_hash', None)
@@ -3381,6 +3830,17 @@ def update_admin_user(username):
             admin.set_password(data['password'])
         
         admin.save()
+
+        # Sync Firebase Auth identity
+        sync_ok, sync_error = _sync_firebase_auth_user(
+            uid=f"admin:{admin.username}",
+            email=admin.email,
+            password=data.get('password'),
+            display_name=admin.name,
+            disabled=not admin.is_active
+        )
+        if not sync_ok:
+            return jsonify({'error': f'Admin updated but Firebase Auth sync failed: {sync_error}'}), 500
         
         admin_dict = admin.to_dict()
         admin_dict.pop('password_hash', None)
@@ -3411,6 +3871,11 @@ def delete_admin_user(username):
             super_admins = db.collection('admin_users').where('role', '==', 'super_admin').stream()
             if len(list(super_admins)) <= 1:
                 return jsonify({'error': 'Cannot delete the last super admin'}), 400
+
+        # Delete Firebase Auth user (best effort)
+        delete_ok, delete_error = _delete_firebase_auth_user(f"admin:{admin.username}")
+        if not delete_ok:
+            return jsonify({'error': f'Failed to delete admin auth user: {delete_error}'}), 500
         
         db = get_firestore_db()
         db.collection('admin_users').document(username).delete()
@@ -3458,6 +3923,9 @@ def super_admin_setup():
         # Validate required fields
         if not data.get('username') or not data.get('password') or not data.get('name'):
             return jsonify({'error': 'Username, password, and name are required'}), 400
+
+        if FIREBASE_AUTH_REQUIRED and not data.get('email'):
+            return jsonify({'error': 'Email is required when Firebase Auth is enabled'}), 400
         
         # Create super admin
         super_admin = AdminUser(
@@ -3470,6 +3938,17 @@ def super_admin_setup():
         )
         super_admin.set_password(data['password'])
         super_admin.save()
+
+        # Sync Firebase Auth identity
+        sync_ok, sync_error = _sync_firebase_auth_user(
+            uid=f"admin:{super_admin.username}",
+            email=super_admin.email,
+            password=data['password'],
+            display_name=super_admin.name,
+            disabled=False
+        )
+        if not sync_ok:
+            return jsonify({'error': f'Super Admin created but Firebase Auth sync failed: {sync_error}'}), 500
         
         return jsonify({
             'success': True,

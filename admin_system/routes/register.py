@@ -341,6 +341,15 @@ def submit_form_registration():
             "country": data.get("country", "").strip(),
             "state": data.get("state", "").strip(),
             "consent": data.get("consent", "").strip(),
+            "registration_category": data.get("registration_category", "").strip(),
+            "addon_food_accommodation": data.get("addon_food_accommodation", "No"),
+            "addon_safari": data.get("addon_safari", "No"),
+            "safari_route": data.get("safari_route", "").strip(),
+            "fee_currency": data.get("fee_currency"),
+            "base_fee": data.get("base_fee"),
+            "addon_food_accommodation_fee": data.get("addon_food_accommodation_fee"),
+            "addon_safari_fee": data.get("addon_safari_fee"),
+            "total_fee": data.get("total_fee"),
             "registration_source": "form"  # Mark as form registration
         }
         

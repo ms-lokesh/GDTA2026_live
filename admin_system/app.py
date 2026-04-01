@@ -9,7 +9,7 @@ ARCHITECTURE PRINCIPLES:
 4. JSON files are the single source of truth
 """
 
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, render_template
 from flask_cors import CORS
 import os
 
@@ -27,7 +27,7 @@ from db.firebase_models import init_firebase, create_default_admin
 
 def create_app():
     """Application factory pattern"""
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='templates', static_folder='static')
     
     # Configuration
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
@@ -175,32 +175,16 @@ def create_app():
     
     # Serve main website at root
     @app.route('/')
+    @app.route('/index')
     def index():
-        """Serve the main website's index.html from parent directory"""
-        return send_from_directory('..', 'index.html')
-    
-    # Catch-all route for main website files (HTML, CSS, JS, images, etc.)
-    # This must be defined LAST so specific routes above are matched first
-    @app.route('/<path:filename>')
-    def serve_website_files(filename):
-        """Serve files from the parent directory (main website)"""
-        import os
-        parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-        file_path = os.path.join(parent_dir, filename)
-        
-        # Security check: ensure the file is within the parent directory
-        if not file_path.startswith(parent_dir):
-            return jsonify({'error': 'Access denied'}), 403
-        
-        # Check if file exists
-        if os.path.exists(file_path) and os.path.isfile(file_path):
-            return send_from_directory(parent_dir, filename)
-        else:
-            return jsonify({
-                'error': 'File not found',
-                'message': f'The requested file "{filename}" does not exist',
-                'available_endpoints': '/api, /chatbot, /admin, /register'
-            }), 404
+        """Serve the main website's index.html from the templates directory"""
+        return render_template('index.html')
+
+    # Catch-all route for other HTML files
+    @app.route('/<string:page_name>.html')
+    def render_page(page_name):
+        """Render a page from the templates directory"""
+        return render_template(f'{page_name}.html')
     
     # Error handlers
     @app.errorhandler(404)

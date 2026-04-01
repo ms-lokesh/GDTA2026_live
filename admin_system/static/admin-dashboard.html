@@ -309,7 +309,7 @@
             <li class="admin_only" style="display:none;"><a href="#" data-page="email-templates"><i class="fas fa-file-alt"></i>Email Templates</a></li>
             <li class="admin_only" style="display:none;"><a href="#" data-page="export"><i class="fas fa-download"></i>Export Data</a></li>
             <li class="super_admin_only" style="display:none;"><a href="#" data-page="events"><i class="fas fa-calendar-alt"></i>Event Management</a></li>
-            <li class="super_admin_only" style="display:none;"><a href="#" data-page="admins"><i class="fas fa-user-shield"></i>Admin Management</a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="admins"><i class="fas fa-user-shield"></i>Admin Management</a></li>
             <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
         </ul>
     </nav>
@@ -1474,6 +1474,10 @@ GDTA Team"></textarea>
                             <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('role')">{{role}}</span>
                             <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('country')">{{country}}</span>
                             <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('unique_id')">{{unique_id}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('registration_category')">{{registration_category}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('fee_display')">{{fee_display}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('total_fee')">{{total_fee}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('safari_route')">{{safari_route}}</span>
                             <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('event_name')">{{event_name}}</span>
                             <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('event_year')">{{event_year}}</span>
                             <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('event_location')">{{event_location}}</span>

@@ -224,7 +224,9 @@ class IDCardGenerator:
                         name: str, 
                         institution: str, 
                         registration_id: str,
-                        qr_data: Optional[str] = None) -> str:
+                        qr_data: Optional[str] = None,
+                        fee_text: Optional[str] = None,
+                        safari_route_text: Optional[str] = None) -> str:
         """
         Generate ID card for a delegate
         
@@ -306,6 +308,21 @@ class IDCardGenerator:
         # Ensure QR code doesn't go off the bottom of the template
         if qr_y + qr_config['size'] > template.height - 20:
             qr_y = template.height - qr_config['size'] - 20  # Reduced margin to allow lower positioning
+
+        # Draw fee and safari route text above QR if available
+        text_cursor_y = qr_y - 46
+        if fee_text:
+            fee_font = self._get_font('Helvetica-Bold', 30)
+            fee_x = qr_x
+            fee_y = max(20, text_cursor_y)
+            draw.text((fee_x, fee_y), f"FEE: {fee_text}", fill="#000000", font=fee_font)
+            text_cursor_y = fee_y - 34
+
+        if safari_route_text:
+            route_font = self._get_font('Helvetica', 20)
+            route_x = qr_x
+            route_y = max(20, text_cursor_y)
+            draw.text((route_x, route_y), f"SAFARI: {safari_route_text}", fill="#000000", font=route_font)
         
         template.paste(qr_img, (qr_x, qr_y))
         
@@ -354,7 +371,7 @@ class IDCardGenerator:
 
 
 # Convenience function
-def generate_id_card(name: str, institution: str, registration_id: str) -> str:
+def generate_id_card(name: str, institution: str, registration_id: str, fee_text: Optional[str] = None, safari_route_text: Optional[str] = None) -> str:
     """
     Simple function to generate an ID card
     
@@ -367,4 +384,4 @@ def generate_id_card(name: str, institution: str, registration_id: str) -> str:
         Path to generated ID card
     """
     generator = IDCardGenerator()
-    return generator.generate_id_card(name, institution, registration_id)
+    return generator.generate_id_card(name, institution, registration_id, fee_text=fee_text, safari_route_text=safari_route_text)
