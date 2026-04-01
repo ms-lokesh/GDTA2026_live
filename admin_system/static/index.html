@@ -385,6 +385,57 @@
             background: #667eea;
             transition: width 0.3s ease;
         }
+
+        .magic-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(118,75,162,0.92), rgba(27, 18, 46, 0.98));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .magic-overlay.show {
+            opacity: 1;
+        }
+
+        .magic-core {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff 0%, #d6c7ff 45%, rgba(214, 199, 255, 0.1) 100%);
+            box-shadow: 0 0 30px rgba(255,255,255,0.8), 0 0 80px rgba(177,128,255,0.8);
+            animation: pulseMagic 0.9s ease-in-out infinite;
+            position: relative;
+        }
+
+        .magic-sparkles {
+            position: absolute;
+            inset: -80px;
+            pointer-events: none;
+        }
+
+        .magic-sparkle {
+            position: absolute;
+            font-size: 18px;
+            color: #fff;
+            animation: twinkle 0.9s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes pulseMagic {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.25); }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { transform: translateY(0) scale(0.7); opacity: 0; }
+            50% { transform: translateY(-8px) scale(1.2); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -429,12 +480,25 @@
         </div>
     </div>
 
+    <div class="magic-overlay" id="magicOverlay" aria-hidden="true">
+        <div style="position: relative;">
+            <div class="magic-core"></div>
+            <div class="magic-sparkles">
+                <span class="magic-sparkle" style="left: 6%; top: 18%; animation-delay: 0.0s;">✨</span>
+                <span class="magic-sparkle" style="left: 78%; top: 12%; animation-delay: 0.2s;">⭐</span>
+                <span class="magic-sparkle" style="left: 14%; top: 74%; animation-delay: 0.35s;">✨</span>
+                <span class="magic-sparkle" style="left: 82%; top: 68%; animation-delay: 0.5s;">⭐</span>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Use current origin for API calls (works locally and on Render)
         const API_BASE = window.location.origin;
         let registrationSessionId = null;
         let registrationMode = false;
         let currentStep = null;
+        let awaitingScheduleRedirectConfirmation = false;
 
         function addMessage(text, isUser = false, html = null) {
             const messagesContainer = document.getElementById('chatMessages');
@@ -482,6 +546,32 @@
             const message = input.value.trim();
             
             if (!message) return;
+
+            // If we're waiting for schedule-page confirmation, handle it locally for fast UX
+            if (awaitingScheduleRedirectConfirmation) {
+                addMessage(message, true);
+                input.value = '';
+                const normalized = message.toLowerCase().trim();
+                const yesPattern = /^(yes|y|yeah|yep|sure|ok|okay|please|yes please|show me|open it)$/i;
+                const noPattern = /^(no|n|nope|later|not now|stay|cancel)$/i;
+
+                if (yesPattern.test(normalized)) {
+                    awaitingScheduleRedirectConfirmation = false;
+                    addMessage("Awesome! Opening the full schedule page... ✨", false);
+                    redirectToScheduleWithMagic();
+                    return;
+                }
+
+                if (noPattern.test(normalized)) {
+                    awaitingScheduleRedirectConfirmation = false;
+                    addMessage("No worries — we can continue here. If you want later, just say: show full schedule.", false);
+                    return;
+                }
+
+                // If unclear, ask again and do not call backend
+                addMessage("Please reply with Yes or No — should I open the full schedule page?", false);
+                return;
+            }
             
             addMessage(message, true);
             input.value = '';
@@ -510,6 +600,10 @@
                     
                     if (response.ok) {
                         addMessage(data.message, false);
+
+                        if (data.suggest_schedule_page) {
+                            showScheduleRedirectPrompt();
+                        }
                         
                         // Check if registration was started from chat
                         if (data.action === 'registration_started') {
@@ -715,6 +809,50 @@
                 showTyping(false);
                 addMessage('Sorry, there was an error. Please try again.', false);
             }
+        }
+
+        function showScheduleRedirectPrompt() {
+            awaitingScheduleRedirectConfirmation = true;
+            addMessage('', false, `
+                <div class="registration-card">
+                    <h4>📅 View full schedule?</h4>
+                    <p>Would you like to open the complete schedule page now?</p>
+                </div>
+                <div class="option-buttons">
+                    <button class="option-btn" onclick="confirmScheduleRedirect(true)">✨ Yes, show schedule</button>
+                    <button class="option-btn" onclick="confirmScheduleRedirect(false)">Stay in chat</button>
+                </div>
+            `);
+        }
+
+        function confirmScheduleRedirect(shouldOpen) {
+            awaitingScheduleRedirectConfirmation = false;
+            if (!shouldOpen) {
+                addMessage("Perfect — staying in chat. Ask me anything else.", false);
+                return;
+            }
+
+            addMessage("Great choice! Opening schedule with a little magic... ✨", false);
+            redirectToScheduleWithMagic();
+        }
+
+        function redirectToScheduleWithMagic() {
+            const overlay = document.getElementById('magicOverlay');
+            overlay.classList.add('show');
+
+            const targetUrl = `${window.location.origin}/program-schedule.html`;
+
+            setTimeout(() => {
+                try {
+                    if (window.top && window.top !== window.self) {
+                        window.top.location.href = targetUrl;
+                    } else {
+                        window.location.href = targetUrl;
+                    }
+                } catch (e) {
+                    window.location.href = targetUrl;
+                }
+            }, 900);
         }
 
         function handleKeyPress(event) {

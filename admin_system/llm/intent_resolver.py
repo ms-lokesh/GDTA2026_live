@@ -17,6 +17,7 @@ If LLM fails, system falls back to keyword matching.
 import os
 import json
 import logging
+import re
 from enum import Enum
 from typing import Dict, Optional, Tuple
 from dataclasses import dataclass
@@ -243,9 +244,20 @@ def _keyword_fallback(user_message: str) -> Tuple[IntentType, float]:
         Tuple of (intent, confidence)
     """
     msg_lower = user_message.lower()
+
+    info_keywords = [
+        'when', 'where', 'location', 'date', 'what is', 'venue',
+        'fee', 'fees', 'price', 'pricing', 'cost', 'charges',
+        'safari route', 'safari routes',
+        'contact', 'email', 'phone', 'reach',
+        'travel', 'stay', 'hotel', 'airport', 'train', 'road',
+        'hackathon', 'challenge', 'timeline', 'track', 'tracks'
+    ]
+
+    registration_keywords = ['register', 'registration', 'sign up', 'signup', 'enroll', 'join']
     
     # Pattern 1: Registration
-    if any(word in msg_lower for word in ['register', 'registration', 'sign up', 'signup', 'enroll', 'join']):
+    if any(word in msg_lower for word in registration_keywords) and not any(word in msg_lower for word in ['fee', 'fees', 'price', 'pricing', 'cost', 'charges']):
         return IntentType.START_REGISTRATION, 0.85
     
     # Pattern 2: Schedule/Planning
@@ -253,11 +265,11 @@ def _keyword_fallback(user_message: str) -> Tuple[IntentType, float]:
         return IntentType.SCHEDULE_REQUEST, 0.85
     
     # Pattern 3: Conference Info
-    elif any(word in msg_lower for word in ['when', 'where', 'location', 'date', 'what is', 'venue']):
+    elif any(word in msg_lower for word in info_keywords):
         return IntentType.CONFERENCE_INFO, 0.85
     
     # Pattern 4: Greeting
-    elif any(word in msg_lower for word in ['hello', 'hi', 'hey', 'good morning', 'good afternoon']):
+    elif re.search(r'\b(hello|hi|hey|good morning|good afternoon)\b', msg_lower):
         return IntentType.GREETING, 0.85
     
     # Pattern 5: Help
@@ -342,4 +354,4 @@ def resolve_intent(
 
 def is_llm_available() -> bool:
     """Check if LLM integration is available"""
-    return bool(os.getenv('OPENAI_API_KEY') or os.getenv('GOOGLE_API_KEY'))
+    return bool(os.getenv('OPENAI_API_KEY') or os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY'))

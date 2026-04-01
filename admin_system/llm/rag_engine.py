@@ -73,7 +73,7 @@ class RAGEngine:
         """
         self.conference_data = conference_data
         self.sessions_data = sessions_data
-        self.gemini_key = os.getenv('GOOGLE_API_KEY')
+        self.gemini_key = os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY')
         self.grok_key = os.getenv('GROK_API_KEY')
         self.openai_key = os.getenv('OPENAI_API_KEY')
         
@@ -109,6 +109,7 @@ RESPONSE STYLE:
 - Concise but complete
 - Use bullet points for lists
 - Include specific details (dates, times, locations) when available
+- For pricing questions, always include category-wise fee details and mention GST note when available
 
 Remember: You are providing information only. The backend handles all actions."""
 
@@ -294,7 +295,11 @@ ASSISTANT RESPONSE:"""
         relevant_sessions = self._get_relevant_sessions(user_query)
         
         # Build context string
-        context = json.dumps(relevant_sessions, indent=2)
+        context_payload = {
+            "conference": self.conference_data,
+            "relevant_sessions": relevant_sessions
+        }
+        context = json.dumps(context_payload, indent=2)
         
         # Try Gemini first
         response = None
@@ -330,22 +335,110 @@ ASSISTANT RESPONSE:"""
             Simple structured response
         """
         query_lower = user_query.lower()
+        contact = self.conference_data.get('contact', {})
+        travel = self.conference_data.get('travel_and_stay', {})
+        hackathon = self.conference_data.get('hackathon', {})
+
+        asks_date = any(word in query_lower for word in ['when', 'date'])
+        asks_location = any(word in query_lower for word in ['where', 'location', 'venue'])
         
+        # Explicit unknown-fact probes
+        if any(word in query_lower for word in ['chief guest', 'prize money', 'exact prize', 'cash prize']):
+            return "I don't have that information in the current GDTA 2026 conference data."
+
+        # Combined date + location questions
+        if asks_date and asks_location:
+            loc = self.conference_data['location']
+            return (
+                f"GDTA 2026 takes place from {self.conference_data['dates']['start']} to {self.conference_data['dates']['end']}, "
+                f"at {loc['venue']}, {loc['city']}, {loc['country']}."
+            )
+
         # Date questions
-        if 'when' in query_lower or 'date' in query_lower:
+        if asks_date:
             return (f"GDTA 2026 takes place from {self.conference_data['dates']['start']} "
                    f"to {self.conference_data['dates']['end']}.")
+
+        # Travel / stay questions (check before generic location)
+        elif any(word in query_lower for word in ['travel', 'stay', 'hotel', 'airport', 'train', 'road', 'reach']):
+            travel_info = travel.get('travel', {})
+            return (
+                "Travel & Stay info for GDTA 2026:\n"
+                f"• By Air: {travel_info.get('air', 'Details not available')}\n"
+                f"• By Train: {travel_info.get('train', 'Details not available')}\n"
+                f"• By Road: {travel_info.get('road', 'Details not available')}\n"
+                "• Recommended hotels are listed by area: near airport, near SNS, and city center on the Travel & Stay page."
+            )
         
         # Location questions
-        elif 'where' in query_lower or 'location' in query_lower or 'venue' in query_lower:
+        elif asks_location:
             loc = self.conference_data['location']
             return (f"The conference is at {loc['venue']}, "
                    f"{loc['city']}, {loc['country']}.")
-        
+
+        # Contact questions
+        elif any(word in query_lower for word in ['contact', 'email', 'phone', 'reach', 'support']):
+            email = contact.get('email', 'Not available')
+            phone = contact.get('phone', 'Not available')
+            address = contact.get('address', self.conference_data.get('location', {}).get('display', 'Not available'))
+            return (
+                "Here are the GDTA 2026 contact details:\n"
+                f"• Email: {email}\n"
+                f"• Phone: {phone}\n"
+                f"• Address: {address}"
+            )
+
+        # Pricing / fee questions
+        elif any(word in query_lower for word in ['fee', 'fees', 'price', 'pricing', 'cost', 'charges']):
+            pricing = self.conference_data.get('pricing', {})
+            if pricing:
+                return (
+                    "Here are the GDTA 2026 registration fees:\n"
+                    "• Students: Base Rs.500; Food & Accommodation add-on Rs.1000; Safari add-on Rs.1500\n"
+                    "• Academicians: Base Rs.2000; Food & Accommodation add-on Rs.2500; Safari add-on Rs.3000\n"
+                    "• Industry People: Rs.7500 (all-inclusive)\n"
+                    "• Foreign Delegates: $100 (all-inclusive)\n"
+                    "Note: GST will be added at the final payment stage."
+                )
+            return "I don't have pricing details at the moment. Please contact the organizers for the latest fee structure."
+
+        # Safari route questions
+        elif 'safari' in query_lower and any(word in query_lower for word in ['route', 'routes', 'which', 'options']):
+            routes = self.conference_data.get('safari_routes', [])
+            if routes:
+                return "Available safari routes:\n" + "\n".join([f"• {r}" for r in routes])
+            return "Safari route details are not available right now."
+
+        # Hackathon questions
+        elif any(word in query_lower for word in ['hackathon', 'challenge']):
+            hack_tracks = hackathon.get('tracks', [])
+            timeline = hackathon.get('timeline', {})
+            tracks_text = "\n".join([f"• {t}" for t in hack_tracks]) if hack_tracks else "• Track details coming soon"
+            return (
+                "GDTA Challenge 2026 (Hackathon) details:\n"
+                f"• Focus: {hackathon.get('summary', 'AI innovation for real-world impact')}\n"
+                f"• Registration Opens: {timeline.get('registration_opens', 'N/A')}\n"
+                f"• Kickoff: {timeline.get('kickoff', 'N/A')}\n"
+                f"• Submission Deadline: {timeline.get('submission_deadline', 'N/A')}\n"
+                "• Tracks:\n"
+                f"{tracks_text}"
+            )
+
+        # Conference tracks questions
+        elif any(word in query_lower for word in ['track', 'tracks', 'themes', 'sessions']):
+            tracks = self.conference_data.get('tracks', [])
+            if tracks:
+                return "GDTA 2026 conference tracks:\n" + "\n".join([f"• {t}" for t in tracks])
+            return "Track information is currently unavailable."
+
         # Session count
         elif 'how many' in query_lower and 'session' in query_lower:
             count = len(self.sessions_data.get('sessions', []))
             return f"There are {count} sessions scheduled across 2 days."
+
+        # Registration guidance
+        elif any(word in query_lower for word in ['register', 'registration', 'sign up', 'signup']):
+            return "To register, just type: I want to register. I can guide you through the full registration flow step by step."
         
         # Default
         else:
@@ -358,4 +451,4 @@ ASSISTANT RESPONSE:"""
 
 def is_rag_available() -> bool:
     """Check if RAG can be used (requires API key)"""
-    return bool(os.getenv('GOOGLE_API_KEY') or os.getenv('GROK_API_KEY') or os.getenv('OPENAI_API_KEY'))
+    return bool(os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY') or os.getenv('GROK_API_KEY') or os.getenv('OPENAI_API_KEY'))

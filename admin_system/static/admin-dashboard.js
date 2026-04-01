@@ -11,6 +11,20 @@ let currentEventId = null; // For filtering by event
 let allEvents = []; // Cache of all events
 let selectedRegistrations = []; // Track selected registration IDs for bulk operations
 
+function getPaymentBadge(paymentStatus) {
+    const normalized = String(paymentStatus || 'pending').toLowerCase();
+    if (normalized === 'paid') {
+        return '<span class="badge badge-payment-paid">Paid ✅</span>';
+    }
+    if (normalized === 'payment_link_created') {
+        return '<span class="badge badge-payment-link">Link Created</span>';
+    }
+    if (normalized === 'payment_pending') {
+        return '<span class="badge badge-payment-pending">Pending</span>';
+    }
+    return '<span class="badge badge-payment-pending">Pending</span>';
+}
+
 // ========== AUTHENTICATION ==========
 
 function showLogin() {
@@ -216,7 +230,8 @@ async function loadDashboard() {
         $('#totalRegistrations').text(stats.total);
         $('#pendingRegistrations').text(stats.by_status.pending);
         $('#approvedRegistrations').text(stats.by_status.approved);
-        $('#todayRegistrations').text(stats.today);
+        $('#todayRegistrations').text((stats.payment_summary && typeof stats.payment_summary.paid !== 'undefined') ? stats.payment_summary.paid : stats.today);
+        $('#todayRegistrations').siblings('p').text((stats.payment_summary && typeof stats.payment_summary.paid !== 'undefined') ? 'Payments Successful' : 'Today');
         
         // Update country stats
         let countryHtml = '<div class="list-group">';
@@ -627,6 +642,7 @@ async function loadRegistrations() {
     const gdtaMember = $('#filterGdtaMember').val();
     const regSource = $('#filterRegSource').val();
     const checkedIn = $('#filterCheckedIn').val();
+    const paymentStatus = $('#filterPaymentStatus').val();
     
     try {
         let url = `${API_BASE}/registrations?`;
@@ -654,6 +670,7 @@ async function loadRegistrations() {
         if (gdtaMember) url += `is_gdta_member=${gdtaMember}&`;
         if (regSource) url += `registration_source=${regSource}&`;
         if (checkedIn) url += `checked_in=${checkedIn}&`;
+        if (paymentStatus) url += `payment_status=${encodeURIComponent(paymentStatus)}&`;
         
         const response = await fetch(url, { credentials: 'include' });
         const data = await response.json();
@@ -678,6 +695,7 @@ function displayRegistrations(registrations) {
     
     registrations.forEach(reg => {
         const statusBadge = `<span class="badge badge-${reg.status}">${reg.status}</span>`;
+        const paymentBadge = getPaymentBadge(reg.payment_status);
         const date = new Date(reg.created_at).toLocaleDateString();
         const uniqueId = reg.unique_id ? `<code class="text-primary">${reg.unique_id}</code>` : '<span class="text-muted">-</span>';
         const feeDisplay = (reg.fee_currency && reg.total_fee !== null && reg.total_fee !== undefined)
@@ -721,6 +739,7 @@ function displayRegistrations(registrations) {
                     ${safariRouteInline}
                 </td>
                 <td>${statusBadge}</td>
+                <td>${paymentBadge}</td>
                 <td>${date}</td>
                 <td>
                     <button class="btn btn-sm btn-primary me-1" onclick="viewDetails('${reg.id}')" title="View Details">
@@ -878,7 +897,19 @@ async function viewDetails(registrationId) {
                     <strong>Total Fee:</strong> ${feeDisplay}
                 </div>
                 <div class="col-md-6">
+                    <strong>Payment Status:</strong> ${getPaymentBadge(reg.payment_status)}
+                </div>
+                <div class="col-md-6">
                     <strong>Base Fee:</strong> ${reg.base_fee ? (reg.fee_currency === 'USD' ? `$${reg.base_fee}` : `Rs.${reg.base_fee}`) : 'N/A'}
+                </div>
+                <div class="col-md-6">
+                    <strong>Payment Invoice ID:</strong> ${reg.payment_invoice_id || 'N/A'}
+                </div>
+                <div class="col-md-6">
+                    <strong>Payment Provider:</strong> ${reg.payment_provider || 'N/A'}
+                </div>
+                <div class="col-md-6">
+                    <strong>Payment Completed At:</strong> ${reg.payment_paid_at ? new Date(reg.payment_paid_at).toLocaleString() : 'N/A'}
                 </div>
                 <div class="col-md-6">
                     <strong>Add-ons:</strong>
@@ -1876,7 +1907,7 @@ $(document).ready(function() {
     // Advanced filters - auto-apply on change
     $('#filterDateFrom, #filterDateTo, #filterUpdatedFrom, #filterUpdatedTo').on('change', applyAdvancedFilters);
     $('#filterStatusMulti, #filterCountryMulti').on('change', applyAdvancedFilters);
-    $('#filterGdtaMember, #filterRegSource, #filterCheckedIn').on('change', applyAdvancedFilters);
+    $('#filterGdtaMember, #filterRegSource, #filterCheckedIn, #filterPaymentStatus').on('change', applyAdvancedFilters);
     
     // Save details
     $('#saveDetailsBtn').on('click', saveDetails);
@@ -2854,6 +2885,7 @@ function resetAdvancedFilters() {
     $('#filterGdtaMember').val('');
     $('#filterRegSource').val('');
     $('#filterCheckedIn').val('');
+    $('#filterPaymentStatus').val('');
     
     loadRegistrations();
 }
@@ -2905,6 +2937,7 @@ function updateActiveFiltersCount() {
     if ($('#filterGdtaMember').val()) count++;
     if ($('#filterRegSource').val()) count++;
     if ($('#filterCheckedIn').val()) count++;
+    if ($('#filterPaymentStatus').val()) count++;
     
     if (count > 0) {
         countSpan.text(`${count} filter${count > 1 ? 's' : ''} active`);

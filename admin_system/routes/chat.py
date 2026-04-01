@@ -12,6 +12,7 @@ import uuid
 import logging
 import pickle
 import base64
+import re
 
 # Import our logic modules
 from logic.planner import build_schedule, summarize_schedule
@@ -207,7 +208,8 @@ def chat():
             'state': current_state,
             'action': None,
             'data': None,
-            'session_id': None
+            'session_id': None,
+            'suggest_schedule_page': False
         }
         
         # Get or create conversation context from database
@@ -304,6 +306,11 @@ def chat():
             intent = None
         else:
             intent = intent_result.intent
+
+        # Guard against false greeting matches (e.g., "chief" containing "hi")
+        if intent == IntentType.GREETING:
+            if not re.search(r'^\s*(hello|hi|hey|good morning|good afternoon)\b', user_message):
+                intent = IntentType.UNKNOWN
         
         # ================================================================
         # BACKEND ROUTING - Based on resolved intent
@@ -320,8 +327,9 @@ def chat():
         logger.info(f"Intent: {intent}, is_modification: {is_modification_intent}")
         
         # Route 1: Start Registration
-        if intent == IntentType.START_REGISTRATION or (
+        if (intent == IntentType.START_REGISTRATION and not any(word in user_message for word in ['fee', 'fees', 'price', 'pricing', 'cost', 'charges'])) or (
             intent is None and any(word in user_message for word in ['register', 'registration', 'sign up', 'signup'])
+            and not any(word in user_message for word in ['fee', 'fees', 'price', 'pricing', 'cost', 'charges'])
         ):
             response['state'] = 'registration_mode'
             
@@ -377,6 +385,8 @@ def chat():
                 response['message'] += ". Here's your modified schedule:\n\n"
                 response['message'] += summarize_schedule(schedule)
                 response['message'] += "\n\nAll sessions were selected to avoid time conflicts."
+                response['message'] += "\n\nWould you like to view the full schedule page?"
+                response['suggest_schedule_page'] = True
                 
             # Check if user type is in message or stored in context
             elif extracted_params.get('user_type'):
@@ -405,6 +415,8 @@ def chat():
                 response['message'] += ". Here's what I selected:\n\n"
                 response['message'] += summarize_schedule(schedule)
                 response['message'] += "\n\nAll sessions were selected to avoid time conflicts. Would you like to modify it?"
+                response['message'] += "\nWould you like to view the full schedule page?"
+                response['suggest_schedule_page'] = True
                 
             else:
                 # Need clarification - but check if we already know user type
@@ -432,6 +444,8 @@ def chat():
                     response['message'] += ". Here's what I selected:\n\n"
                     response['message'] += summarize_schedule(schedule)
                     response['message'] += "\n\nAll sessions were selected to avoid time conflicts. Would you like to modify it?"
+                    response['message'] += "\nWould you like to view the full schedule page?"
+                    response['suggest_schedule_page'] = True
                 else:
                     # Ask for user type
                     response['message'] = "I'd be happy to create a schedule for you! Are you a student or an industry professional? This helps me recommend the most relevant sessions."
@@ -441,29 +455,97 @@ def chat():
             intent is None and any(word in user_message for word in ['when', 'where', 'location', 'date', 'what is'])
         ):
             response['state'] = 'info_mode'
-            
-            # Use RAG engine for natural language responses
-            if LLM_AVAILABLE and is_rag_available():
-                try:
-                    rag_engine = RAGEngine(conference_data, sessions_data)
-                    response['message'] = rag_engine.answer_question(data['message'])
-                except Exception as e:
-                    logger.error(f"RAG engine error: {e}")
-                    # Fallback to basic response
-                    if 'when' in user_message or 'date' in user_message:
-                        response['message'] = f"GDTA 2026 takes place on {conference_data['dates']['start']} to {conference_data['dates']['end']}."
-                    elif 'where' in user_message or 'location' in user_message:
-                        response['message'] = f"The conference is at {conference_data['location']['venue']}, {conference_data['location']['city']}, {conference_data['location']['country']}."
-                    else:
-                        response['message'] = f"{conference_data['description']} It takes place {conference_data['dates']['start']} to {conference_data['dates']['end']} in {conference_data['location']['city']}."
-            else:
-                # Fallback when no LLM available
-                if 'when' in user_message or 'date' in user_message:
+
+            # Deterministic strict overrides for high-precision factual answers
+            asks_date = any(word in user_message for word in ['when', 'date'])
+            asks_location = any(word in user_message for word in ['where', 'location', 'venue'])
+
+            if any(word in user_message for word in ['chief guest', 'prize money', 'exact prize', 'cash prize']):
+                response['message'] = "I don't have that specific information in the current GDTA 2026 conference data."
+                store.add_message(session_id, 'assistant', response['message'])
+                return jsonify(response), 200
+
+            if asks_date and asks_location:
+                response['message'] = (
+                    f"GDTA 2026 takes place from {conference_data['dates']['start']} to {conference_data['dates']['end']}, "
+                    f"at {conference_data['location']['venue']}, {conference_data['location']['city']}, {conference_data['location']['country']}."
+                )
+                store.add_message(session_id, 'assistant', response['message'])
+                return jsonify(response), 200
+
+            if any(word in user_message for word in ['travel', 'stay', 'hotel', 'airport', 'train', 'road', 'reach']):
+                travel = conference_data.get('travel_and_stay', {}).get('travel', {})
+                response['message'] = (
+                    "Travel & Stay info for GDTA 2026:\n"
+                    f"• By Air: {travel.get('air', 'Details not available')}\n"
+                    f"• By Train: {travel.get('train', 'Details not available')}\n"
+                    f"• By Road: {travel.get('road', 'Details not available')}\n"
+                    "• Recommended hotels are listed by area: near airport, near SNS, and city center on the Travel & Stay page."
+                )
+                store.add_message(session_id, 'assistant', response['message'])
+                return jsonify(response), 200
+
+            # Always use RAG engine (it has built-in non-LLM fallback for reliability)
+            try:
+                rag_engine = RAGEngine(conference_data, sessions_data)
+                response['message'] = rag_engine.answer_question(data['message'])
+            except Exception as e:
+                logger.error(f"RAG engine error: {e}")
+                # Deterministic metadata-grounded fallback
+                contact = conference_data.get('contact', {})
+                travel = conference_data.get('travel_and_stay', {}).get('travel', {})
+                hackathon = conference_data.get('hackathon', {})
+
+                asks_date = any(word in user_message for word in ['when', 'date'])
+                asks_location = any(word in user_message for word in ['where', 'location', 'venue'])
+
+                if asks_date and asks_location:
+                    response['message'] = (
+                        f"GDTA 2026 takes place from {conference_data['dates']['start']} to {conference_data['dates']['end']}, "
+                        f"at {conference_data['location']['venue']}, {conference_data['location']['city']}, {conference_data['location']['country']}."
+                    )
+                elif any(word in user_message for word in ['travel', 'stay', 'hotel', 'airport', 'train', 'road', 'reach']):
+                    response['message'] = (
+                        "Travel & Stay info for GDTA 2026:\n"
+                        f"• By Air: {travel.get('air', 'Details not available')}\n"
+                        f"• By Train: {travel.get('train', 'Details not available')}\n"
+                        f"• By Road: {travel.get('road', 'Details not available')}"
+                    )
+                elif asks_date:
                     response['message'] = f"GDTA 2026 takes place on {conference_data['dates']['start']} to {conference_data['dates']['end']}."
-                elif 'where' in user_message or 'location' in user_message:
+                elif asks_location:
                     response['message'] = f"The conference is at {conference_data['location']['venue']}, {conference_data['location']['city']}, {conference_data['location']['country']}."
+                elif any(word in user_message for word in ['fee', 'fees', 'price', 'pricing', 'cost', 'charges']):
+                    response['message'] = (
+                        "Here are the GDTA 2026 registration fees:\n"
+                        "• Students: Base Rs.500; Food & Accommodation add-on Rs.1000; Safari add-on Rs.1500\n"
+                        "• Academicians: Base Rs.2000; Food & Accommodation add-on Rs.2500; Safari add-on Rs.3000\n"
+                        "• Industry People: Rs.7500 (all-inclusive)\n"
+                        "• Foreign Delegates: $100 (all-inclusive)\n"
+                        "Note: GST will be added at the final payment stage."
+                    )
+                elif 'safari' in user_message and 'route' in user_message:
+                    routes = conference_data.get('safari_routes', [])
+                    response['message'] = "Available safari routes:\n" + "\n".join([f"• {r}" for r in routes])
+                elif any(word in user_message for word in ['contact', 'email', 'phone', 'reach']):
+                    response['message'] = (
+                        "Here are the GDTA 2026 contact details:\n"
+                        f"• Email: {contact.get('email', 'Not available')}\n"
+                        f"• Phone: {contact.get('phone', 'Not available')}\n"
+                        f"• Address: {contact.get('address', 'Not available')}"
+                    )
+                elif any(word in user_message for word in ['hackathon', 'challenge', 'timeline']):
+                    tl = hackathon.get('timeline', {})
+                    tracks = hackathon.get('tracks', [])
+                    response['message'] = (
+                        "GDTA Challenge 2026 (Hackathon) details:\n"
+                        f"• Registration Opens: {tl.get('registration_opens', 'N/A')}\n"
+                        f"• Kickoff: {tl.get('kickoff', 'N/A')}\n"
+                        f"• Submission Deadline: {tl.get('submission_deadline', 'N/A')}\n"
+                        "• Tracks:\n" + "\n".join([f"• {t}" for t in tracks])
+                    )
                 else:
-                    response['message'] = f"{conference_data['description']} It takes place {conference_data['dates']['start']} to {conference_data['dates']['end']} in {conference_data['location']['city']}."
+                    response['message'] = "I don't have that specific information in the current GDTA 2026 conference data."
         
         # Route 4: Greeting
         elif intent == IntentType.GREETING or (
@@ -477,15 +559,13 @@ def chat():
         
         # Route 6: Unknown or Unsupported - Use RAG for any other questions
         else:
-            if LLM_AVAILABLE and is_rag_available():
-                try:
-                    rag_engine = RAGEngine(conference_data, sessions_data)
-                    response['message'] = rag_engine.answer_question(data['message'])
-                except Exception as e:
-                    logger.error(f"RAG engine error: {e}")
-                    response['message'] = "I can help you with conference information, registration, and schedule planning. What would you like to know?"
-            else:
-                response['message'] = "I can help you with conference information, registration, and schedule planning. What would you like to know?"
+            try:
+                rag_engine = RAGEngine(conference_data, sessions_data)
+                response['message'] = rag_engine.answer_question(data['message'])
+            except Exception as e:
+                logger.error(f"RAG engine error: {e}")
+                # Deterministic fallback for unknown intents
+                response['message'] = f"{conference_data['description']} It takes place {conference_data['dates']['start']} to {conference_data['dates']['end']} in {conference_data['location']['city']}."
         
         # Add assistant response to conversation history
         store.add_message(session_id, 'assistant', response['message'])

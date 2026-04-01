@@ -488,6 +488,15 @@ def get_all_registrations():
         registration_source = request.args.get('registration_source')
         if registration_source and registration_source in ['form', 'chatbot']:
             filtered_registrations = [r for r in filtered_registrations if r.registration_source == registration_source]
+
+        # Payment status filter
+        payment_status = request.args.get('payment_status')
+        if payment_status:
+            target_payment = payment_status.strip().lower()
+            filtered_registrations = [
+                r for r in filtered_registrations
+                if str(getattr(r, 'payment_status', 'pending')).strip().lower() == target_payment
+            ]
         
         # Check-in status filter
         checked_in = request.args.get('checked_in')
@@ -1403,6 +1412,11 @@ def get_statistics():
         # Today's registrations
         today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
         today = sum(1 for r in all_regs if isinstance(r.created_at, datetime) and r.created_at >= today_start)
+
+        # Payment summary
+        payment_paid = sum(1 for r in all_regs if str(getattr(r, 'payment_status', 'pending')).lower() == 'paid')
+        payment_link_created = sum(1 for r in all_regs if str(getattr(r, 'payment_status', 'pending')).lower() == 'payment_link_created')
+        payment_pending = max(0, total - payment_paid - payment_link_created)
         
         return jsonify({
             'total': total,
@@ -1410,6 +1424,11 @@ def get_statistics():
                 'pending': pending,
                 'approved': approved,
                 'rejected': rejected
+            },
+            'payment_summary': {
+                'paid': payment_paid,
+                'payment_link_created': payment_link_created,
+                'pending': payment_pending
             },
             'by_country': [{'country': c[0], 'count': c[1]} for c in countries],
             'by_role': [{'role': r[0], 'count': r[1]} for r in roles],

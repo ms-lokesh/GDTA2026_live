@@ -65,6 +65,14 @@ class Registration(FirestoreModel):
         self.addon_safari_fee = kwargs.get('addon_safari_fee')
         self.total_fee = kwargs.get('total_fee')
         self.fixed_all_inclusive = kwargs.get('fixed_all_inclusive', False)
+        self.payment_status = kwargs.get('payment_status', 'pending')
+        self.payment_provider = kwargs.get('payment_provider')
+        self.payment_invoice_id = kwargs.get('payment_invoice_id')
+        self.payment_link = kwargs.get('payment_link')
+        self.payment_amount = kwargs.get('payment_amount')
+        self.payment_currency = kwargs.get('payment_currency')
+        self.payment_method = kwargs.get('payment_method')
+        self.payment_paid_at = kwargs.get('payment_paid_at')
         self.created_at = kwargs.get('created_at', datetime.utcnow())
         self.updated_at = kwargs.get('updated_at', datetime.utcnow())
         self.status = kwargs.get('status', 'pending')
@@ -112,6 +120,14 @@ class Registration(FirestoreModel):
             'addon_safari_fee': self.addon_safari_fee,
             'total_fee': self.total_fee,
             'fixed_all_inclusive': self.fixed_all_inclusive,
+            'payment_status': self.payment_status,
+            'payment_provider': self.payment_provider,
+            'payment_invoice_id': self.payment_invoice_id,
+            'payment_link': self.payment_link,
+            'payment_amount': self.payment_amount,
+            'payment_currency': self.payment_currency,
+            'payment_method': self.payment_method,
+            'payment_paid_at': self._serialize_datetime(self.payment_paid_at),
             'created_at': self._serialize_datetime(self.created_at),
             'updated_at': self._serialize_datetime(self.updated_at),
             'status': self.status,
@@ -133,6 +149,7 @@ class Registration(FirestoreModel):
         data['created_at'] = cls._deserialize_datetime(data.get('created_at'))
         data['updated_at'] = cls._deserialize_datetime(data.get('updated_at'))
         data['id_card_generated_at'] = cls._deserialize_datetime(data.get('id_card_generated_at'))
+        data['payment_paid_at'] = cls._deserialize_datetime(data.get('payment_paid_at'))
         return cls(**data)
     
     @staticmethod

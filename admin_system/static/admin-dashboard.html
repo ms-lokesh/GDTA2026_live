@@ -212,6 +212,18 @@
         .badge-rejected {
             background-color: #dc3545;
         }
+
+        .badge-payment-paid {
+            background-color: #198754;
+        }
+
+        .badge-payment-link {
+            background-color: #0d6efd;
+        }
+
+        .badge-payment-pending {
+            background-color: #6c757d;
+        }
         
         /* Modal */
         .modal-header {
@@ -588,6 +600,17 @@
                                     <option value="false">Not Checked In</option>
                                 </select>
                             </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold">Payment Status</label>
+                                <select class="form-select form-select-sm" id="filterPaymentStatus">
+                                    <option value="">All</option>
+                                    <option value="paid">Paid</option>
+                                    <option value="payment_link_created">Link Created</option>
+                                    <option value="payment_pending">Pending</option>
+                                    <option value="pending">Pending</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <div class="row mt-3">
@@ -619,6 +642,7 @@
                             <th>Country</th>
                             <th>Role</th>
                             <th>Status</th>
+                            <th>Payment</th>
                             <th>Date</th>
                             <th>Actions</th>
                         </tr>

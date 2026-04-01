@@ -88,6 +88,215 @@
             border-radius: 10px;
             padding: 12px;
         }
+
+        .reg-step-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: #eef1f4;
+            color: #6c757d;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .reg-step-chip.active {
+            background: #000000 !important;
+            color: #ffffff !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            filter: none !important;
+            backdrop-filter: none !important;
+            opacity: 1 !important;
+            border: 1px solid #000000 !important;
+            position: relative;
+            z-index: 2;
+        }
+
+        .reg-step-chip.active i,
+        .reg-step-chip.active span,
+        .reg-step-chip.active * {
+            color: #ffffff !important;
+            opacity: 1 !important;
+            text-shadow: none !important;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .pricing-card {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 16px;
+            padding: 22px;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-6px);
+            border-color: #212529;
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #000000;
+            color: #ffffff !important;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 5px 10px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            text-shadow: none;
+            opacity: 1;
+        }
+
+        .pricing-badge * {
+            color: #ffffff !important;
+        }
+
+        .select-plan-btn {
+            background: #000000;
+            border-color: #000000;
+            color: #ffffff !important;
+            font-weight: 700;
+            text-shadow: none;
+        }
+
+        .select-plan-btn:hover,
+        .select-plan-btn:focus {
+            background: #1f1f1f;
+            border-color: #1f1f1f;
+            color: #ffffff !important;
+        }
+
+        .price-main {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #000;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .price-note {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 14px;
+        }
+
+        .price-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 18px;
+        }
+
+        .price-list li {
+            margin-bottom: 8px;
+            color: #495057;
+            font-size: 0.92rem;
+        }
+
+        .card-addon-choice {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin: 0 0 14px;
+        }
+
+        .card-addon-choice .form-check {
+            margin-bottom: 4px;
+        }
+
+        .card-addon-choice .form-check:last-child {
+            margin-bottom: 0;
+        }
+
+        .reg-flow-shell {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 28px;
+        }
+
+        .magic-pulse {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .magic-pulse::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 25%, rgba(255, 255, 255, 0.45) 50%, transparent 75%);
+            transform: translateX(-120%);
+            animation: shimmer 1.2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            to {
+                transform: translateX(120%);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Registration form readability improvements */
+        #registrationModal .modal-body,
+        #registrationModal .modal-title {
+            color: #1f2937;
+        }
+
+        #registrationModal .form-label,
+        #registrationModal .form-check-label,
+        #registrationModal .fee-row,
+        #registrationModal .fee-pill p,
+        #registrationModal .price-note,
+        #registrationModal small,
+        #registrationModal .text-muted {
+            color: #1f2937 !important;
+        }
+
+        #registrationModal .form-control,
+        #registrationModal .form-select {
+            color: #111827;
+            background-color: #ffffff;
+            border: 1px solid #9ca3af;
+        }
+
+        #registrationModal .form-control::placeholder {
+            color: #4b5563;
+            opacity: 1;
+        }
+
+        #registrationModal .form-control:focus,
+        #registrationModal .form-select:focus {
+            border-color: #111827;
+            box-shadow: 0 0 0 0.18rem rgba(17, 24, 39, 0.15);
+        }
+
+        #registrationModal .fee-summary-card,
+        #registrationModal .addon-block,
+        #registrationModal .fee-pill {
+            background: #ffffff;
+        }
     </style>
 </head>
 
@@ -151,45 +360,162 @@
 
     <div class="container-fluid py-5" style="background-color: #F8F9FA;">
         <div class="container py-5">
-            <div class="row g-5 justify-content-center">
-                <div class="col-lg-8 wow fadeInRight" data-wow-delay="0.2s">
-                    <div class="content-card" style="padding: 40px;">
-                        <h3 style="color: #000000 !important; font-weight: 700; margin-bottom: 30px;">Registration Form
-                        </h3>
+            <div class="row justify-content-center mb-4">
+                <div class="col-lg-11 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="reg-flow-shell text-center">
+                        <h3 style="font-weight: 800; color: #000; margin-bottom: 8px;">3-Step Registration Flow</h3>
+                        <p class="mb-4" style="color: #6c757d;">Choose your category card, complete the form, then continue to payment.</p>
+                        <div class="d-flex flex-wrap gap-2 justify-content-center">
+                            <span class="reg-step-chip active"><i class="fas fa-layer-group"></i> 1. Choose Card</span>
+                            <span class="reg-step-chip"><i class="fas fa-id-card"></i> 2. Registration Form</span>
+                            <span class="reg-step-chip"><i class="fas fa-credit-card"></i> 3. Payment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="fee-structure-compact">
-                            <h5 style="font-weight: 700; color: #000000; margin-bottom: 12px;">Fee Structure</h5>
-                            <div class="fee-structure-grid">
-                                <div class="fee-pill">
-                                    <h6>Students</h6>
-                                    <p>General: <strong>Rs.500</strong></p>
-                                    <p>Food & Accommodation (Add-on): <strong>Rs.1000</strong></p>
-                                    <p>Safari (Add-on): <strong>Rs.1500</strong></p>
+            <div class="row justify-content-center">
+                <div class="col-lg-11 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="pricing-grid">
+                        <div class="pricing-card">
+                            <span class="pricing-badge">Most Popular</span>
+                            <h5 style="font-weight: 800; color: #000;">Student</h5>
+                            <div class="price-main">Rs.500</div>
+                            <p class="price-note">Conference access with optional add-ons</p>
+                            <ul class="price-list">
+                                <li><i class="fas fa-check text-success me-2"></i>General Pass</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Food & Accommodation Add-on Available</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Safari Add-on Available</li>
+                            </ul>
+                            <div class="card-addon-choice">
+                                <div style="font-size: 0.85rem; font-weight: 700; color: #212529; margin-bottom: 6px;">Choose Pass Type</div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="student_pass_choice" id="student_general" value="general" checked>
+                                    <label class="form-check-label" for="student_general" style="font-size: 0.88rem;">General Pass (Rs.500)</label>
                                 </div>
-                                <div class="fee-pill">
-                                    <h6>Academicians</h6>
-                                    <p>General: <strong>Rs.2000</strong></p>
-                                    <p>Food & Accommodation (Add-on): <strong>Rs.2500</strong></p>
-                                    <p>Safari (Add-on): <strong>Rs.3000</strong></p>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="student_pass_choice" id="student_food" value="food">
+                                    <label class="form-check-label" for="student_food" style="font-size: 0.88rem;">Food & Accommodation (+Rs.500)</label>
                                 </div>
-                                <div class="fee-pill">
-                                    <h6>Industrial People</h6>
-                                    <p>All Inclusive: <strong>Rs.7500</strong></p>
-                                    <p style="font-size: 0.84rem; color: #6c757d;">Includes food and safari</p>
-                                </div>
-                                <div class="fee-pill">
-                                    <h6>Foreign Delegates</h6>
-                                    <p>All Inclusive: <strong>$100</strong></p>
-                                    <p style="font-size: 0.84rem; color: #6c757d;">Includes food and safari</p>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="student_pass_choice" id="student_safari" value="safari">
+                                    <label class="form-check-label" for="student_safari" style="font-size: 0.88rem;">Safari (+Rs.500)</label>
                                 </div>
                             </div>
-                            <p style="margin-top: 12px; margin-bottom: 0; font-size: 0.9rem; color: #495057;">
-                                <strong>Note:</strong> GST will be added at the final payment stage.
-                            </p>
+                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Student" data-addon-choice-group="student_pass_choice">Proceed with Student</button>
                         </div>
-                        
-                        <!-- Registration Form -->
-                        <form id="registrationForm">
+
+                        <div class="pricing-card">
+                            <h5 style="font-weight: 800; color: #000;">Academician</h5>
+                            <div class="price-main">Rs.2000</div>
+                            <p class="price-note">Conference pass for faculty and researchers</p>
+                            <ul class="price-list">
+                                <li><i class="fas fa-check text-success me-2"></i>General Pass</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Food & Accommodation Add-on Available</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Safari Add-on Available</li>
+                            </ul>
+                            <div class="card-addon-choice">
+                                <div style="font-size: 0.85rem; font-weight: 700; color: #212529; margin-bottom: 6px;">Choose Pass Type</div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="academician_pass_choice" id="academician_general" value="general" checked>
+                                    <label class="form-check-label" for="academician_general" style="font-size: 0.88rem;">General Pass (Rs.2000)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="academician_pass_choice" id="academician_food" value="food">
+                                    <label class="form-check-label" for="academician_food" style="font-size: 0.88rem;">Food & Accommodation (+Rs.500)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="academician_pass_choice" id="academician_safari" value="safari">
+                                    <label class="form-check-label" for="academician_safari" style="font-size: 0.88rem;">Safari (+Rs.500)</label>
+                                </div>
+                            </div>
+                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Academician" data-addon-choice-group="academician_pass_choice">Proceed with Academician</button>
+                        </div>
+
+                        <div class="pricing-card">
+                            <span class="pricing-badge">All Inclusive</span>
+                            <h5 style="font-weight: 800; color: #000;">Industrial People</h5>
+                            <div class="price-main">Rs.7500</div>
+                            <p class="price-note">Complete pass including food and safari</p>
+                            <ul class="price-list">
+                                <li><i class="fas fa-check text-success me-2"></i>Conference + Food + Safari</li>
+                                <li><i class="fas fa-check text-success me-2"></i>No additional add-on selection</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Fast-track payment step</li>
+                            </ul>
+                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Industry People">Proceed with Industrial</button>
+                        </div>
+
+                        <div class="pricing-card">
+                            <span class="pricing-badge">International</span>
+                            <h5 style="font-weight: 800; color: #000;">Foreign Delegate</h5>
+                            <div class="price-main">$100</div>
+                            <p class="price-note">All-inclusive international registration</p>
+                            <ul class="price-list">
+                                <li><i class="fas fa-check text-success me-2"></i>Conference + Food + Safari</li>
+                                <li><i class="fas fa-check text-success me-2"></i>No add-ons required</li>
+                                <li><i class="fas fa-check text-success me-2"></i>USD billing</li>
+                            </ul>
+                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Foreign Delegate">Proceed with Foreign Delegate</button>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <p class="mb-2" style="color: #6c757d;">Prefer an interactive experience?</p>
+                        <a href="/chatbot" target="_blank" class="btn btn-outline-secondary">
+                            <i class="fas fa-comments me-2"></i>Register via Chatbot
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 2: Registration Form Modal -->
+    <div class="modal fade" id="registrationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="font-weight: 700;">Step 2/3 · Complete Registration Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3" id="selectedPlanBanner">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        Selected plan: <strong id="selectedPlanText">-</strong>
+                    </div>
+
+                    <div class="fee-structure-compact">
+                        <h5 style="font-weight: 700; color: #000000; margin-bottom: 12px;">Fee Structure</h5>
+                        <div class="fee-structure-grid">
+                            <div class="fee-pill">
+                                <h6>Students</h6>
+                                <p>General: <strong>Rs.500</strong></p>
+                                <p>Food & Accommodation: <strong>+Rs.500</strong></p>
+                                <p>Safari: <strong>+Rs.500</strong></p>
+                            </div>
+                            <div class="fee-pill">
+                                <h6>Academicians</h6>
+                                <p>General: <strong>Rs.2000</strong></p>
+                                <p>Food & Accommodation: <strong>+Rs.500</strong></p>
+                                <p>Safari: <strong>+Rs.500</strong></p>
+                            </div>
+                            <div class="fee-pill">
+                                <h6>Industrial People</h6>
+                                <p>All Inclusive: <strong>Rs.7500</strong></p>
+                                <p style="font-size: 0.84rem; color: #6c757d;">Includes food and safari</p>
+                            </div>
+                            <div class="fee-pill">
+                                <h6>Foreign Delegates</h6>
+                                <p>All Inclusive: <strong>$100</strong></p>
+                                <p style="font-size: 0.84rem; color: #6c757d;">Includes food and safari</p>
+                            </div>
+                        </div>
+                        <p style="margin-top: 12px; margin-bottom: 0; font-size: 0.9rem; color: #495057;">
+                            <strong>Note:</strong> GST will be added at the final payment stage.
+                        </p>
+                    </div>
+
+                    <form id="registrationForm">
                             <!-- Data Consent -->
                             <div class="mb-4">
                                 <label class="form-label" style="font-weight: 600;">
@@ -321,17 +647,50 @@
                             </div>
 
                             <!-- GDTA Affiliation -->
-                            <div class="mb-3">
+                            <div class="mb-3" id="gdtaAffiliationBlock" style="display: none;">
                                 <label for="gdta_affiliation" class="form-label" style="font-weight: 600;">
                                     <span style="color: red;">*</span> GDTA Affiliation/Chapter
                                 </label>
-                                <select class="form-select" id="gdta_affiliation" name="gdta_affiliation" required>
-                                    <option value="">Select your affiliation</option>
-                                    <option value="Indian Chapter">Indian Chapter</option>
-                                    <option value="USA Chapter">USA Chapter</option>
-                                    <option value="European Chapter">European Chapter</option>
-                                    <option value="None">None</option>
-                                    <option value="Other">Other</option>
+                                <select class="form-select" id="gdta_affiliation" name="gdta_affiliation">
+                                    <option value="">Select your affiliated institution</option>
+                                    <option value="American University in Cairo">American University in Cairo</option>
+                                    <option value="Design Thinking Center, Moscow">Design Thinking Center, Moscow</option>
+                                    <option value="Echos – Innovation Lab">Echos – Innovation Lab</option>
+                                    <option value="FH JOANNEUM">FH JOANNEUM</option>
+                                    <option value="Genovasi">Genovasi</option>
+                                    <option value="Hasso Plattner Institute">Hasso Plattner Institute</option>
+                                    <option value="Impact Week gUG">Impact Week gUG</option>
+                                    <option value="Innovation Station Fleminsgberg">Innovation Station Fleminsgberg</option>
+                                    <option value="Ivey Business School">Ivey Business School</option>
+                                    <option value="KLEF Deemed to be University">KLEF Deemed to be University</option>
+                                    <option value="London School of Economics – Department of Management">London School of Economics – Department of Management</option>
+                                    <option value="Lucian Blaga University of Sibiu">Lucian Blaga University of Sibiu</option>
+                                    <option value="Observatory Design Thinking for Business at Politecnico di Milano">Observatory Design Thinking for Business at Politecnico di Milano</option>
+                                    <option value="OpenLab Stockholm">OpenLab Stockholm</option>
+                                    <option value="Policy School at the UBC">Policy School at the UBC</option>
+                                    <option value="Queensland University of Technology – Design Lab">Queensland University of Technology – Design Lab</option>
+                                    <option value="Shenkar – Engineering. Design. Art">Shenkar – Engineering. Design. Art</option>
+                                    <option value="Singapore Polytechnic">Singapore Polytechnic</option>
+                                    <option value="SNS Group of Institutions">SNS Group of Institutions</option>
+                                    <option value="Technical School of Innovation of the American University of Central Asia">Technical School of Innovation of the American University of Central Asia</option>
+                                    <option value="Tecnológico de Monterrey">Tecnológico de Monterrey</option>
+                                    <option value="The CMR University">The CMR University</option>
+                                    <option value="The Communication University of China">The Communication University of China</option>
+                                    <option value="The Escuela Superior Politecnica del Litoral (ESPOL)">The Escuela Superior Politecnica del Litoral (ESPOL)</option>
+                                    <option value="The Hasso Plattner Institute of Design Thinking at the University of Cape Town (d-school)">The Hasso Plattner Institute of Design Thinking at the University of Cape Town (d-school)</option>
+                                    <option value="The Industry Research &amp; Development Group (IRDG)">The Industry Research &amp; Development Group (IRDG)</option>
+                                    <option value="The Learning Factory">The Learning Factory</option>
+                                    <option value="The Painted Sky">The Painted Sky</option>
+                                    <option value="Universidad Mayor">Universidad Mayor</option>
+                                    <option value="Universitas Bakrie">Universitas Bakrie</option>
+                                    <option value="University of College Cork">University of College Cork</option>
+                                    <option value="University of Cologne">University of Cologne</option>
+                                    <option value="University of Galway">University of Galway</option>
+                                    <option value="University of Virginia">University of Virginia</option>
+                                    <option value="UTS Business School">UTS Business School</option>
+                                    <option value="V&amp;A Dundee">V&amp;A Dundee</option>
+                                    <option value="Yasar University">Yasar University</option>
+                                    <option value="Not Listed / Other">Not Listed / Other</option>
                                 </select>
                             </div>
 
@@ -363,15 +722,46 @@
                             <!-- Success/Error Messages -->
                             <div id="alertContainer" class="mt-3"></div>
                         </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                        <!-- Chatbot Registration Option -->
-                        <div class="text-center mt-4 pt-4" style="border-top: 1px solid #dee2e6;">
-                            <p class="mb-2" style="color: #6c757d;">Prefer an interactive experience?</p>
-                            <a href="/chatbot" target="_blank" class="btn btn-outline-secondary">
-                                <i class="fas fa-comments me-2"></i>Register via Chatbot
-                            </a>
-                        </div>
+    <!-- Step 3: Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="font-weight: 700;">Step 3/3 · Complete Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="p-3 mb-3 rounded-3" style="background: #f8f9fa; border: 1px solid #dee2e6;">
+                        <p class="mb-1"><strong>Category:</strong> <span id="paymentCategoryText">-</span></p>
+                        <p class="mb-1"><strong>Registrant:</strong> <span id="paymentNameText">-</span></p>
+                        <p class="mb-1"><strong>Email:</strong> <span id="paymentEmailText">-</span></p>
+                        <p class="mb-0"><strong>Amount Payable:</strong> <span id="paymentAmountText">-</span></p>
                     </div>
+
+                    <label for="paymentMethod" class="form-label" style="font-weight: 600;">Payment Method</label>
+                    <select id="paymentMethod" class="form-select mb-3">
+                        <option value="UPI">UPI</option>
+                        <option value="Card">Credit/Debit Card</option>
+                        <option value="NetBanking">Net Banking</option>
+                    </select>
+
+                    <div id="paymentStatus" class="mb-3"></div>
+
+                    <div class="d-grid gap-2 mb-3">
+                        <button class="btn btn-outline-dark" id="checkPaymentStatusBtn" style="display: none;">
+                            <i class="fas fa-sync-alt me-2"></i>I've completed payment - Check Status
+                        </button>
+                    </div>
+
+                    <button class="btn btn-success w-100 magic-pulse" id="payNowBtn">
+                        <i class="fas fa-lock me-2"></i>Proceed to Pay
+                    </button>
+                    <small class="d-block text-muted mt-2">You will be redirected to the payment page.</small>
                 </div>
             </div>
         </div>
@@ -435,8 +825,8 @@
                 currency: "INR",
                 base: 500,
                 addons: {
-                    foodAccommodation: 1000,
-                    safari: 1500
+                    foodAccommodation: 500,
+                    safari: 500
                 },
                 fixedAllInclusive: false
             },
@@ -444,8 +834,8 @@
                 currency: "INR",
                 base: 2000,
                 addons: {
-                    foodAccommodation: 2500,
-                    safari: 3000
+                    foodAccommodation: 500,
+                    safari: 500
                 },
                 fixedAllInclusive: false
             },
@@ -468,6 +858,12 @@
                 fixedAllInclusive: true
             }
         };
+
+        let selectedCategoryFromCard = null;
+        let latestRegistrationPayload = null;
+        let registrationModalInstance = null;
+        let paymentModalInstance = null;
+        let latestZohoInvoiceId = null;
 
         function formatCurrency(amount, currency) {
             if (currency === 'USD') {
@@ -556,10 +952,97 @@
             totalFeeText.textContent = `${formatCurrency(breakdown.total, cfg.currency)}${cfg.fixedAllInclusive ? ' (All inclusive)' : ''}`;
         }
 
+        function openRegistrationModalWithCategory(category, presetFoodAddon = null, presetSafariAddon = null) {
+            selectedCategoryFromCard = category;
+            const categorySelect = document.getElementById('registration_category');
+            const selectedPlanText = document.getElementById('selectedPlanText');
+            const foodCheck = document.getElementById('addon_food_accommodation');
+            const safariCheck = document.getElementById('addon_safari');
+
+            categorySelect.value = category;
+            selectedPlanText.textContent = category;
+            safariCheck.checked = false;
+
+            if (presetFoodAddon === true) {
+                foodCheck.checked = true;
+            } else if (presetFoodAddon === false) {
+                foodCheck.checked = false;
+            }
+
+            if (presetSafariAddon === true) {
+                safariCheck.checked = true;
+            } else if (presetSafariAddon === false) {
+                safariCheck.checked = false;
+            }
+
+            updateFeeUI();
+
+            if (!registrationModalInstance) {
+                registrationModalInstance = new bootstrap.Modal(document.getElementById('registrationModal'));
+            }
+            registrationModalInstance.show();
+        }
+
+        function showPaymentStep(payload, feeBreakdown, registrationResult = null) {
+            latestRegistrationPayload = {
+                ...payload,
+                feeBreakdown,
+                registration_id: registrationResult && registrationResult.registration_id ? registrationResult.registration_id : null
+            };
+
+            document.getElementById('paymentCategoryText').textContent = payload.registration_category;
+            document.getElementById('paymentNameText').textContent = payload.name;
+            document.getElementById('paymentEmailText').textContent = payload.email;
+            document.getElementById('paymentAmountText').textContent = formatCurrency(feeBreakdown.total, feeBreakdown.currency);
+            document.getElementById('paymentStatus').innerHTML = '';
+
+            if (!paymentModalInstance) {
+                paymentModalInstance = new bootstrap.Modal(document.getElementById('paymentModal'));
+            }
+            paymentModalInstance.show();
+        }
+
+        document.querySelectorAll('.select-plan-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const chosen = btn.getAttribute('data-category');
+                const groupName = btn.getAttribute('data-addon-choice-group');
+                let presetFoodAddon = null;
+                let presetSafariAddon = null;
+
+                if (groupName) {
+                    const selectedOption = document.querySelector(`input[name="${groupName}"]:checked`);
+                    if (selectedOption) {
+                        presetFoodAddon = selectedOption.value === 'food';
+                        presetSafariAddon = selectedOption.value === 'safari';
+                    }
+                }
+
+                openRegistrationModalWithCategory(chosen, presetFoodAddon, presetSafariAddon);
+            });
+        });
+
         document.getElementById('registration_category').addEventListener('change', updateFeeUI);
         document.getElementById('addon_food_accommodation').addEventListener('change', updateFeeUI);
         document.getElementById('addon_safari').addEventListener('change', updateFeeUI);
         updateFeeUI();
+
+        function updateGdtaAffiliationVisibility() {
+            const memberValue = document.getElementById('gdta_member').value;
+            const affiliationBlock = document.getElementById('gdtaAffiliationBlock');
+            const affiliationSelect = document.getElementById('gdta_affiliation');
+
+            if (memberValue === 'Yes') {
+                affiliationBlock.style.display = 'block';
+                affiliationSelect.required = true;
+            } else {
+                affiliationBlock.style.display = 'none';
+                affiliationSelect.required = false;
+                affiliationSelect.value = '';
+            }
+        }
+
+        document.getElementById('gdta_member').addEventListener('change', updateGdtaAffiliationVisibility);
+        updateGdtaAffiliationVisibility();
 
         document.getElementById('registrationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -639,23 +1122,30 @@
                 
                 if (result.success) {
                     const feeLine = result.fee_display_text ? `<br><strong>Final Fee:</strong> ${result.fee_display_text}` : '';
-                    // Show success message
                     alertContainer.innerHTML = `
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <i class="fas fa-check-circle me-2"></i>
-                            <strong>Success!</strong> ${result.message}${feeLine}
+                            <strong>Step 2 complete!</strong> ${result.message}${feeLine}<br>
+                            Proceeding to payment...
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     `;
-                    
-                    // Reset form
-                    form.reset();
-                    
-                    // Scroll to success message
+
                     alertContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                    setTimeout(() => {
+                        if (registrationModalInstance) {
+                            registrationModalInstance.hide();
+                        }
+                        showPaymentStep(formData, feeBreakdown, result);
+                        form.reset();
+                        if (selectedCategoryFromCard) {
+                            document.getElementById('registration_category').value = selectedCategoryFromCard;
+                        }
+                        updateFeeUI();
+                    }, 900);
                     
                 } else {
-                    // Show error message
                     alertContainer.innerHTML = `
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <i class="fas fa-exclamation-circle me-2"></i>
@@ -663,8 +1153,6 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     `;
-                    
-                    // Scroll to error message
                     alertContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
                 
@@ -679,10 +1167,134 @@
                 `;
                 alertContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } finally {
-                // Re-enable submit button
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Registration';
             }
+        });
+
+        document.getElementById('payNowBtn').addEventListener('click', function() {
+            const payNowBtn = document.getElementById('payNowBtn');
+            const paymentStatus = document.getElementById('paymentStatus');
+            const checkStatusBtn = document.getElementById('checkPaymentStatusBtn');
+            const paymentMethod = document.getElementById('paymentMethod').value;
+
+            if (!latestRegistrationPayload) {
+                paymentStatus.innerHTML = `
+                    <div class="alert alert-danger mb-0">
+                        Missing registration details. Please complete registration again.
+                    </div>
+                `;
+                return;
+            }
+
+            payNowBtn.disabled = true;
+            payNowBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating payment link...';
+
+            paymentStatus.innerHTML = `
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-shield-alt me-2"></i>Connecting to Zoho Books via ${paymentMethod}...
+                </div>
+            `;
+
+            const payload = {
+                ...latestRegistrationPayload,
+                payment_method: paymentMethod
+            };
+
+            fetch('/api/register/payment/zoho-books/create-link', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(async (response) => {
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Failed to initiate Zoho Books payment.');
+                }
+
+                latestZohoInvoiceId = result.invoice_id;
+                checkStatusBtn.style.display = 'block';
+
+                paymentStatus.innerHTML = `
+                    <div class="alert alert-success mb-0">
+                        <i class="fas fa-external-link-alt me-2"></i>
+                        Payment link generated. <a href="${result.payment_url}" target="_blank" rel="noopener">Open payment page</a>.<br>
+                        Invoice ID: <strong>${result.invoice_id || 'N/A'}</strong>
+                    </div>
+                `;
+
+                window.open(result.payment_url, '_blank', 'noopener');
+                payNowBtn.innerHTML = '<i class="fas fa-link me-2"></i>Open Zoho Payment Link Again';
+                payNowBtn.disabled = false;
+            })
+            .catch((error) => {
+                paymentStatus.innerHTML = `
+                    <div class="alert alert-danger mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>${error.message}
+                    </div>
+                `;
+                payNowBtn.disabled = false;
+                payNowBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Proceed to Pay';
+            });
+        });
+
+        document.getElementById('checkPaymentStatusBtn').addEventListener('click', function() {
+            const paymentStatus = document.getElementById('paymentStatus');
+            const checkStatusBtn = document.getElementById('checkPaymentStatusBtn');
+
+            if (!latestZohoInvoiceId) {
+                paymentStatus.innerHTML = `
+                    <div class="alert alert-warning mb-0">
+                        Invoice ID not available yet. Please create payment link first.
+                    </div>
+                `;
+                return;
+            }
+
+            checkStatusBtn.disabled = true;
+            checkStatusBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Checking status...';
+
+            fetch(`/api/register/payment/zoho-books/status?invoice_id=${encodeURIComponent(latestZohoInvoiceId)}`)
+                .then(async (response) => {
+                    const result = await response.json();
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.message || 'Unable to fetch payment status.');
+                    }
+
+                    if (result.paid) {
+                        paymentStatus.innerHTML = `
+                            <div class="alert alert-success mb-0">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Payment confirmed in Zoho Books. Registration is now fully complete ✅
+                            </div>
+                        `;
+
+                        setTimeout(() => {
+                            if (paymentModalInstance) {
+                                paymentModalInstance.hide();
+                            }
+                        }, 1200);
+                    } else {
+                        paymentStatus.innerHTML = `
+                            <div class="alert alert-info mb-0">
+                                Current status: <strong>${result.status || 'pending'}</strong>. If you've just paid, wait a few seconds and check again.
+                            </div>
+                        `;
+                    }
+                })
+                .catch((error) => {
+                    paymentStatus.innerHTML = `
+                        <div class="alert alert-danger mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>${error.message}
+                        </div>
+                    `;
+                })
+                .finally(() => {
+                    checkStatusBtn.disabled = false;
+                    checkStatusBtn.innerHTML = '<i class="fas fa-sync-alt me-2"></i>I\'ve completed payment - Check Status';
+                });
         });
     </script>
 </body>

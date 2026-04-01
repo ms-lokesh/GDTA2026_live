@@ -13,15 +13,15 @@ FEE_CONFIG = {
     "Student": {
         "currency": "INR",
         "base": 500,
-        "food": 1000,
-        "safari": 1500,
+        "food": 500,
+        "safari": 500,
         "fixed": False
     },
     "Academician": {
         "currency": "INR",
         "base": 2000,
-        "food": 2500,
-        "safari": 3000,
+        "food": 500,
+        "safari": 500,
         "fixed": False
     },
     "Industry People": {

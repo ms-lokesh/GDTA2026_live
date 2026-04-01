@@ -7,6 +7,13 @@ from flask import Blueprint, request, jsonify, session as flask_session
 import json
 import pickle
 import base64
+import os
+import urllib.request
+import urllib.parse
+import urllib.error
+import threading
+import time
+import re
 
 from logic.registration import (
     start_registration,
@@ -15,7 +22,8 @@ from logic.registration import (
     get_summary,
     cancel_registration,
     RegistrationState,
-    RegistrationSteps
+    RegistrationSteps,
+    FEE_CONFIG
 )
 
 register_bp = Blueprint('register', __name__)
@@ -24,6 +32,26 @@ register_bp = Blueprint('register', __name__)
 # In-memory storage for registration sessions
 # In production, use database
 registration_sessions = {}
+
+# Payment endpoint runtime guards
+payment_rate_limit_store = {}
+PAYMENT_RATE_LIMIT_WINDOW_SECONDS = 60
+PAYMENT_RATE_LIMIT_MAX_REQUESTS = 20
+
+# Zoho token cache/lock for safe refresh across concurrent requests
+zoho_token_cache = {
+    'token': None,
+    'expires_at': 0
+}
+zoho_token_lock = threading.Lock()
+
+
+class ZohoAPIError(Exception):
+    def __init__(self, message, status_code=502, error_code='ZOHO_API_ERROR'):
+        super().__init__(message)
+        self.message = message
+        self.status_code = status_code
+        self.error_code = error_code
 
 
 def serialize_state(state):
@@ -45,6 +73,223 @@ def get_or_create_session_id():
         flask_session['reg_session_id'] = str(uuid.uuid4())
         flask_session.modified = True
     return flask_session['reg_session_id']
+
+
+def _get_client_ip():
+    forwarded = request.headers.get('X-Forwarded-For', '')
+    if forwarded:
+        return forwarded.split(',')[0].strip()
+    return request.remote_addr or 'unknown'
+
+
+def _enforce_payment_rate_limit(endpoint_key):
+    now = int(time.time())
+    window_start = now - PAYMENT_RATE_LIMIT_WINDOW_SECONDS
+    ip = _get_client_ip()
+    bucket_key = f"{endpoint_key}:{ip}"
+
+    hits = payment_rate_limit_store.get(bucket_key, [])
+    hits = [t for t in hits if t >= window_start]
+
+    if len(hits) >= PAYMENT_RATE_LIMIT_MAX_REQUESTS:
+        return False
+
+    hits.append(now)
+    payment_rate_limit_store[bucket_key] = hits
+    return True
+
+
+def _accounts_base_domain():
+    data_center = (os.environ.get('ZOHO_BOOKS_DATA_CENTER') or 'in').strip().lower()
+    return f"accounts.zoho.{data_center}"
+
+
+def _refresh_zoho_access_token(force=False):
+    now = int(time.time())
+
+    with zoho_token_lock:
+        cached_token = zoho_token_cache.get('token')
+        expires_at = int(zoho_token_cache.get('expires_at') or 0)
+        if (not force) and cached_token and now < (expires_at - 30):
+            return cached_token
+
+        client_id = (os.environ.get('ZOHO_BOOKS_CLIENT_ID') or '').strip()
+        client_secret = (os.environ.get('ZOHO_BOOKS_CLIENT_SECRET') or '').strip()
+        refresh_token = (os.environ.get('ZOHO_BOOKS_REFRESH_TOKEN') or '').strip()
+
+        # Backward-compatible fallback to static token, but refresh flow is preferred.
+        fallback_access_token = (os.environ.get('ZOHO_BOOKS_ACCESS_TOKEN') or '').strip()
+
+        if not client_id or not client_secret or not refresh_token:
+            if fallback_access_token:
+                zoho_token_cache['token'] = fallback_access_token
+                zoho_token_cache['expires_at'] = now + 300
+                return fallback_access_token
+            raise ZohoAPIError(
+                "Zoho Books auth not configured.",
+                status_code=400,
+                error_code='ZOHO_AUTH_NOT_CONFIGURED'
+            )
+
+        token_url = f"https://{_accounts_base_domain()}/oauth/v2/token"
+        payload = urllib.parse.urlencode({
+            'refresh_token': refresh_token,
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'grant_type': 'refresh_token'
+        }).encode('utf-8')
+
+        req = urllib.request.Request(
+            url=token_url,
+            data=payload,
+            method='POST',
+            headers={'Content-Type': 'application/x-www-form-urlencoded'}
+        )
+
+        try:
+            with urllib.request.urlopen(req, timeout=20) as response:
+                token_data = json.loads(response.read().decode('utf-8'))
+        except urllib.error.HTTPError:
+            raise ZohoAPIError(
+                "Unable to refresh Zoho access token.",
+                status_code=502,
+                error_code='ZOHO_TOKEN_REFRESH_FAILED'
+            )
+        except Exception:
+            raise ZohoAPIError(
+                "Unable to refresh Zoho access token.",
+                status_code=502,
+                error_code='ZOHO_TOKEN_REFRESH_FAILED'
+            )
+
+        access_token = (token_data.get('access_token') or '').strip()
+        expires_in = int(token_data.get('expires_in', 3600))
+        if not access_token:
+            raise ZohoAPIError(
+                "Zoho token refresh response missing access token.",
+                status_code=502,
+                error_code='ZOHO_TOKEN_INVALID_RESPONSE'
+            )
+
+        zoho_token_cache['token'] = access_token
+        zoho_token_cache['expires_at'] = now + max(120, (expires_in - 60))
+        return access_token
+
+
+def _zoho_books_base_url():
+    data_center = (os.environ.get('ZOHO_BOOKS_DATA_CENTER') or 'in').strip().lower()
+    return f"https://www.zohoapis.{data_center}/books/v3"
+
+
+def _zoho_books_headers():
+    access_token = _refresh_zoho_access_token()
+    return {
+        'Authorization': f'Zoho-oauthtoken {access_token}',
+        'Content-Type': 'application/json'
+    }
+
+
+def _zoho_books_request(method, path, org_id, payload=None, retry_on_unauthorized=True):
+    query = urllib.parse.urlencode({'organization_id': org_id})
+    url = f"{_zoho_books_base_url()}{path}?{query}"
+    data = None
+    if payload is not None:
+        data = json.dumps(payload).encode('utf-8')
+
+    req = urllib.request.Request(
+        url=url,
+        data=data,
+        method=method,
+        headers=_zoho_books_headers()
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=25) as response:
+            body = response.read().decode('utf-8')
+            return json.loads(body)
+    except urllib.error.HTTPError as http_err:
+        if http_err.code == 401 and retry_on_unauthorized:
+            _refresh_zoho_access_token(force=True)
+            return _zoho_books_request(method, path, org_id, payload=payload, retry_on_unauthorized=False)
+
+        raise ZohoAPIError(
+            "Zoho Books API request failed.",
+            status_code=502,
+            error_code='ZOHO_API_HTTP_ERROR'
+        )
+    except ZohoAPIError:
+        raise
+    except Exception:
+        raise ZohoAPIError(
+            "Zoho Books API request failed.",
+            status_code=502,
+            error_code='ZOHO_API_REQUEST_FAILED'
+        )
+
+
+def _extract_payment_url(invoice_payload):
+    if not invoice_payload:
+        return None
+
+    candidates = [
+        invoice_payload.get('payment_link'),
+        invoice_payload.get('payment_url'),
+        invoice_payload.get('invoice_url'),
+        invoice_payload.get('customer_view_url'),
+        invoice_payload.get('url')
+    ]
+
+    for candidate in candidates:
+        if isinstance(candidate, str) and candidate.strip().startswith('http'):
+            return candidate.strip()
+
+    return None
+
+
+def _is_valid_email(email):
+    return bool(re.match(r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$', email or ''))
+
+
+def _is_valid_invoice_id(invoice_id):
+    return bool(re.match(r'^[A-Za-z0-9_-]{6,80}$', invoice_id or ''))
+
+
+def _parse_yes_no(value):
+    return str(value or '').strip().lower() in ['yes', 'true', '1', 'y']
+
+
+def _expected_fee_from_payload(data):
+    category = (data.get('registration_category') or '').strip()
+    if category not in FEE_CONFIG:
+        return None
+
+    cfg = FEE_CONFIG[category]
+    addon_food = _parse_yes_no(data.get('addon_food_accommodation'))
+    addon_safari = _parse_yes_no(data.get('addon_safari'))
+
+    if cfg['fixed']:
+        total = cfg['base']
+    else:
+        total = cfg['base']
+        total += cfg['food'] if addon_food else 0
+        total += cfg['safari'] if addon_safari else 0
+
+    return {
+        'category': category,
+        'currency': cfg['currency'],
+        'total': float(total)
+    }
+
+
+def _get_registration_for_payment(email=None, registration_id=None):
+    from db.firebase_models import Registration
+
+    registration = None
+    if registration_id:
+        registration = Registration.get_by_id(registration_id)
+    if (not registration) and email:
+        registration = Registration.get_by_email(email)
+    return registration
 
 
 @register_bp.route('/api/register/start', methods=['POST'])
@@ -223,7 +468,7 @@ def cancel_registration_session():
     """
     try:
         data = request.get_json() or {}
-        session_id = data.get('session_id') or get_session_id()
+        session_id = data.get('session_id') or get_or_create_session_id()
         
         if session_id in registration_sessions:
             reg_state = registration_sessions[session_id]
@@ -254,7 +499,7 @@ def get_registration_status():
     """
     try:
         # Accept session_id from query parameter or use Flask session
-        session_id = request.args.get('session_id') or get_session_id()
+        session_id = request.args.get('session_id') or get_or_create_session_id()
         
         if session_id not in registration_sessions:
             return jsonify({
@@ -367,4 +612,246 @@ def submit_form_registration():
             "success": False,
             "message": "An error occurred during registration. Please try again.",
             "error": str(e)
+        }), 500
+
+
+@register_bp.route('/api/register/payment/zoho-books/create-link', methods=['POST'])
+def create_zoho_books_payment_link():
+    """
+    Creates a Zoho Books invoice/payment link for a completed registration.
+    """
+    try:
+        if not _enforce_payment_rate_limit('zoho_create_link'):
+            return jsonify({
+                "success": False,
+                "message": "Too many payment attempts. Please wait a minute and try again."
+            }), 429
+
+        data = request.get_json() or {}
+        org_id = (os.environ.get('ZOHO_BOOKS_ORGANIZATION_ID') or '').strip()
+
+        if not org_id:
+            return jsonify({
+                "success": False,
+                "message": "Zoho Books is not configured. Set ZOHO_BOOKS_ORGANIZATION_ID in .env"
+            }), 400
+
+        name = (data.get('name') or '').strip()
+        email = (data.get('email') or '').strip()
+        registration_category = (data.get('registration_category') or '').strip()
+        registration_id = (data.get('registration_id') or '').strip()
+
+        expected_fee = _expected_fee_from_payload(data)
+        if not expected_fee:
+            return jsonify({
+                "success": False,
+                "message": "Invalid registration category for payment."
+            }), 400
+
+        if not name or len(name) > 120 or not _is_valid_email(email):
+            return jsonify({
+                "success": False,
+                "message": "Invalid payer details."
+            }), 400
+
+        try:
+            client_total = float(data.get('total_fee'))
+        except (TypeError, ValueError):
+            client_total = None
+
+        amount = expected_fee['total']
+        currency = expected_fee['currency']
+
+        if amount <= 0 or amount > 1000000:
+            return jsonify({
+                "success": False,
+                "message": "Invalid payment amount."
+            }), 400
+
+        if client_total is not None and abs(client_total - amount) > 0.01:
+            return jsonify({
+                "success": False,
+                "message": "Payment amount mismatch. Please refresh and try again."
+            }), 400
+
+        contact_payload = {
+            "contact_name": name,
+            "email": email
+        }
+        contact_resp = _zoho_books_request('POST', '/contacts', org_id, payload=contact_payload)
+        if contact_resp.get('code') not in [0, '0']:
+            return jsonify({
+                "success": False,
+                "message": "Failed to create Zoho customer contact."
+            }), 502
+
+        contact = contact_resp.get('contact') or {}
+        contact_id = contact.get('contact_id')
+        if not contact_id:
+            return jsonify({
+                "success": False,
+                "message": "Zoho contact creation did not return contact ID."
+            }), 502
+
+        invoice_payload = {
+            "customer_id": contact_id,
+            "currency_code": currency,
+            "reference_number": registration_id or None,
+            "line_items": [
+                {
+                    "name": f"GDTA 2026 - {registration_category}",
+                    "description": f"GDTA 2026 conference registration fee ({registration_category})",
+                    "quantity": 1,
+                    "rate": amount
+                }
+            ]
+        }
+
+        invoice_resp = _zoho_books_request('POST', '/invoices', org_id, payload=invoice_payload)
+        if invoice_resp.get('code') not in [0, '0']:
+            return jsonify({
+                "success": False,
+                "message": "Failed to create Zoho invoice."
+            }), 502
+
+        invoice = invoice_resp.get('invoice') or {}
+        invoice_id = invoice.get('invoice_id')
+        payment_url = _extract_payment_url(invoice)
+
+        if (not payment_url) and invoice_id:
+            payment_template = (os.environ.get('ZOHO_BOOKS_PAYMENT_LINK_TEMPLATE') or '').strip()
+            if payment_template and '{invoice_id}' in payment_template:
+                payment_url = payment_template.replace('{invoice_id}', str(invoice_id))
+
+        if not payment_url:
+            return jsonify({
+                "success": False,
+                "message": "Invoice created, but no direct payment URL was returned. Configure ZOHO_BOOKS_PAYMENT_LINK_TEMPLATE in .env.",
+                "invoice_id": invoice_id
+            }), 502
+
+        registration = _get_registration_for_payment(email=email, registration_id=registration_id)
+        if registration:
+            registration.payment_status = 'payment_link_created'
+            registration.payment_provider = 'zoho_books'
+            registration.payment_invoice_id = invoice_id
+            registration.payment_link = payment_url
+            registration.payment_amount = amount
+            registration.payment_currency = currency
+            registration.payment_method = (data.get('payment_method') or '').strip() or None
+            registration.save()
+
+        return jsonify({
+            "success": True,
+            "provider": "zoho_books",
+            "invoice_id": invoice_id,
+            "payment_url": payment_url,
+            "currency": currency,
+            "amount": amount,
+            "message": "Zoho Books payment link created successfully."
+        }), 200
+
+    except ZohoAPIError as e:
+        return jsonify({
+            "success": False,
+            "message": e.message,
+            "error_code": e.error_code
+        }), e.status_code
+    except Exception as e:
+        print(f"Zoho create-link error: {e}")
+        return jsonify({
+            "success": False,
+            "message": "Failed to create Zoho Books payment link.",
+            "error_code": "ZOHO_CREATE_LINK_FAILED"
+        }), 500
+
+
+@register_bp.route('/api/register/payment/zoho-books/status', methods=['GET'])
+def get_zoho_books_payment_status():
+    """
+    Checks invoice payment status from Zoho Books.
+    """
+    try:
+        if not _enforce_payment_rate_limit('zoho_payment_status'):
+            return jsonify({
+                "success": False,
+                "message": "Too many status checks. Please wait a minute and try again."
+            }), 429
+
+        org_id = (os.environ.get('ZOHO_BOOKS_ORGANIZATION_ID') or '').strip()
+        invoice_id = (request.args.get('invoice_id') or '').strip()
+
+        if not org_id:
+            return jsonify({
+                "success": False,
+                "message": "Zoho Books is not configured."
+            }), 400
+
+        if not invoice_id or not _is_valid_invoice_id(invoice_id):
+            return jsonify({
+                "success": False,
+                "message": "Valid invoice_id is required."
+            }), 400
+
+        status_resp = _zoho_books_request('GET', f'/invoices/{invoice_id}', org_id)
+        if status_resp.get('code') not in [0, '0']:
+            return jsonify({
+                "success": False,
+                "message": "Failed to fetch invoice status from Zoho Books."
+            }), 502
+
+        invoice = status_resp.get('invoice') or {}
+        invoice_status = (invoice.get('status') or '').lower()
+        try:
+            balance = float(invoice.get('balance') if invoice.get('balance') is not None else 0)
+        except (TypeError, ValueError):
+            balance = 0
+
+        paid = invoice_status == 'paid' or balance <= 0
+
+        if paid:
+            from datetime import datetime
+
+            registration = _get_registration_for_payment(registration_id=invoice.get('reference_number'))
+            if (not registration) and invoice.get('customer_email'):
+                registration = _get_registration_for_payment(email=invoice.get('customer_email'))
+
+            if registration:
+                registration.payment_status = 'paid'
+                registration.payment_provider = 'zoho_books'
+                registration.payment_invoice_id = invoice_id
+                registration.payment_amount = float(invoice.get('total') or registration.payment_amount or 0)
+                registration.payment_currency = invoice.get('currency_code') or registration.payment_currency
+                registration.payment_paid_at = datetime.utcnow()
+                registration.save()
+        else:
+            registration = _get_registration_for_payment(registration_id=invoice.get('reference_number'))
+            if registration and str(getattr(registration, 'payment_status', '')).lower() != 'paid':
+                registration.payment_status = 'payment_pending'
+                registration.payment_provider = 'zoho_books'
+                registration.payment_invoice_id = invoice_id
+                registration.save()
+
+        return jsonify({
+            "success": True,
+            "provider": "zoho_books",
+            "invoice_id": invoice_id,
+            "status": invoice_status or 'unknown',
+            "balance": balance,
+            "paid": paid,
+            "raw_status": invoice.get('status')
+        }), 200
+
+    except ZohoAPIError as e:
+        return jsonify({
+            "success": False,
+            "message": e.message,
+            "error_code": e.error_code
+        }), e.status_code
+    except Exception as e:
+        print(f"Zoho status error: {e}")
+        return jsonify({
+            "success": False,
+            "message": "Failed to check Zoho Books payment status.",
+            "error_code": "ZOHO_STATUS_FAILED"
         }), 500
