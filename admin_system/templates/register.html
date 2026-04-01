@@ -207,6 +207,34 @@
             font-size: 0.92rem;
         }
 
+        .locked-check-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .plan-check-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .locked-check-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #198754;
+            cursor: not-allowed;
+            flex: 0 0 auto;
+        }
+
+        .plan-check-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #198754;
+            cursor: pointer;
+            flex: 0 0 auto;
+        }
+
         .card-addon-choice {
             background: #f8f9fa;
             border: 1px solid #e9ecef;
@@ -383,26 +411,11 @@
                             <div class="price-main">Rs.500</div>
                             <p class="price-note">Conference access with optional add-ons</p>
                             <ul class="price-list">
-                                <li><i class="fas fa-check text-success me-2"></i>General Pass</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Food & Accommodation Add-on Available</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Safari Add-on Available</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>General Pass (Rs.500)</li>
+                                <li class="plan-check-item"><input type="checkbox" id="student_food_choice">Food & Accommodation Add-on Available (+Rs.500)</li>
+                                <li class="plan-check-item"><input type="checkbox" id="student_safari_choice">Safari Add-on Available (+Rs.500)</li>
                             </ul>
-                            <div class="card-addon-choice">
-                                <div style="font-size: 0.85rem; font-weight: 700; color: #212529; margin-bottom: 6px;">Choose Pass Type</div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="student_pass_choice" id="student_general" value="general" checked>
-                                    <label class="form-check-label" for="student_general" style="font-size: 0.88rem;">General Pass (Rs.500)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="student_pass_choice" id="student_food" value="food">
-                                    <label class="form-check-label" for="student_food" style="font-size: 0.88rem;">Food & Accommodation (+Rs.500)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="student_pass_choice" id="student_safari" value="safari">
-                                    <label class="form-check-label" for="student_safari" style="font-size: 0.88rem;">Safari (+Rs.500)</label>
-                                </div>
-                            </div>
-                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Student" data-addon-choice-group="student_pass_choice">Proceed with Student</button>
+                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Student" data-food-checkbox-id="student_food_choice" data-safari-checkbox-id="student_safari_choice">Proceed with Student</button>
                         </div>
 
                         <div class="pricing-card">
@@ -410,26 +423,11 @@
                             <div class="price-main">Rs.2000</div>
                             <p class="price-note">Conference pass for faculty and researchers</p>
                             <ul class="price-list">
-                                <li><i class="fas fa-check text-success me-2"></i>General Pass</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Food & Accommodation Add-on Available</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Safari Add-on Available</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>General Pass (Rs.2000)</li>
+                                <li class="plan-check-item"><input type="checkbox" id="academician_food_choice">Food & Accommodation Add-on Available (+Rs.500)</li>
+                                <li class="plan-check-item"><input type="checkbox" id="academician_safari_choice">Safari Add-on Available (+Rs.500)</li>
                             </ul>
-                            <div class="card-addon-choice">
-                                <div style="font-size: 0.85rem; font-weight: 700; color: #212529; margin-bottom: 6px;">Choose Pass Type</div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="academician_pass_choice" id="academician_general" value="general" checked>
-                                    <label class="form-check-label" for="academician_general" style="font-size: 0.88rem;">General Pass (Rs.2000)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="academician_pass_choice" id="academician_food" value="food">
-                                    <label class="form-check-label" for="academician_food" style="font-size: 0.88rem;">Food & Accommodation (+Rs.500)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="academician_pass_choice" id="academician_safari" value="safari">
-                                    <label class="form-check-label" for="academician_safari" style="font-size: 0.88rem;">Safari (+Rs.500)</label>
-                                </div>
-                            </div>
-                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Academician" data-addon-choice-group="academician_pass_choice">Proceed with Academician</button>
+                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Academician" data-food-checkbox-id="academician_food_choice" data-safari-checkbox-id="academician_safari_choice">Proceed with Academician</button>
                         </div>
 
                         <div class="pricing-card">
@@ -438,9 +436,9 @@
                             <div class="price-main">Rs.7500</div>
                             <p class="price-note">Complete pass including food and safari</p>
                             <ul class="price-list">
-                                <li><i class="fas fa-check text-success me-2"></i>Conference + Food + Safari</li>
-                                <li><i class="fas fa-check text-success me-2"></i>No additional add-on selection</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Fast-track payment step</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>Conference + Food + Safari</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>No additional add-on selection</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>Fast-track payment step</li>
                             </ul>
                             <button class="btn btn-dark w-100 select-plan-btn" data-category="Industry People">Proceed with Industrial</button>
                         </div>
@@ -451,9 +449,9 @@
                             <div class="price-main">$100</div>
                             <p class="price-note">All-inclusive international registration</p>
                             <ul class="price-list">
-                                <li><i class="fas fa-check text-success me-2"></i>Conference + Food + Safari</li>
-                                <li><i class="fas fa-check text-success me-2"></i>No add-ons required</li>
-                                <li><i class="fas fa-check text-success me-2"></i>USD billing</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>Conference + Food + Safari</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>No add-ons required</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>USD billing</li>
                             </ul>
                             <button class="btn btn-dark w-100 select-plan-btn" data-category="Foreign Delegate">Proceed with Foreign Delegate</button>
                         </div>
@@ -1006,10 +1004,15 @@
             btn.addEventListener('click', () => {
                 const chosen = btn.getAttribute('data-category');
                 const groupName = btn.getAttribute('data-addon-choice-group');
+                const foodCheckboxId = btn.getAttribute('data-food-checkbox-id');
+                const safariCheckboxId = btn.getAttribute('data-safari-checkbox-id');
                 let presetFoodAddon = null;
                 let presetSafariAddon = null;
 
-                if (groupName) {
+                if (foodCheckboxId || safariCheckboxId) {
+                    presetFoodAddon = !!(foodCheckboxId && document.getElementById(foodCheckboxId) && document.getElementById(foodCheckboxId).checked);
+                    presetSafariAddon = !!(safariCheckboxId && document.getElementById(safariCheckboxId) && document.getElementById(safariCheckboxId).checked);
+                } else if (groupName) {
                     const selectedOption = document.querySelector(`input[name="${groupName}"]:checked`);
                     if (selectedOption) {
                         presetFoodAddon = selectedOption.value === 'food';
