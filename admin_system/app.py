@@ -9,9 +9,10 @@ ARCHITECTURE PRINCIPLES:
 4. JSON files are the single source of truth
 """
 
-from flask import Flask, jsonify, send_from_directory, render_template
+from flask import Flask, jsonify, send_from_directory, render_template, request
 from flask_cors import CORS
 import os
+from urllib.parse import urlparse
 
 # Import our route blueprints
 from routes.chat import chat_bp
@@ -35,10 +36,15 @@ def create_app():
     app.config['SESSION_TYPE'] = 'filesystem'  # For session support
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
     app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SECURE'] = os.environ.get('SESSION_COOKIE_SECURE', 'True').lower() == 'true'
+    app.config['ENABLE_SECURITY_HEADERS'] = os.environ.get('ENABLE_SECURITY_HEADERS', 'True').lower() == 'true'
+    app.config['REQUIRE_ORIGIN_FOR_STATE_CHANGING'] = os.environ.get('REQUIRE_ORIGIN_FOR_STATE_CHANGING', 'True').lower() == 'true'
     
     # Enable CORS for frontend integration
     allowed_origins = os.environ.get('CORS_ORIGINS', 'http://localhost:5000,http://127.0.0.1:5000,http://127.0.0.1:5500,null')
     origins_list = [origin.strip() for origin in allowed_origins.split(',')]
+    strict_origin_list = [origin for origin in origins_list if origin and origin.lower() != 'null']
+    strict_origins = set(strict_origin_list)
     
     CORS(app, resources={
         r"/api/*": {
@@ -49,6 +55,66 @@ def create_app():
             "expose_headers": ["Set-Cookie"]
         }
     }, supports_credentials=True)
+
+    @app.before_request
+    def validate_state_changing_request_origin():
+        """
+        CSRF posture for cookie-authenticated admin routes:
+        - For state-changing methods on /api/admin and /api/superadmin,
+          require Origin (or Referer fallback) to match configured allowed origins.
+        """
+        if request.method not in ('POST', 'PUT', 'PATCH', 'DELETE'):
+            return None
+
+        if not (request.path.startswith('/api/admin') or request.path.startswith('/api/superadmin')):
+            return None
+
+        origin = (request.headers.get('Origin') or '').strip()
+        referer = (request.headers.get('Referer') or '').strip()
+        require_origin = app.config.get('REQUIRE_ORIGIN_FOR_STATE_CHANGING', True)
+
+        if origin:
+            if origin not in strict_origins:
+                return jsonify({'success': False, 'message': 'Forbidden origin.'}), 403
+            return None
+
+        if referer:
+            parsed = urlparse(referer)
+            referer_origin = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else ''
+            if referer_origin and referer_origin in strict_origins:
+                return None
+            return jsonify({'success': False, 'message': 'Forbidden referer.'}), 403
+
+        if require_origin:
+            return jsonify({'success': False, 'message': 'Missing origin header.'}), 403
+        return None
+
+    @app.after_request
+    def add_security_headers(response):
+        if app.config.get('ENABLE_SECURITY_HEADERS', True):
+            response.headers['X-Frame-Options'] = 'DENY'
+            response.headers['X-Content-Type-Options'] = 'nosniff'
+            response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+            response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
+
+            csp = (
+                "default-src 'self'; "
+                "img-src 'self' data: https:; "
+                "font-src 'self' https: data:; "
+                "style-src 'self' 'unsafe-inline' https:; "
+                "script-src 'self' 'unsafe-inline' https:; "
+                "connect-src 'self' https:; "
+                "frame-ancestors 'none'; "
+                "base-uri 'self'; "
+                "form-action 'self'"
+            )
+            response.headers['Content-Security-Policy'] = csp
+
+            # HSTS should only be set over HTTPS
+            if request.is_secure or request.headers.get('X-Forwarded-Proto', '').lower() == 'https':
+                response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains; preload'
+
+        return response
     
     # Register blueprints
     app.register_blueprint(chat_bp)
