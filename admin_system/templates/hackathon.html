@@ -1,769 +1,307 @@
 <!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <title>GDTA Challenge 2026 - Global Innovation Hackathon</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link href="/static/img/Logo/Screenshot 2026-01-24 143837.png" rel="icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap"
-        rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/static/lib/animate/animate.min.css" rel="stylesheet">
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/style.css" rel="stylesheet">
-    <link href="/static/css/custom-overrides.css" rel="stylesheet">
-    
-    <style>
-        .stat-card {
-            transition: all 0.3s ease;
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GDTA Build4Change | Build what truly matters</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-surface": "#d2e4ff",
+                        "on-surface": "#d2e4ff",
+                        "secondary": "#b0c8eb",
+                        "surface-container-highest": "#1e3652",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#524525",
+                        "primary-fixed": "#f4e1b5",
+                        "primary-fixed-dim": "#d7c59b",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "primary": "#ffffff",
+                        "secondary-container": "#314865",
+                        "on-surface-variant": "#cec5b8",
+                        "background": "#00142a",
+                        "on-background": "#d2e4ff",
+                        "tertiary-container": "#e4e2e2",
+                        "tertiary-fixed-dim": "#c7c6c6",
+                        "on-tertiary": "#303031",
+                        "on-primary-container": "#716340",
+                        "secondary-fixed-dim": "#b0c8eb",
+                        "outline-variant": "#4b463c",
+                        "on-secondary-container": "#9fb7d9",
+                        "on-tertiary-fixed-variant": "#464747",
+                        "on-secondary": "#19324d",
+                        "surface-container-lowest": "#000f21",
+                        "on-secondary-fixed": "#001c37",
+                        "on-primary-fixed": "#241a01",
+                        "error-container": "#93000a",
+                        "primary-container": "#f4e1b5",
+                        "tertiary-fixed": "#e4e2e2",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#00142a",
+                        "tertiary": "#ffffff",
+                        "inverse-primary": "#6b5d3b",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#d2e4ff",
+                        "surface-tint": "#d7c59b",
+                        "on-tertiary-container": "#646464",
+                        "on-secondary-fixed-variant": "#314865",
+                        "on-primary": "#3a2f11",
+                        "surface-container-high": "#122b46",
+                        "surface-bright": "#233a56",
+                        "surface-container-low": "#001c37",
+                        "surface-container": "#04203b",
+                        "surface": "#00142a",
+                        "outline": "#979083",
+                        "inverse-on-surface": "#19324d",
+                        "surface-variant": "#1e3652"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
         }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        .timeline-item {
-            position: relative;
-            padding-left: 40px;
+        .editorial-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
         }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 8px;
-            width: 16px;
-            height: 16px;
-            background: #000000;
-            border-radius: 50%;
-            border: 3px solid #FFFFFF;
-            box-shadow: 0 0 0 3px #000000;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5) !important;
+        body {
+            background-color: #00142a;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
         }
     </style>
 </head>
-
-<body>
-
-    <div class="container-fluid p-0"
-        style="background-color: #F8F9FA; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;">
-        <nav class="navbar navbar-expand-lg navbar-dark px-4 py-1">
-            <a href="/index.html" class="navbar-brand">
-                <img src="/static/img/Logo/gdta_main_logo.png" alt="GDTA Logo" style="height: 65px; width: auto;">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto">
-                    <a href="/index.html" class="nav-item nav-link" style="color: #495057 !important;">Home</a>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-                            style="color: #495057 !important;">About</a>
-                        <div class="dropdown-menu" style="background-color: #F8F9FA;">
-                            <a href="/about-gdta.html" class="dropdown-item" style="color: #495057 !important;">GDTA</a>
-                            <a href="/about-gdta-2026.html" class="dropdown-item" style="color: #495057 !important;">GDTA
-                                2026</a>
-                            <a href="/about-sns.html" class="dropdown-item" style="color: #495057 !important;">SNS</a>
-                            <a href="/organizing-team.html" class="dropdown-item" style="color: #495057 !important;">Organizing Team</a>
-                        </div>
-                    </div>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-                            style="color: #495057 !important;">Program</a>
-                        <div class="dropdown-menu" style="background-color: #F8F9FA;">
-                            <a href="/program-schedule.html" class="dropdown-item"
-                                style="color: #495057 !important;">Details & Schedule</a>
-                            <a href="/program-sessions.html" class="dropdown-item"
-                                style="color: #495057 !important;">Sessions & Speakers</a>
-                            <a href="/program-safari.html" class="dropdown-item"
-                                style="color: #495057 !important;">Safari</a>
-                        </div>
-                    </div>
-                    <a href="/travel-stay.html" class="nav-item nav-link" style="color: #495057 !important;">Travel &
-                        Stay</a>
-                    <a href="/sponsors.html" class="nav-item nav-link" style="color: #495057 !important;">Sponsors &
-                        Partners</a>
-                    <a href="/hackathon1.html" class="nav-item nav-link active" style="color: #000000 !important;">Hackathon</a>
-                    <a href="/contact.html" class="nav-item nav-link" style="color: #495057 !important;">Contact Us</a>
-                </div>
-                <a class="navbar-register-btn border-0 ms-3" href="/register.html">Register</a>
-            </div>
-        </nav>
-    </div>
-
-    <!-- Hero Section Start -->
-    <div class="container-fluid py-5"
-        style="background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/static/img/Background/travel_stay_bg.png') center center/cover no-repeat; margin-top: 100px; padding-top: 120px !important; padding-bottom: 120px !important;">
-        <div class="container text-center py-5">
-            <h1 class="display-3 mb-4 wow fadeInDown" data-wow-delay="0.1s"
-                style="color: #000000 !important; font-weight: 800;">Real-world Problems Solved<br>through AI Innovation</h1>
-            <p class="fs-4 mb-5 wow fadeInUp" data-wow-delay="0.2s"
-                style="color: #495057 !important;">GDTA Conference 2026 – Challenge Hackathon</p>
-            
-            <!-- Stats Grid -->
-            <div class="row g-4 mb-5 wow fadeInUp" data-wow-delay="0.3s">
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card p-4" style="background: rgba(255, 255, 255, 0.95); border-radius: 15px;">
-                        <i class="fas fa-globe fa-3x mb-3" style="color: #000000;"></i>
-                        <h4 style="color: #000000; font-weight: 700;">Global Innovation Challenge</h4>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card p-4" style="background: rgba(255, 255, 255, 0.95); border-radius: 15px;">
-                        <i class="fas fa-layer-group fa-3x mb-3" style="color: #000000;"></i>
-                        <h4 style="color: #000000; font-weight: 700;">3 Impact Tracks</h4>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card p-4" style="background: rgba(255, 255, 255, 0.95); border-radius: 15px;">
-                        <i class="fas fa-users fa-3x mb-3" style="color: #000000;"></i>
-                        <h4 style="color: #000000; font-weight: 700;">Industry Mentorship</h4>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card p-4" style="background: rgba(255, 255, 255, 0.95); border-radius: 15px;">
-                        <i class="fas fa-lightbulb fa-3x mb-3" style="color: #000000;"></i>
-                        <h4 style="color: #000000; font-weight: 700;">Real-world AI Solutions</h4>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CTA Buttons -->
-            <div class="d-flex gap-3 justify-content-center wow fadeInUp" data-wow-delay="0.4s">
-                <a href="/register.html" class="btn btn-lg px-5 py-3" style="background: #000000; color: #FFFFFF !important; border-radius: 30px; font-weight: 700; border: 3px solid #000000; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); transition: all 0.3s ease;">Start Building</a>
-                <a href="#resources" class="btn btn-outline-dark btn-lg px-5 py-3" style="background: #FFFFFF; color: #000000 !important; border-radius: 30px; font-weight: 700; border: 3px solid #000000; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;">View Resources</a>
-            </div>
-        </div>
-    </div>
-    <!-- Hero Section End -->
-
-    <!-- About Section Start -->
-    <div class="container-fluid py-5" style="background-color: #FFFFFF;">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">About the Challenge</h5>
-                <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #000000 !important;">GDTA Challenge 2026</h2>
-            </div>
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-12">
-                    <div class="wow fadeInUp" data-wow-delay="0.3s">
-                        <p class="mb-4" style="line-height: 1.8; text-align: justify; color: #495057 !important; font-size: 16px;">
-                            The GDTA Challenge 2026 is a global innovation hackathon organized as part of the GDTA Conference 2026. The challenge invites developers, researchers, students, and innovators to build impactful AI-powered solutions addressing critical challenges across industries.
-                        </p>
-                        <p class="mb-4" style="line-height: 1.8; text-align: justify; color: #495057 !important; font-size: 16px;">
-                            Participants will design intelligent systems capable of analyzing real-world problems and delivering scalable digital solutions that can create meaningful impact in society.
-                        </p>
-                        <p class="mb-0" style="line-height: 1.8; text-align: justify; color: #495057 !important; font-size: 16px;">
-                            This challenge encourages innovation that combines advanced technologies, responsible AI practices, and practical implementation.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- About Section End -->
-
-    <!-- Hackathon Goal Section Start -->
-    <div class="container-fluid py-5" style="background-color: #F8F9FA;">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Our Mission</h5>
-                <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #000000 !important;">Hackathon Goal</h2>
-            </div>
-            <div class="row g-5">
-                <div class="col-lg-12">
-                    <div class="wow fadeInUp" data-wow-delay="0.3s" style="background: #FFFFFF; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
-                        <p class="mb-4" style="line-height: 1.8; color: #000000 !important; font-size: 18px; font-weight: 600;">
-                            Build intelligent systems that can analyze, reason, and solve real-world problems in sectors that directly impact society.
-                        </p>
-                        <p class="mb-4" style="line-height: 1.8; color: #495057 !important; font-size: 16px;">
-                            Participants are encouraged to develop solutions that demonstrate:
-                        </p>
-                        <ul style="line-height: 2; color: #495057 !important; font-size: 16px;">
-                            <li><strong>Innovative use of Artificial Intelligence</strong></li>
-                            <li><strong>Scalable and deployable system architecture</strong></li>
-                            <li><strong>Multi-modal or data-driven intelligence</strong></li>
-                            <li><strong>Integration with real-world tools or datasets</strong></li>
-                            <li><strong>Meaningful impact in healthcare, education, or sustainability</strong></li>
-                        </ul>
-                        <p class="mb-0 mt-4" style="line-height: 1.8; color: #000000 !important; font-size: 17px; font-weight: 600;">
-                            This challenge focuses on building <strong>practical solutions rather than theoretical prototypes</strong>.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Hackathon Goal Section End -->
-
-    <!-- The Challenge Section Start -->
-    <div class="container-fluid py-5" style="background-color: #FFFFFF;">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Requirements</h5>
-                <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #000000 !important;">The Challenge</h2>
-                <p class="wow fadeInUp" data-wow-delay="0.3s" style="color: #495057 !important; max-width: 800px; margin: 0 auto;">
-                    Participants are expected to develop solutions that demonstrate:
+<body class="antialiased">
+<header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex h-20 items-center justify-between gap-4">
+<a href="/index.html" class="shrink-0">
+<img src="/static/img/Logo/gdta_main_logo.png" alt="GDTA Logo" class="h-14 w-auto"/>
+</a>
+<nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-700">
+<a href="/index.html" class="hover:text-black transition-colors">Home</a>
+<a href="/about-gdta.html" class="hover:text-black transition-colors">About</a>
+<a href="/program-schedule.html" class="hover:text-black transition-colors">Program</a>
+<a href="/travel-stay.html" class="hover:text-black transition-colors">Travel &amp; Stay</a>
+<a href="/sponsors.html" class="hover:text-black transition-colors">Sponsors &amp; Partners</a>
+<a href="/hackathon.html" class="text-black">Hackathon</a>
+<a href="/contact.html" class="hover:text-black transition-colors">Contact Us</a>
+</nav>
+<a href="/register.html" class="hidden sm:inline-flex items-center rounded-full bg-black px-5 py-2 text-white text-sm font-bold uppercase tracking-wide hover:bg-slate-800 transition-colors">Register</a>
+</div>
+<nav class="lg:hidden pb-3 overflow-x-auto whitespace-nowrap text-sm font-semibold text-slate-700">
+<a href="/index.html" class="mr-4">Home</a>
+<a href="/about-gdta.html" class="mr-4">About</a>
+<a href="/program-schedule.html" class="mr-4">Program</a>
+<a href="/travel-stay.html" class="mr-4">Travel</a>
+<a href="/sponsors.html" class="mr-4">Sponsors</a>
+<a href="/hackathon.html" class="mr-4 text-black">Hackathon</a>
+<a href="/contact.html" class="mr-4">Contact</a>
+<a href="/register.html" class="text-black">Register</a>
+</nav>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center justify-center pt-24 overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-40 grayscale" data-alt="candid shot of diverse young innovators collaborating around a wooden table in a high ceiling industrial loft with natural afternoon light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDh0E0H46zI9hmde3q5HMpPk6yWpy99vPWXAIxnTJ7xidIN8sgowE3ZzWloWafF63KNg1o_c4yiKrEQT49Dt8157rt7s51M7mRgM4ZuKE3rsC-i7GlfV9RQlJ-NHMcCZxZ5HdHGEA7vBGtT9A7-agClPc6BNDBxLnLxk5g2qgDmgKJyHEZKhJJlCUXftNXubrDGMKhLIgbrmPQcB90AQXfEbaYl7qRboXB9bdE6GNMAVREXVmat0L7Hluvc_1I-xtuxMTmy2vAt-A"/>
+<div class="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background"></div>
+</div>
+<div class="relative z-10 container mx-auto px-6 text-center">
+<p class="font-label text-primary-fixed-dim tracking-[0.3em] uppercase mb-6 text-sm">Part of GDTA 2026</p>
+<h1 class="font-headline text-5xl md:text-8xl font-black tracking-tighter text-white mb-8 leading-[0.9]">
+                    GDTA <br class="md:hidden"/> Build4Change
+                </h1>
+<p class="font-body text-xl md:text-3xl text-on-surface-variant max-w-2xl mx-auto mb-12 font-light">
+                    Build what truly matters.
                 </p>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
-                    <div class="h-100" style="background: #F8F9FA; padding: 30px; border-radius: 15px; border-left: 5px solid #000000;">
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 15px;">
-                            <i class="fas fa-project-diagram me-2" style="color: #000000;"></i>Intelligent System Architecture
-                        </h4>
-                        <p style="margin-bottom: 0; color: #495057 !important; line-height: 1.8;">
-                            Design modular and scalable systems capable of solving complex problems.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="h-100" style="background: #F8F9FA; padding: 30px; border-radius: 15px; border-left: 5px solid #000000;">
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 15px;">
-                            <i class="fas fa-bolt me-2" style="color: #000000;"></i>Real-Time Data Processing
-                        </h4>
-                        <p style="margin-bottom: 0; color: #495057 !important; line-height: 1.8;">
-                            Utilize modern AI and computing technologies to process information efficiently.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
-                    <div class="h-100" style="background: #F8F9FA; padding: 30px; border-radius: 15px; border-left: 5px solid #000000;">
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 15px;">
-                            <i class="fas fa-plug me-2" style="color: #000000;"></i>Integration with External Systems
-                        </h4>
-                        <p style="margin-bottom: 0; color: #495057 !important; line-height: 1.8;">
-                            Connect your solution with APIs, datasets, or digital platforms to demonstrate real-world applicability.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="h-100" style="background: #F8F9FA; padding: 30px; border-radius: 15px; border-left: 5px solid #000000;">
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 15px;">
-                            <i class="fas fa-layer-group me-2" style="color: #000000;"></i>Multi-Modal Capabilities
-                        </h4>
-                        <p style="margin-bottom: 0; color: #495057 !important; line-height: 1.8;">
-                            Combine multiple forms of input such as text, data, images, or voice.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
-                    <div class="h-100" style="background: #F8F9FA; padding: 30px; border-radius: 15px; border-left: 5px solid #000000;">
-                        <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 15px;">
-                            <i class="fas fa-heart me-2" style="color: #000000;"></i>Genuine Impact
-                        </h4>
-                        <p style="margin-bottom: 0; color: #495057 !important; line-height: 1.8;">
-                            Address a real-world problem that affects communities, industries, or the environment.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- The Challenge Section End -->
-
-    <!-- Developer Resources Section Start -->
-    <div class="container-fluid py-5" id="resources" style="background-color: #F8F9FA;">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Get Started</h5>
-                <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #000000 !important;">Developer Resources</h2>
-            </div>
-            
-            <!-- Quick Start Guide -->
-            <div class="row g-5 mb-5">
-                <div class="col-lg-6">
-                    <div class="wow fadeInLeft" data-wow-delay="0.3s" style="background: #FFFFFF; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); height: 100%;">
-                        <h3 style="color: #000000 !important; font-weight: 700; margin-bottom: 25px;">Quick Start Guide</h3>
-                        <ol style="line-height: 2.2; color: #495057 !important; font-size: 16px; padding-left: 20px;">
-                            <li>Register for the GDTA Challenge 2026</li>
-                            <li>Explore the challenge tracks and problem areas</li>
-                            <li>Identify a real-world problem within a track</li>
-                            <li>Design your solution architecture</li>
-                            <li>Begin building and testing your prototype</li>
-                        </ol>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="wow fadeInRight" data-wow-delay="0.3s" style="background: #FFFFFF; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); height: 100%;">
-                        <h3 style="color: #000000 !important; font-weight: 700; margin-bottom: 25px;">Support Resources</h3>
-                        <div class="mb-3">
-                            <h5 style="color: #000000; font-weight: 600;"><i class="fas fa-book me-2" style="color: #000000;"></i>Documentation</h5>
-                            <p style="color: #495057 !important; margin-bottom: 20px;">Access technical guides and datasets provided for the challenge.</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5 style="color: #000000; font-weight: 600;"><i class="fas fa-comments me-2" style="color: #000000;"></i>Community Forum</h5>
-                            <p style="color: #495057 !important; margin-bottom: 20px;">Discuss ideas, ask questions, and collaborate with other participants.</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5 style="color: #000000; font-weight: 600;"><i class="fas fa-user-tie me-2" style="color: #000000;"></i>Mentorship Sessions</h5>
-                            <p style="color: #495057 !important; margin-bottom: 20px;">Industry mentors will provide guidance during the development phase.</p>
-                        </div>
-                        <div>
-                            <h5 style="color: #000000; font-weight: 600;"><i class="fas fa-chalkboard-teacher me-2" style="color: #000000;"></i>Technical Workshops</h5>
-                            <p style="color: #495057 !important; margin-bottom: 0;">Online sessions to help participants understand tools and technologies required for the challenge.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Developer Resources Section End -->
-
-    <!-- Participation Tiers Section Start -->
-    <div class="container-fluid py-5" style="background-color: #FFFFFF;">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Who Can Participate</h5>
-                <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #000000 !important;">Participation Tiers</h2>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="h-100" style="background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); border: 2px solid #000000;">
-                        <div class="text-center mb-4">
-                            <i class="fas fa-graduation-cap fa-4x mb-3" style="color: #000000;"></i>
-                            <h3 style="color: #000000 !important; font-weight: 700;">Student Innovator Tier</h3>
-                        </div>
-                        <ul style="line-height: 2; color: #495057 !important; font-size: 16px; list-style: none; padding-left: 0;">
-                            <li><i class="fas fa-check-circle me-2" style="color: #000000;"></i>Open to university and college students</li>
-                            <li><i class="fas fa-check-circle me-2" style="color: #000000;"></i>Access to mentorship and learning resources</li>
-                            <li><i class="fas fa-check-circle me-2" style="color: #000000;"></i>Opportunity to showcase innovative ideas</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.4s">
-                    <div class="h-100" style="background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); border: 2px solid #000000;">
-                        <div class="text-center mb-4">
-                            <i class="fas fa-laptop-code fa-4x mb-3" style="color: #000000;"></i>
-                            <h3 style="color: #000000 !important; font-weight: 700;">Developer / Professional Tier</h3>
-                        </div>
-                        <ul style="line-height: 2; color: #495057 !important; font-size: 16px; list-style: none; padding-left: 0;">
-                            <li><i class="fas fa-check-circle me-2" style="color: #000000;"></i>Open to developers, engineers, and startups</li>
-                            <li><i class="fas fa-check-circle me-2" style="color: #000000;"></i>Focus on scalable and production-ready solutions</li>
-                            <li><i class="fas fa-check-circle me-2" style="color: #000000;"></i>Industry collaboration opportunities</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Special Recognition -->
-            <div class="row mt-5">
-                <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.5s">
-                    <div style="background: #FFFFFF; padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
-                        <h3 style="color: #000000 !important; font-weight: 700; margin-bottom: 20px;">Special Recognition Awards</h3>
-                        <p style="color: #495057 !important; font-size: 18px; margin-bottom: 20px;">Outstanding projects may receive:</p>
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <div style="background: #F8F9FA; padding: 20px; border-radius: 10px; border: 2px solid #000000;">
-                                    <i class="fas fa-trophy fa-3x mb-2" style="color: #000000;"></i>
-                                    <h5 style="color: #000000 !important; font-weight: 600;">Innovation Awards</h5>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div style="background: #F8F9FA; padding: 20px; border-radius: 10px; border: 2px solid #000000;">
-                                    <i class="fas fa-handshake fa-3x mb-2" style="color: #000000;"></i>
-                                    <h5 style="color: #000000 !important; font-weight: 600;">Industry Collaboration</h5>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div style="background: #F8F9FA; padding: 20px; border-radius: 10px; border: 2px solid #000000;">
-                                    <i class="fas fa-medal fa-3x mb-2" style="color: #000000;"></i>
-                                    <h5 style="color: #000000 !important; font-weight: 600;">Conference Recognition</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Participation Tiers Section End -->
-
-    <!-- Challenge Tracks Section Start -->
-    <div class="container-fluid py-5" style="background-color: #F8F9FA;">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Focus Areas</h5>
-                <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #000000 !important;">Challenge Tracks</h2>
-            </div>
-            
-            <div class="row g-4">
-                <!-- Healthcare Innovation -->
-                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
-                    <div class="h-100" style="background: #FFFFFF; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; border: 2px solid #000000;">
-                        <div style="background: #000000; padding: 30px; text-align: center;">
-                            <i class="fas fa-heartbeat fa-4x mb-3" style="color: #FFFFFF;"></i>
-                            <h3 style="color: #FFFFFF !important; font-weight: 800; font-size: 24px;">Healthcare Innovation</h3>
-                        </div>
-                        <div style="padding: 30px;">
-                            <p style="color: #495057 !important; margin-bottom: 20px; line-height: 1.8;">
-                                Develop AI-powered systems to improve healthcare accessibility, diagnostics, patient monitoring, or healthcare data management.
-                            </p>
-                            <h5 style="color: #000000; font-weight: 600; margin-bottom: 15px;">Example areas:</h5>
-                            <ul style="color: #495057 !important; line-height: 1.8;">
-                                <li>AI-assisted diagnosis</li>
-                                <li>Patient monitoring systems</li>
-                                <li>Medical data analysis</li>
-                                <li>Digital health platforms</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- EdTech Transformation -->
-                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="h-100" style="background: #FFFFFF; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; border: 2px solid #000000;">
-                        <div style="background: #000000; padding: 30px; text-align: center;">
-                            <i class="fas fa-graduation-cap fa-4x mb-3" style="color: #FFFFFF;"></i>
-                            <h3 style="color: #FFFFFF !important; font-weight: 800; font-size: 24px;">EdTech Transformation</h3>
-                        </div>
-                        <div style="padding: 30px;">
-                            <p style="color: #495057 !important; margin-bottom: 20px; line-height: 1.8;">
-                                Create intelligent systems that enhance education, learning accessibility, and knowledge delivery.
-                            </p>
-                            <h5 style="color: #000000; font-weight: 600; margin-bottom: 15px;">Example areas:</h5>
-                            <ul style="color: #495057 !important; line-height: 1.8;">
-                                <li>Personalized learning systems</li>
-                                <li>AI tutoring assistants</li>
-                                <li>Skill development platforms</li>
-                                <li>Educational analytics</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sustainability & Climate Solutions -->
-                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.4s">
-                    <div class="h-100" style="background: #FFFFFF; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; border: 2px solid #000000;">
-                        <div style="background: #000000; padding: 30px; text-align: center;">
-                            <i class="fas fa-leaf fa-4x mb-3" style="color: #FFFFFF;"></i>
-                            <h3 style="color: #FFFFFF !important; font-weight: 800; font-size: 24px;">Sustainability & Climate</h3>
-                        </div>
-                        <div style="padding: 30px;">
-                            <p style="color: #495057 !important; margin-bottom: 20px; line-height: 1.8;">
-                                Design technologies that help monitor environmental impact, optimize resources, and support sustainable development.
-                            </p>
-                            <h5 style="color: #000000; font-weight: 600; margin-bottom: 15px;">Example areas:</h5>
-                            <ul style="color: #495057 !important; line-height: 1.8;">
-                                <li>Environmental monitoring systems</li>
-                                <li>Smart energy optimization</li>
-                                <li>Waste management solutions</li>
-                                <li>Climate data analysis</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Challenge Tracks Section End -->
-
-    <!-- Event Timeline Section Start -->
-    <div class="container-fluid py-5" style="background-color: #FFFFFF;">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Important Dates</h5>
-                <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #000000 !important;">Event Timeline</h2>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="wow fadeInUp" data-wow-delay="0.3s" style="background: #F8F9FA; padding: 50px; border-radius: 15px;">
-                        <div class="timeline-item mb-4">
-                            <h4 style="color: #000000; font-weight: 700; margin-bottom: 5px;">Registration Opens</h4>
-                            <p style="color: #000000; font-weight: 600; margin-bottom: 10px;">April 10, 2026</p>
-                        </div>
-                        <div class="timeline-item mb-4">
-                            <h4 style="color: #000000; font-weight: 700; margin-bottom: 5px;">Hackathon Kickoff</h4>
-                            <p style="color: #000000; font-weight: 600; margin-bottom: 10px;">May 1, 2026</p>
-                        </div>
-                        <div class="timeline-item mb-4">
-                            <h4 style="color: #000000; font-weight: 700; margin-bottom: 5px;">Development Phase</h4>
-                            <p style="color: #000000; font-weight: 600; margin-bottom: 10px;">May – August 2026</p>
-                        </div>
-                        <div class="timeline-item mb-4">
-                            <h4 style="color: #000000; font-weight: 700; margin-bottom: 5px;">Submission Deadline</h4>
-                            <p style="color: #000000; font-weight: 600; margin-bottom: 10px;">September 10, 2026</p>
-                        </div>
-                        <div class="timeline-item mb-4">
-                            <h4 style="color: #000000; font-weight: 700; margin-bottom: 5px;">Judging Period</h4>
-                            <p style="color: #000000; font-weight: 600; margin-bottom: 10px;">September 11 – September 20, 2026</p>
-                        </div>
-                        <div class="timeline-item mb-4">
-                            <h4 style="color: #000000; font-weight: 700; margin-bottom: 5px;">Final Results Announcement</h4>
-                            <p style="color: #000000; font-weight: 600; margin-bottom: 10px;">September 25, 2026</p>
-                        </div>
-                        <div class="text-center mt-5 pt-4" style="border-top: 2px solid #DEE2E6;">
-                            <h3 style="color: #000000; font-weight: 700;">Total Development Duration</h3>
-                            <p style="color: #495057; font-size: 20px; font-weight: 600;">Approximately 4 Months</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Event Timeline Section End -->
-
-    <!-- Sample Architecture Section Start -->
-    <div class="container-fluid py-5" style="background-color: #F8F9FA;">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Implementation Guide</h5>
-                <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #000000 !important;">Sample Solution Architecture</h2>
-                <p class="wow fadeInUp" data-wow-delay="0.3s" style="color: #495057 !important; font-size: 18px; font-weight: 600;">
-                    Example: Intelligent Healthcare Monitoring System
+<div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+<button class="px-10 py-4 bg-white text-on-primary font-headline font-extrabold uppercase tracking-wider text-sm rounded transition-all hover:bg-slate-100">Explore Tracks</button>
+<button class="px-10 py-4 border border-outline-variant/30 text-white font-headline font-extrabold uppercase tracking-wider text-sm rounded transition-all hover:bg-white/5">Learn More</button>
+</div>
+<p class="mt-12 font-label text-primary-fixed-dim/80 text-sm italic">
+                    Registration opening soon. Powered by Siemens.
                 </p>
-            </div>
-            
-            <div class="row g-4 mb-5">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
-                    <div style="background: #FFFFFF; padding: 30px; border-radius: 15px; height: 100%; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
-                        <div class="text-center mb-3">
-                            <i class="fas fa-database fa-3x" style="color: #000000;"></i>
-                        </div>
-                        <h4 style="color: #000000; font-weight: 700; text-align: center; margin-bottom: 15px;">Data Intake Module</h4>
-                        <p style="color: #495057 !important; text-align: center;">Collects patient data from devices or input systems.</p>
-                    </div>
+</div>
+</section>
+<!-- About Section -->
+<section class="py-32 bg-surface">
+<div class="container mx-auto px-6">
+<div class="max-w-4xl mx-auto text-center">
+<h2 class="font-headline text-3xl md:text-5xl font-bold text-white mb-12 tracking-tight">Solving problems that matter.</h2>
+<div class="space-y-8 text-on-surface-variant text-lg md:text-xl leading-relaxed font-body">
+<p>
+                            The digital age has brought us endless tools but often leaves us disconnected from real human needs. GDTA Build4Change is a call to students who want to look beyond the code. We believe innovation should serve the community, not just the market.
+                        </p>
+<p>
+                            Through meaningful narratives and real world challenges, we invite you to design solutions that breathe life into education, urban living, and healthcare. This is not just a competition; it is a movement toward intentional, human centered engineering.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Industry Partner -->
+<section class="py-24 bg-surface-container-low">
+<div class="container mx-auto px-6 text-center">
+<p class="font-label text-outline text-xs tracking-widest uppercase mb-12">Global Technology Partner</p>
+<div class="mb-12 flex justify-center">
+<!-- Representing Siemens with high-end typography -->
+<span class="text-4xl md:text-6xl font-black text-white tracking-tighter opacity-80 font-headline">SIEMENS</span>
+</div>
+<div class="max-w-2xl mx-auto">
+<p class="text-on-surface-variant font-body text-lg leading-relaxed">
+                        Industry driven problem statements provide the grounding for real innovation. Siemens brings decades of technological leadership to help students navigate complex challenges with professional tools and expert mentorship.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Tracks Section -->
+<section class="py-32 bg-surface">
+<div class="container mx-auto px-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<!-- Track 1 -->
+<div class="group relative overflow-hidden bg-surface-container-lowest p-8 min-h-[500px] flex flex-col justify-end">
+<div class="absolute inset-0 z-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
+<img class="w-full h-full object-cover" data-alt="warm sunlit classroom with blurred focus on books and modern learning tools creating a hopeful academic atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSNCu2dxm6boZ9s4bV9OBEFo0L9fsAGm0iaByoB0HUtBab9ww6QE7Hz9sGOqswSrXz574Fs31aMEtI0Oe6FZp4Y49YvYhu77WuWa_PzjZXWnGKE-wKveCOk4NdUBrviI55CuXRZ6k3OlLu_DPrdtdB7vLtp_bnd_L3MU7BLLtePXL5whKmiWi3mEST-AIDIHronsKBggzRo3XIzp9n8itTeHFxdYQtporh1sWLRszAl7130PM3sgKBgwSKJYsAsHOtv8PueREnTA"/>
+</div>
+<div class="relative z-10">
+<p class="text-primary-fixed-dim text-xs font-bold tracking-widest uppercase mb-4">Sponsor Track</p>
+<h3 class="font-headline text-3xl font-bold text-white mb-4">Education Policy</h3>
+<p class="text-on-surface-variant mb-8 leading-relaxed">Redefining how policy shapes student experiences in a digital first world. Sponsored by Siemens.</p>
+<button class="text-white font-headline font-bold text-sm uppercase tracking-wider border-b border-white/20 pb-1 group-hover:border-white transition-all">Explore Track</button>
+</div>
+</div>
+<!-- Track 2 -->
+<div class="group relative overflow-hidden bg-surface-container-lowest p-8 min-h-[500px] flex flex-col justify-end">
+<div class="absolute inset-0 z-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
+<img class="w-full h-full object-cover" data-alt="abstract architectural shot of clean modern urban structures in Stockholm with deep blue sky and minimalist aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7GnQ9_1tW4Zc8FqGlO9sPTbGKlslVDt1x4NUj2ozPqaPTUfcFsslpmLIV7NMezOL6NLlLFo_gAQrQqIqgvf5ymp_vOLzmV5S7naCqIsEe6H8A52vaupbF4b2udobxRDkSOhABAEZ7kbOXEC1aOcPq9qpLeSoHA9TbIRCVF1X0Hvs_Kx8y41L6DpLGvr7fnkt6dCNFF2cdTZhpr13w6wyvnh3EQPZ0p1EZKoV_qmXZEJiFKaqaTEuGaLa6E_Tmt7Pz_ynutvHVvA"/>
+</div>
+<div class="relative z-10">
+<p class="text-primary-fixed-dim text-xs font-bold tracking-widest uppercase mb-4">Impact Track</p>
+<h3 class="font-headline text-3xl font-bold text-white mb-4">Smart City</h3>
+<p class="text-on-surface-variant mb-8 leading-relaxed">Building resilient urban environments that prioritize human connection and sustainable growth.</p>
+<button class="text-white font-headline font-bold text-sm uppercase tracking-wider border-b border-white/20 pb-1 group-hover:border-white transition-all">Explore Track</button>
+</div>
+</div>
+<!-- Track 3 -->
+<div class="group relative overflow-hidden bg-surface-container-lowest p-8 min-h-[500px] flex flex-col justify-end">
+<div class="absolute inset-0 z-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
+<img class="w-full h-full object-cover" data-alt="clean bright medical setting with soft focus on a digital tablet and stethoscope symbolizing modern compassionate healthcare" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdrIKREdwN4XRv5pUxZxLRdbWVR2xFTBKoVsFwod0NJ2GuS6ipokimlZUUYdjFXPuyMwubKjDz_Gdd6zyWMBFhTr-gGG2XjHvIGDnTi8gnoE907jiF_Zz3HW79a3ohBvBBxnkhhwcTi6fr90Pwsm5NPhvhtgzWgDpMv3w6iVXzq1HHVN03eRkxwGV9XnbAYIIxA3iJozF0uFPbnnsqAtCpNMEi_ETPbX1uQ8U6uZIJ516omcYxQ-O_AI0OPY0F8JS6U9LZuXtwLA"/>
+</div>
+<div class="relative z-10">
+<p class="text-primary-fixed-dim text-xs font-bold tracking-widest uppercase mb-4">Wellness Track</p>
+<h3 class="font-headline text-3xl font-bold text-white mb-4">Healthcare</h3>
+<p class="text-on-surface-variant mb-8 leading-relaxed">Designing patient first digital experiences that make quality care accessible and intuitive for all.</p>
+<button class="text-white font-headline font-bold text-sm uppercase tracking-wider border-b border-white/20 pb-1 group-hover:border-white transition-all">Explore Track</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Why This Matters -->
+<section class="py-32 bg-surface-container-lowest">
+<div class="container mx-auto px-6">
+<div class="flex flex-col md:flex-row items-center gap-20">
+<div class="w-full md:w-1/2">
+<img class="w-full grayscale brightness-75 hover:grayscale-0 transition-all duration-1000 object-cover aspect-[4/5]" data-alt="candid close up of two students pointing at a sketch on a blackboard deep in thoughtful discussion about a project" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtbAUbBiFLlneUIs0OIXmsCCP3UuEVOZLDGajuah9VL4vLCeXg0cUt64s9GmbmTCNJig7gNWjNWo1gNIym-fp9mRqf4KeU62FtQAHSYEw_x1dh4b0R6En7_Q3k-6iihWqIpchASAzhRIiUUMNYdZMZX7Yc_6nuKfn0Hi2AaEF28SSsEz07YFdABl77_6542zUNh8-yjurjjdGs6Ak5nVuPXxJsvmSd-FmzEtPNp3qY7Ql8o0jD3VHQcDXyawDNJMQ1eKxunyNqxQ"/>
+</div>
+<div class="w-full md:w-1/2 space-y-12">
+<h2 class="font-headline text-4xl md:text-6xl font-black text-white leading-tight tracking-tighter">Beyond the code.</h2>
+<div class="space-y-6 text-on-surface-variant font-body text-xl">
+<p>It is easy to build something fast. It is difficult to build something right. We believe that students are the bridge between today's technology and tomorrow's empathy.</p>
+<p>When you solve a real problem, you create a legacy. You are not just winning a hackathon; you are proving that human centered design can change the trajectory of a community.</p>
+</div>
+<div class="flex items-center gap-4 text-primary-fixed-dim italic">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-headline font-bold tracking-tight">Creating change that lasts.</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Timeline -->
+<section class="py-32 bg-surface">
+<div class="container mx-auto px-6">
+<div class="max-w-2xl mx-auto text-center">
+<h2 class="font-headline text-3xl font-bold text-white mb-16 tracking-tight">The Road Ahead</h2>
+<div class="space-y-16">
+<div class="relative pb-16">
+<div class="absolute left-1/2 top-full h-16 w-px bg-outline-variant/30 hidden md:block"></div>
+<p class="font-label text-primary-fixed-dim text-sm uppercase tracking-widest mb-2">Phase One</p>
+<h3 class="text-2xl text-white font-headline font-bold">Registrations Open Soon</h3>
+<p class="text-on-surface-variant mt-2">Get your teams ready and mark your calendars for the announcement.</p>
+</div>
+<div class="relative">
+<p class="font-label text-outline text-sm uppercase tracking-widest mb-2">Phase Two</p>
+<h3 class="text-2xl text-white font-headline font-bold">Guidelines Coming Shortly</h3>
+<p class="text-on-surface-variant mt-2">Full schedule and track details will be released to all registered students.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FAQ Section -->
+<section class="py-32 bg-surface-container-low">
+<div class="container mx-auto px-6 max-w-4xl">
+<h2 class="font-headline text-3xl font-bold text-white mb-16 text-center tracking-tight">Common Questions</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<div class="space-y-4">
+<h4 class="text-white font-bold font-headline">Who can participate?</h4>
+<p class="text-on-surface-variant font-body">GDTA students from all backgrounds are welcome. We encourage interdisciplinary teams to bring diverse perspectives.</p>
+</div>
+<div class="space-y-4">
+<h4 class="text-white font-bold font-headline">What is the next step?</h4>
+<p class="text-on-surface-variant font-body">Start exploring the tracks and identifying which area resonates most with your team's vision for impact.</p>
+</div>
+<div class="space-y-4">
+<h4 class="text-white font-bold font-headline">How do we join?</h4>
+<p class="text-on-surface-variant font-body">A registration link will be shared across all GDTA internal channels as soon as the window opens.</p>
+</div>
+<div class="space-y-4">
+<h4 class="text-white font-bold font-headline">Is this purely technical?</h4>
+<p class="text-on-surface-variant font-body">No. We value empathy, research, and design thinking as much as technical execution and code quality.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-950 w-full pt-24 pb-12">
+<div class="max-w-7xl mx-auto px-12 flex flex-col md:flex-row justify-between items-end">
+<div class="w-full md:w-auto mb-12 md:mb-0">
+<div class="text-3xl font-black text-white mb-8 font-headline">GDTA Build4Change</div>
+<div class="space-y-4 text-slate-500 font-manrope text-sm tracking-widest uppercase">
+<p>Build solutions that matter.</p>
+<p>contact@gdta-build4change.org</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-8">
+<div class="flex gap-8">
+<a class="font-manrope text-sm tracking-widest uppercase text-slate-500 hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="font-manrope text-sm tracking-widest uppercase text-slate-500 hover:text-white transition-colors" href="#">Terms of Engagement</a>
+<a class="font-manrope text-sm tracking-widest uppercase text-slate-500 hover:text-white transition-colors" href="#">Contact the Curator</a>
+</div>
+<div class="text-slate-500 font-manrope text-xs tracking-widest uppercase">
+                    © 2024 GDTA Build4Change Collective
                 </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div style="background: #FFFFFF; padding: 30px; border-radius: 15px; height: 100%; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
-                        <div class="text-center mb-3">
-                            <i class="fas fa-brain fa-3x" style="color: #000000;"></i>
-                        </div>
-                        <h4 style="color: #000000; font-weight: 700; text-align: center; margin-bottom: 15px;">AI Analysis Module</h4>
-                        <p style="color: #495057 !important; text-align: center;">Processes data and detects patterns or anomalies.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
-                    <div style="background: #FFFFFF; padding: 30px; border-radius: 15px; height: 100%; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
-                        <div class="text-center mb-3">
-                            <i class="fas fa-cogs fa-3x" style="color: #000000;"></i>
-                        </div>
-                        <h4 style="color: #000000; font-weight: 700; text-align: center; margin-bottom: 15px;">Decision Engine</h4>
-                        <p style="color: #495057 !important; text-align: center;">Generates recommendations based on AI analysis.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div style="background: #FFFFFF; padding: 30px; border-radius: 15px; height: 100%; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
-                        <div class="text-center mb-3">
-                            <i class="fas fa-network-wired fa-3x" style="color: #000000;"></i>
-                        </div>
-                        <h4 style="color: #000000; font-weight: 700; text-align: center; margin-bottom: 15px;">Integration Layer</h4>
-                        <p style="color: #495057 !important; text-align: center;">Connects the system with healthcare platforms or databases.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
-                    <div style="background: #FFFFFF; padding: 30px; border-radius: 15px; height: 100%; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
-                        <div class="text-center mb-3">
-                            <i class="fas fa-desktop fa-3x" style="color: #000000;"></i>
-                        </div>
-                        <h4 style="color: #000000; font-weight: 700; text-align: center; margin-bottom: 15px;">User Interface</h4>
-                        <p style="color: #495057 !important; text-align: center;">Provides insights, alerts, and reports to users.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Example Workflow -->
-            <div class="row">
-                <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.7s">
-                    <div style="background: #FFFFFF; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
-                        <h3 style="color: #000000; font-weight: 700; margin-bottom: 25px; text-align: center;">Example Workflow</h3>
-                        <div style="max-width: 700px; margin: 0 auto;">
-                            <div class="d-flex align-items-center mb-3">
-                                <div style="background: #000000; color: #FFFFFF !important; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; flex-shrink: 0;">1</div>
-                                <p style="color: #495057 !important; margin: 0; margin-left: 20px;">Patient health data is captured from monitoring devices</p>
-                            </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div style="background: #000000; color: #FFFFFF !important; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; flex-shrink: 0;">2</div>
-                                <p style="color: #495057 !important; margin: 0; margin-left: 20px;">AI model analyzes vital signals</p>
-                            </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div style="background: #000000; color: #FFFFFF !important; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; flex-shrink: 0;">3</div>
-                                <p style="color: #495057 !important; margin: 0; margin-left: 20px;">System identifies potential health risks</p>
-                            </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div style="background: #000000; color: #FFFFFF !important; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; flex-shrink: 0;">4</div>
-                                <p style="color: #495057 !important; margin: 0; margin-left: 20px;">Alerts and recommendations are generated</p>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <div style="background: #000000; color: #FFFFFF !important; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; flex-shrink: 0;">5</div>
-                                <p style="color: #495057 !important; margin: 0; margin-left: 20px;">Healthcare providers receive actionable insights</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Sample Architecture Section End -->
-
-    <!-- Judging Criteria Section Start -->
-    <div class="container-fluid py-5" style="background-color: #FFFFFF;">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Evaluation</h5>
-                <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #000000 !important;">Judging Criteria</h2>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
-                    <div class="text-center h-100" style="background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
-                        <div style="background: #000000; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                            <span style="color: #FFFFFF !important; font-size: 36px; font-weight: 900; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">35%</span>
-                        </div>
-                        <h3 style="color: #000000; font-weight: 700; margin-bottom: 15px;">Technical Excellence</h3>
-                        <p style="color: #495057 !important; line-height: 1.8;">Quality of architecture, implementation, and system design.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="text-center h-100" style="background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
-                        <div style="background: #000000; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                            <span style="color: #FFFFFF !important; font-size: 36px; font-weight: 900; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">35%</span>
-                        </div>
-                        <h3 style="color: #000000; font-weight: 700; margin-bottom: 15px;">Real-World Impact</h3>
-                        <p style="color: #495057 !important; line-height: 1.8;">Effectiveness in solving meaningful real-world problems.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.4s">
-                    <div class="text-center h-100" style="background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);">
-                        <div style="background: #000000; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                            <span style="color: #FFFFFF !important; font-size: 36px; font-weight: 900; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">30%</span>
-                        </div>
-                        <h3 style="color: #000000; font-weight: 700; margin-bottom: 15px;">Innovation</h3>
-                        <p style="color: #495057 !important; line-height: 1.8;">Creativity, originality, and technological advancement.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Judging Criteria Section End -->
-
-    <!-- Submission Requirements Section Start -->
-    <div class="container-fluid py-5" style="background-color: #F8F9FA;">
-        <div class="container py-5">
-            <div class="text-center mb-5">
-                <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.1s"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Final Deliverables</h5>
-                <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #000000 !important;">Submission Requirements</h2>
-            </div>
-            
-            <div class="row g-5">
-                <div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.3s">
-                    <div style="background: #FFFFFF; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); height: 100%;">
-                        <h3 style="color: #000000; font-weight: 700; margin-bottom: 25px;">Participants must submit:</h3>
-                        <div class="mb-3">
-                            <h5 style="color: #000000; font-weight: 600;"><i class="fab fa-github me-2" style="color: #000000;"></i>GitHub Repository</h5>
-                            <p style="color: #495057 !important;">The complete project code</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5 style="color: #000000; font-weight: 600;"><i class="fas fa-video me-2" style="color: #000000;"></i>Demonstration Video</h5>
-                            <p style="color: #495057 !important;">A maximum 3-minute demonstration video</p>
-                        </div>
-                        <div>
-                            <h5 style="color: #000000; font-weight: 600;"><i class="fas fa-rocket me-2" style="color: #000000;"></i>Live Deployment</h5>
-                            <p style="color: #495057 !important;">A live deployment link or detailed setup instructions</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.3s">
-                    <div style="background: #FFFFFF; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); height: 100%;">
-                        <h3 style="color: #000000; font-weight: 700; margin-bottom: 25px;">Documentation should include:</h3>
-                        <ul style="line-height: 2.2; color: #495057 !important; font-size: 15px;">
-                            <li><strong>Executive Summary:</strong> Overview of the problem and solution</li>
-                            <li><strong>System Architecture:</strong> Design explanation and technical workflow</li>
-                            <li><strong>Technical Implementation:</strong> Key components, technologies, and integrations</li>
-                            <li><strong>Live Demonstration:</strong> Complete user journey demonstration</li>
-                            <li><strong>Performance & Impact Analysis:</strong> Expected benefits and scalability potential</li>
-                            <li><strong>Setup & Deployment Guide:</strong> Instructions for running the solution</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Submission Requirements Section End -->
-
-    <!-- CTA Section Start -->
-    <div class="container-fluid py-5" style="background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/static/img/Background/travel_stay_bg.png') center center/cover no-repeat;">
-        <div class="container text-center py-5">
-            <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.1s" style="color: #000000 !important; font-weight: 800; font-size: 42px;">
-                Ready to Build the Future?
-            </h2>
-            <p class="mb-5 wow fadeInUp" data-wow-delay="0.2s" style="color: #495057 !important; font-size: 20px;">
-                Join the GDTA Challenge 2026 and create AI solutions that make a real difference
-            </p>
-            <a href="/register.html" class="btn btn-lg px-5 py-3 wow fadeInUp" data-wow-delay="0.3s" 
-                style="background: #000000; color: #FFFFFF !important; border-radius: 30px; font-weight: 700; border: 3px solid #000000; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); transition: all 0.3s ease;">
-                Register Now
-            </a>
-        </div>
-    </div>
-    <!-- CTA Section End -->
-
-    <!-- Footer Start -->
-    <div class="container-fluid footer py-4 wow fadeIn" data-wow-delay="0.2s" style="background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('/static/img/Background/travel_stay_bg.png') center center/cover no-repeat;">
-        <div class="container text-center py-4">
-            <a href="/index.html">
-                <h2 class="mb-3" style="color: #000000 !important; font-weight: 800;">GDTA 2026</h2>
-            </a>
-            <p
-                style="color: #495057 !important; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                GDTA Indian Chapter – D Conference 2026<br>Chaos & Clarity: Driving Progress with Design Thinking</p>
-            <div class="d-flex justify-content-center mb-3">
-                <a class="btn btn-sm btn-outline-primary border-2 mx-1"
-                    href="https://www.instagram.com/snsinstitutions/?hl=en" target="_blank"
-                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i
-                        class="fab fa-instagram"></i></a>
-                <a class="btn btn-sm btn-outline-primary border-2 mx-1"
-                    href="https://www.linkedin.com/company/sns-institutions/?originalSubdomain=in" target="_blank"
-                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i
-                        class="fab fa-linkedin-in"></i></a>
-                <a class="btn btn-sm btn-outline-primary border-2 mx-1" href="https://x.com/snsinstitutions?lang=en"
-                    target="_blank"
-                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i
-                        class="fab fa-twitter"></i></a>
-            </div>
-            <p style="font-size: 0.9rem; margin: 0; color: #6C757D !important;">September 29-30, 2026 | SNS
-                Institutions, India</p>
-            <p style="font-size: 0.9rem; margin-top: 10px; color: #6C757D !important;">&copy; <span
-                    style="color: #000000 !important;">GDTA Indian Chapter</span>, All Rights Reserved.</p>
-        </div>
-    </div>
-    <!-- Footer End -->
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/static/lib/wow/wow.min.js"></script>
-    <script src="/static/lib/easing/easing.min.js"></script>
-    <script src="/static/lib/waypoints/waypoints.min.js"></script>
-    <script src="/static/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="/static/js/main.js"></script>
-    <script src="/static/js/chatbot-widget.js"></script>
-
-</body>
-
-</html>
+</div>
+</div>
+</footer>
+</body></html>

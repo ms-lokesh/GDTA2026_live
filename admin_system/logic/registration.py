@@ -1027,9 +1027,15 @@ def submit_registration(registration_data):
                 "error_code": "REGISTRATION_CLOSED"
             }
         
-        # Validate required fields
-        required_fields = ["consent", "name", "institution", "role", "registration_category", "gdta_member", 
-                  "gdta_affiliation", "country", "email"]
+        # Validate required fields. Role is optional for direct web form registrations.
+        registration_source = (registration_data.get("registration_source") or "").strip().lower()
+        required_fields = [
+            "consent", "name", "institution", "registration_category",
+            "gdta_member", "gdta_affiliation", "country", "email"
+        ]
+
+        if registration_source != "form":
+            required_fields.append("role")
         
         for field in required_fields:
             if not registration_data.get(field):
@@ -1092,12 +1098,14 @@ def submit_registration(registration_data):
             
             # Create new registration record
             # Note: Using default event_id for GDTA 2026
+            role_value = registration_data.get("role") or "Not specified"
+
             new_registration = Registration(
                 event_id='gdta-2026',  # Default event ID
                 name=registration_data.get("name"),
                 email=registration_data.get("email"),
                 institution=registration_data.get("institution"),
-                role=registration_data.get("role"),
+                role=role_value,
                 gdta_member=registration_data.get("gdta_member"),
                 gdta_affiliation=registration_data.get("gdta_affiliation"),
                 country=registration_data.get("country"),

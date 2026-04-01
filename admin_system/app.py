@@ -9,7 +9,7 @@ ARCHITECTURE PRINCIPLES:
 4. JSON files are the single source of truth
 """
 
-from flask import Flask, jsonify, send_from_directory, render_template, request
+from flask import Flask, jsonify, send_from_directory, render_template, request, redirect
 from flask_cors import CORS
 import os
 from urllib.parse import urlparse
@@ -245,6 +245,12 @@ def create_app():
     def index():
         """Serve the main website's index.html from the templates directory"""
         return render_template('index.html')
+
+    # Keep backward compatibility for old hackathon1 links.
+    @app.route('/hackathon1.html')
+    def redirect_hackathon_legacy():
+        """Redirect legacy hackathon URL to canonical page."""
+        return redirect('/hackathon.html', code=301)
 
     # Catch-all route for other HTML files
     @app.route('/<string:page_name>.html')
