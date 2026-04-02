@@ -72,16 +72,25 @@ def create_app():
         origin = (request.headers.get('Origin') or '').strip()
         referer = (request.headers.get('Referer') or '').strip()
         require_origin = app.config.get('REQUIRE_ORIGIN_FOR_STATE_CHANGING', True)
+        forwarded_host = (request.headers.get('X-Forwarded-Host') or '').split(',')[0].strip()
+        request_host = forwarded_host or (request.host or '')
+
+        # Always trust same-host requests so deployments behind reverse proxies
+        # (where Flask may see http internally) do not break origin checks.
+        effective_origins = set(strict_origins)
+        if request_host:
+            effective_origins.add(f"http://{request_host}")
+            effective_origins.add(f"https://{request_host}")
 
         if origin:
-            if origin not in strict_origins:
+            if origin not in effective_origins:
                 return jsonify({'success': False, 'message': 'Forbidden origin.'}), 403
             return None
 
         if referer:
             parsed = urlparse(referer)
             referer_origin = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else ''
-            if referer_origin and referer_origin in strict_origins:
+            if referer_origin and referer_origin in effective_origins:
                 return None
             return jsonify({'success': False, 'message': 'Forbidden referer.'}), 403
 
