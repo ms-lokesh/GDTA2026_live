@@ -261,6 +261,11 @@ def create_app():
         """Redirect legacy hackathon URL to canonical page."""
         return redirect('/hackathon.html', code=301)
 
+    @app.route('/hackathon')
+    def hackathon_page_alias():
+        """Render hackathon page for URL without .html."""
+        return render_template('hackathon.html')
+
     # Catch-all route for other HTML files
     @app.route('/<string:page_name>.html')
     def render_page(page_name):
