@@ -27,8 +27,7 @@
     "about": [
       "/about-gdta.html",
       "/about-gdta-2026.html",
-      "/about-sns.html",
-      "/organizing-team.html"
+      "/about-sns.html"
     ],
     "program": [
       "/program-schedule.html",
@@ -167,7 +166,7 @@
     }
   },
   "metadata_notes": [
-    "Some website sections (sponsors, organizing team, phone contact) still include placeholder content on the public pages.",
+    "Some website sections (sponsors, phone contact) still include placeholder content on the public pages.",
     "RAG should treat these values as currently published website content unless updated by organizers."
   ],
   "faq": [
