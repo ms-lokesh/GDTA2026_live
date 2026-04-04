@@ -484,50 +484,36 @@
                     <div class="fee-structure-compact">
                         <h5 style="font-weight: 700; color: #000000; margin-bottom: 12px;">Fee Structure</h5>
                         <div class="fee-structure-grid">
-                            <div class="fee-pill">
+                            <div class="fee-pill" id="student-fee-pill">
                                 <h6>Students</h6>
                                 <p>General: <strong>Rs.500</strong></p>
                                 <p>Food & Accommodation: <strong>+Rs.500</strong></p>
                                 <p>Safari: <strong>+Rs.500</strong></p>
                             </div>
-                            <div class="fee-pill">
+                            <div class="fee-pill" id="academician-fee-pill">
                                 <h6>Academicians</h6>
                                 <p>General: <strong>Rs.2000</strong></p>
                                 <p>Food & Accommodation: <strong>+Rs.500</strong></p>
                                 <p>Safari: <strong>+Rs.500</strong></p>
                             </div>
-                            <div class="fee-pill">
+                            <div class="fee-pill" id="industry-fee-pill">
                                 <h6>Industrial People</h6>
                                 <p>All Inclusive: <strong>Rs.7500</strong></p>
-                                <p style="font-size: 0.84rem; color: #6c757d;">Includes food and safari</p>
                             </div>
-                            <div class="fee-pill">
+                            <div class="fee-pill" id="foreign-fee-pill">
                                 <h6>Foreign Delegates</h6>
                                 <p>All Inclusive: <strong>$100</strong></p>
-                                <p style="font-size: 0.84rem; color: #6c757d;">Includes food and safari</p>
                             </div>
                         </div>
-                        <p style="margin-top: 12px; margin-bottom: 0; font-size: 0.9rem; color: #495057;">
-                            <strong>Note:</strong> GST will be added at the final payment stage.
-                        </p>
                     </div>
 
-                    <form id="registrationForm">
-                            <!-- Data Consent -->
-                            <div class="mb-4">
-                                <label class="form-label" style="font-weight: 600;">
-                                    <span style="color: red;">*</span> Data Usage Consent
-                                </label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="consent" name="consent" required>
-                                    <label class="form-check-label" for="consent">
-                                        I consent to the collection and use of my personal data for GDTA 2026 conference purposes
-                                    </label>
-                                </div>
-                            </div>
+                    <form id="registrationForm" action="/register" method="POST">
+                        <input type="hidden" name="category" id="categoryInput">
+                        <input type="hidden" name="food_addon" id="foodAddonInput">
+                        <input type="hidden" name="safari_addon" id="safariAddonInput">
 
-                            <!-- Full Name -->
-                            <div class="mb-3">
+                        <div class="row g-3">
+                            <div class="col-md-6">
                                 <label for="name" class="form-label" style="font-weight: 600;">
                                     <span style="color: red;">*</span> Full Name
                                 </label>
@@ -535,8 +521,7 @@
                                     placeholder="Enter your full name">
                             </div>
 
-                            <!-- Email -->
-                            <div class="mb-3">
+                            <div class="col-md-6">
                                 <label for="email" class="form-label" style="font-weight: 600;">
                                     <span style="color: red;">*</span> Email Address
                                 </label>
@@ -544,8 +529,7 @@
                                     placeholder="your.email@example.com">
                             </div>
 
-                            <!-- Institution -->
-                            <div class="mb-3">
+                            <div class="col-md-6">
                                 <label for="institution" class="form-label" style="font-weight: 600;">
                                     <span style="color: red;">*</span> Institution/Organization
                                 </label>
@@ -553,8 +537,7 @@
                                     placeholder="Your institution or organization">
                             </div>
 
-                            <!-- Registration Category & Fee -->
-                            <div class="mb-3">
+                            <div class="col-md-6">
                                 <label for="registration_category" class="form-label" style="font-weight: 600;">
                                     <span style="color: red;">*</span> Registration Category
                                 </label>
@@ -798,490 +781,66 @@
     <script src="/static/lib/easing/easing.min.js"></script>
     <script src="/static/lib/waypoints/waypoints.min.js"></script>
     <script src="/static/js/main.js"></script>
-    
-    <!-- Registration Form Handler -->
+
     <script>
-        const FEE_CONFIG = {
-            "Student": {
-                currency: "INR",
-                base: 500,
-                addons: {
-                    foodAccommodation: 500,
-                    safari: 500
-                },
-                fixedAllInclusive: false
-            },
-            "Academician": {
-                currency: "INR",
-                base: 2000,
-                addons: {
-                    foodAccommodation: 500,
-                    safari: 500
-                },
-                fixedAllInclusive: false
-            },
-            "Industry People": {
-                currency: "INR",
-                base: 7500,
-                addons: {
-                    foodAccommodation: 0,
-                    safari: 0
-                },
-                fixedAllInclusive: true
-            },
-            "Foreign Delegate": {
-                currency: "USD",
-                base: 100,
-                addons: {
-                    foodAccommodation: 0,
-                    safari: 0
-                },
-                fixedAllInclusive: true
-            }
-        };
-
-        let selectedCategoryFromCard = null;
-        let latestRegistrationPayload = null;
-        let registrationModalInstance = null;
-        let paymentModalInstance = null;
-        let latestZohoInvoiceId = null;
-
-        function formatCurrency(amount, currency) {
-            if (currency === 'USD') {
-                return `$${amount}`;
-            }
-            return `Rs.${amount}`;
-        }
-
-        function calculateFeeBreakdown() {
-            const category = document.getElementById('registration_category').value;
-            const addFood = document.getElementById('addon_food_accommodation').checked;
-            const addSafari = document.getElementById('addon_safari').checked;
-
-            if (!category || !FEE_CONFIG[category]) {
-                return null;
-            }
-
-            const cfg = FEE_CONFIG[category];
-            const foodAmount = addFood ? cfg.addons.foodAccommodation : 0;
-            const safariAmount = addSafari ? cfg.addons.safari : 0;
-            const total = cfg.base + foodAmount + safariAmount;
-
-            return {
-                category,
-                currency: cfg.currency,
-                base: cfg.base,
-                foodAccommodation: foodAmount,
-                safari: safariAmount,
-                total,
-                fixedAllInclusive: cfg.fixedAllInclusive
-            };
-        }
-
-        function updateFeeUI() {
-            const category = document.getElementById('registration_category').value;
-            const addonOptions = document.getElementById('addonOptions');
-            const foodCheck = document.getElementById('addon_food_accommodation');
-            const safariCheck = document.getElementById('addon_safari');
-            const safariRouteBlock = document.getElementById('safariRouteBlock');
-            const safariRouteSelect = document.getElementById('safari_route');
-            const foodRow = document.getElementById('foodRow');
-            const safariRow = document.getElementById('safariRow');
-            const baseFeeText = document.getElementById('baseFeeText');
-            const foodFeeText = document.getElementById('foodFeeText');
-            const safariFeeText = document.getElementById('safariFeeText');
-            const totalFeeText = document.getElementById('totalFeeText');
-            const addonFoodLabel = document.getElementById('addonFoodLabel');
-            const addonSafariLabel = document.getElementById('addonSafariLabel');
-
-            if (!category || !FEE_CONFIG[category]) {
-                addonOptions.style.display = 'none';
-                safariRouteBlock.style.display = 'none';
-                safariRouteSelect.value = '';
-                foodRow.style.display = 'none';
-                safariRow.style.display = 'none';
-                baseFeeText.textContent = '-';
-                totalFeeText.textContent = 'Select category';
-                return;
-            }
-
-            const cfg = FEE_CONFIG[category];
-            const showAddons = !cfg.fixedAllInclusive;
-
-            if (!showAddons) {
-                foodCheck.checked = false;
-                safariCheck.checked = false;
-                safariRouteSelect.value = '';
-            }
-
-            addonOptions.style.display = showAddons ? 'block' : 'none';
-            foodRow.style.display = showAddons ? 'flex' : 'none';
-            safariRow.style.display = showAddons ? 'flex' : 'none';
-            safariRouteBlock.style.display = (showAddons && safariCheck.checked) ? 'block' : 'none';
-
-            addonFoodLabel.textContent = `Food & Accommodation (${formatCurrency(cfg.addons.foodAccommodation, cfg.currency)})`;
-            addonSafariLabel.textContent = `Safari (${formatCurrency(cfg.addons.safari, cfg.currency)})`;
-
-            const breakdown = calculateFeeBreakdown();
-            baseFeeText.textContent = formatCurrency(cfg.base, cfg.currency);
-
-            if (showAddons) {
-                foodFeeText.textContent = breakdown.foodAccommodation > 0 ? `+ ${formatCurrency(breakdown.foodAccommodation, cfg.currency)}` : 'Not selected';
-                safariFeeText.textContent = breakdown.safari > 0 ? `+ ${formatCurrency(breakdown.safari, cfg.currency)}` : 'Not selected';
-            }
-
-            totalFeeText.textContent = `${formatCurrency(breakdown.total, cfg.currency)}${cfg.fixedAllInclusive ? ' (All inclusive)' : ''}`;
-        }
-
-        function openRegistrationModalWithCategory(category, presetFoodAddon = null, presetSafariAddon = null) {
-            selectedCategoryFromCard = category;
-            const categorySelect = document.getElementById('registration_category');
+        document.addEventListener('DOMContentLoaded', function () {
+            const registrationModal = new bootstrap.Modal(document.getElementById('registrationModal'));
             const selectedPlanText = document.getElementById('selectedPlanText');
-            const foodCheck = document.getElementById('addon_food_accommodation');
-            const safariCheck = document.getElementById('addon_safari');
+            const registrationForm = document.getElementById('registrationForm');
+            const categoryInput = document.getElementById('categoryInput');
+            const foodAddonInput = document.getElementById('foodAddonInput');
+            const safariAddonInput = document.getElementById('safariAddonInput');
 
-            categorySelect.value = category;
-            selectedPlanText.textContent = category;
-            safariCheck.checked = false;
-
-            if (presetFoodAddon === true) {
-                foodCheck.checked = true;
-            } else if (presetFoodAddon === false) {
-                foodCheck.checked = false;
-            }
-
-            if (presetSafariAddon === true) {
-                safariCheck.checked = true;
-            } else if (presetSafariAddon === false) {
-                safariCheck.checked = false;
-            }
-
-            updateFeeUI();
-
-            if (!registrationModalInstance) {
-                registrationModalInstance = new bootstrap.Modal(document.getElementById('registrationModal'));
-            }
-            registrationModalInstance.show();
-        }
-
-        function showPaymentStep(payload, feeBreakdown, registrationResult = null) {
-            latestRegistrationPayload = {
-                ...payload,
-                feeBreakdown,
-                registration_id: registrationResult && registrationResult.registration_id ? registrationResult.registration_id : null
+            const feePills = {
+                'Student': document.getElementById('student-fee-pill'),
+                'Academician': document.getElementById('academician-fee-pill'),
+                'Industry People': document.getElementById('industry-fee-pill'),
+                'Foreign Delegate': document.getElementById('foreign-fee-pill')
             };
 
-            document.getElementById('paymentCategoryText').textContent = payload.registration_category;
-            document.getElementById('paymentNameText').textContent = payload.name;
-            document.getElementById('paymentEmailText').textContent = payload.email;
-            document.getElementById('paymentAmountText').textContent = formatCurrency(feeBreakdown.total, feeBreakdown.currency);
-            document.getElementById('paymentStatus').innerHTML = '';
+            document.querySelectorAll('.select-plan-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const category = this.dataset.category;
+                    const foodCheckboxId = this.dataset.foodCheckboxId;
+                    const safariCheckboxId = this.dataset.safariCheckboxId;
 
-            if (!paymentModalInstance) {
-                paymentModalInstance = new bootstrap.Modal(document.getElementById('paymentModal'));
-            }
-            paymentModalInstance.show();
-        }
+                    const foodAddon = foodCheckboxId ? document.getElementById(foodCheckboxId).checked : (category === 'Industry People' || category === 'Foreign Delegate');
+                    const safariAddon = safariCheckboxId ? document.getElementById(safariCheckboxId).checked : (category === 'Industry People' || category === 'Foreign Delegate');
 
-        document.querySelectorAll('.select-plan-btn').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const chosen = btn.getAttribute('data-category');
-                const groupName = btn.getAttribute('data-addon-choice-group');
-                const foodCheckboxId = btn.getAttribute('data-food-checkbox-id');
-                const safariCheckboxId = btn.getAttribute('data-safari-checkbox-id');
-                let presetFoodAddon = null;
-                let presetSafariAddon = null;
+                    selectedPlanText.textContent = category;
+                    categoryInput.value = category;
+                    foodAddonInput.value = foodAddon;
+                    safariAddonInput.value = safariAddon;
 
-                if (foodCheckboxId || safariCheckboxId) {
-                    presetFoodAddon = !!(foodCheckboxId && document.getElementById(foodCheckboxId) && document.getElementById(foodCheckboxId).checked);
-                    presetSafariAddon = !!(safariCheckboxId && document.getElementById(safariCheckboxId) && document.getElementById(safariCheckboxId).checked);
-                } else if (groupName) {
-                    const selectedOption = document.querySelector(`input[name="${groupName}"]:checked`);
-                    if (selectedOption) {
-                        presetFoodAddon = selectedOption.value === 'food';
-                        presetSafariAddon = selectedOption.value === 'safari';
-                    }
-                }
+                    // Hide all fee pills
+                    Object.values(feePills).forEach(pill => {
+                        if (pill) pill.style.display = 'none';
+                    });
 
-                openRegistrationModalWithCategory(chosen, presetFoodAddon, presetSafariAddon);
-            });
-        });
-
-        document.getElementById('registration_category').addEventListener('change', updateFeeUI);
-        document.getElementById('addon_food_accommodation').addEventListener('change', updateFeeUI);
-        document.getElementById('addon_safari').addEventListener('change', updateFeeUI);
-        updateFeeUI();
-
-        function updateGdtaAffiliationVisibility() {
-            const memberValue = document.getElementById('gdta_member').value;
-            const affiliationBlock = document.getElementById('gdtaAffiliationBlock');
-            const affiliationSelect = document.getElementById('gdta_affiliation');
-
-            if (memberValue === 'Yes') {
-                affiliationBlock.style.display = 'block';
-                affiliationSelect.required = true;
-            } else {
-                affiliationBlock.style.display = 'none';
-                affiliationSelect.required = false;
-                affiliationSelect.value = '';
-            }
-        }
-
-        document.getElementById('gdta_member').addEventListener('change', updateGdtaAffiliationVisibility);
-        updateGdtaAffiliationVisibility();
-
-        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const alertContainer = document.getElementById('alertContainer');
-            const form = e.target;
-            
-            // Disable submit button
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
-            
-            // Clear previous alerts
-            alertContainer.innerHTML = '';
-            
-            // Get form data
-            const feeBreakdown = calculateFeeBreakdown();
-
-            if (feeBreakdown.safari > 0 && !form.safari_route.value) {
-                alertContainer.innerHTML = `
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        <strong>Error!</strong> Please select a safari route.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Registration';
-                return;
-            }
-
-            if (!feeBreakdown) {
-                alertContainer.innerHTML = `
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        <strong>Error!</strong> Please select a registration category.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Registration';
-                return;
-            }
-
-            const formData = {
-                name: form.name.value,
-                email: form.email.value,
-                institution: form.institution.value,
-                gdta_member: form.gdta_member.value,
-                gdta_affiliation: form.gdta_affiliation.value,
-                country: form.country.value,
-                state: form.state.value,
-                consent: form.consent.checked ? 'Yes' : 'No',
-                registration_category: feeBreakdown.category,
-                addon_food_accommodation: feeBreakdown.foodAccommodation > 0 ? 'Yes' : 'No',
-                addon_safari: feeBreakdown.safari > 0 ? 'Yes' : 'No',
-                fee_currency: feeBreakdown.currency,
-                base_fee: feeBreakdown.base,
-                addon_food_accommodation_fee: feeBreakdown.foodAccommodation,
-                addon_safari_fee: feeBreakdown.safari,
-                total_fee: feeBreakdown.total,
-                safari_route: feeBreakdown.safari > 0 ? form.safari_route.value : ''
-            };
-            
-            try {
-                // Submit registration
-                const response = await fetch('/api/register/submit-form', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    const feeLine = result.fee_display_text ? `<br><strong>Final Fee:</strong> ${result.fee_display_text}` : '';
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle me-2"></i>
-                            <strong>Step 2 complete!</strong> ${result.message}${feeLine}<br>
-                            Proceeding to payment...
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `;
-
-                    alertContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                    setTimeout(() => {
-                        if (registrationModalInstance) {
-                            registrationModalInstance.hide();
-                        }
-                        showPaymentStep(formData, feeBreakdown, result);
-                        form.reset();
-                        if (selectedCategoryFromCard) {
-                            document.getElementById('registration_category').value = selectedCategoryFromCard;
-                        }
-                        updateFeeUI();
-                    }, 900);
-                    
-                } else {
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-circle me-2"></i>
-                            <strong>Error!</strong> ${result.message}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `;
-                    alertContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-                
-            } catch (error) {
-                console.error('Registration error:', error);
-                alertContainer.innerHTML = `
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Error!</strong> Unable to submit registration. Please check your connection and try again.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
-                alertContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Registration';
-            }
-        });
-
-        document.getElementById('payNowBtn').addEventListener('click', function() {
-            const payNowBtn = document.getElementById('payNowBtn');
-            const paymentStatus = document.getElementById('paymentStatus');
-            const checkStatusBtn = document.getElementById('checkPaymentStatusBtn');
-            const paymentMethod = document.getElementById('paymentMethod').value;
-
-            if (!latestRegistrationPayload) {
-                paymentStatus.innerHTML = `
-                    <div class="alert alert-danger mb-0">
-                        Missing registration details. Please complete registration again.
-                    </div>
-                `;
-                return;
-            }
-
-            payNowBtn.disabled = true;
-            payNowBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating payment link...';
-
-            paymentStatus.innerHTML = `
-                <div class="alert alert-info mb-0">
-                    <i class="fas fa-shield-alt me-2"></i>Connecting to Zoho Books via ${paymentMethod}...
-                </div>
-            `;
-
-            const payload = {
-                ...latestRegistrationPayload,
-                payment_method: paymentMethod
-            };
-
-            fetch('/api/register/payment/zoho-books/create-link', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(async (response) => {
-                const result = await response.json();
-                if (!response.ok || !result.success) {
-                    throw new Error(result.message || 'Failed to initiate Zoho Books payment.');
-                }
-
-                latestZohoInvoiceId = result.invoice_id;
-                checkStatusBtn.style.display = 'block';
-
-                paymentStatus.innerHTML = `
-                    <div class="alert alert-success mb-0">
-                        <i class="fas fa-external-link-alt me-2"></i>
-                        Payment link generated. <a href="${result.payment_url}" target="_blank" rel="noopener">Open payment page</a>.<br>
-                        Invoice ID: <strong>${result.invoice_id || 'N/A'}</strong>
-                    </div>
-                `;
-
-                window.open(result.payment_url, '_blank', 'noopener');
-                payNowBtn.innerHTML = '<i class="fas fa-link me-2"></i>Open Zoho Payment Link Again';
-                payNowBtn.disabled = false;
-            })
-            .catch((error) => {
-                paymentStatus.innerHTML = `
-                    <div class="alert alert-danger mb-0">
-                        <i class="fas fa-exclamation-triangle me-2"></i>${error.message}
-                    </div>
-                `;
-                payNowBtn.disabled = false;
-                payNowBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Proceed to Pay';
-            });
-        });
-
-        document.getElementById('checkPaymentStatusBtn').addEventListener('click', function() {
-            const paymentStatus = document.getElementById('paymentStatus');
-            const checkStatusBtn = document.getElementById('checkPaymentStatusBtn');
-
-            if (!latestZohoInvoiceId) {
-                paymentStatus.innerHTML = `
-                    <div class="alert alert-warning mb-0">
-                        Invoice ID not available yet. Please create payment link first.
-                    </div>
-                `;
-                return;
-            }
-
-            checkStatusBtn.disabled = true;
-            checkStatusBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Checking status...';
-
-            fetch(`/api/register/payment/zoho-books/status?invoice_id=${encodeURIComponent(latestZohoInvoiceId)}`)
-                .then(async (response) => {
-                    const result = await response.json();
-                    if (!response.ok || !result.success) {
-                        throw new Error(result.message || 'Unable to fetch payment status.');
-                    }
-
-                    if (result.paid) {
-                        paymentStatus.innerHTML = `
-                            <div class="alert alert-success mb-0">
-                                <i class="fas fa-check-circle me-2"></i>
-                                Payment confirmed in Zoho Books. Registration is now fully complete ✅
-                            </div>
-                        `;
-
-                        setTimeout(() => {
-                            if (paymentModalInstance) {
-                                paymentModalInstance.hide();
-                            }
-                        }, 1200);
+                    // Show only the selected fee pill
+                    if (feePills[category]) {
+                        feePills[category].style.display = 'block';
                     } else {
-                        paymentStatus.innerHTML = `
-                            <div class="alert alert-info mb-0">
-                                Current status: <strong>${result.status || 'pending'}</strong>. If you've just paid, wait a few seconds and check again.
-                            </div>
-                        `;
+                        // If a specific pill isn't found, show all as a fallback.
+                         Object.values(feePills).forEach(pill => {
+                            if (pill) pill.style.display = 'block';
+                        });
                     }
-                })
-                .catch((error) => {
-                    paymentStatus.innerHTML = `
-                        <div class="alert alert-danger mb-0">
-                            <i class="fas fa-exclamation-triangle me-2"></i>${error.message}
-                        </div>
-                    `;
-                })
-                .finally(() => {
-                    checkStatusBtn.disabled = false;
-                    checkStatusBtn.innerHTML = '<i class="fas fa-sync-alt me-2"></i>I\'ve completed payment - Check Status';
+
+                    registrationModal.show();
                 });
+            });
+
+            registrationForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                // Handle form submission logic here
+                console.log('Form submitted');
+                registrationModal.hide();
+                // You can use fetch() to send the form data to your backend
+            });
         });
     </script>
+
 </body>
 
 </html>
