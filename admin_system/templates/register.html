@@ -790,6 +790,18 @@
             const categoryInput = document.getElementById('categoryInput');
             const foodAddonInput = document.getElementById('foodAddonInput');
             const safariAddonInput = document.getElementById('safariAddonInput');
+            const registrationCategorySelect = document.getElementById('registration_category');
+            const addonOptions = document.getElementById('addonOptions');
+            const addonFoodCheckbox = document.getElementById('addon_food_accommodation');
+            const addonSafariCheckbox = document.getElementById('addon_safari');
+            const safariRouteBlock = document.getElementById('safariRouteBlock');
+
+            const baseFeeText = document.getElementById('baseFeeText');
+            const foodRow = document.getElementById('foodRow');
+            const foodFeeText = document.getElementById('foodFeeText');
+            const safariRow = document.getElementById('safariRow');
+            const safariFeeText = document.getElementById('safariFeeText');
+            const totalFeeText = document.getElementById('totalFeeText');
 
             const feePills = {
                 'Student': document.getElementById('student-fee-pill'),
@@ -797,6 +809,62 @@
                 'Industry People': document.getElementById('industry-fee-pill'),
                 'Foreign Delegate': document.getElementById('foreign-fee-pill')
             };
+
+            const feeData = {
+                'Student': { base: 500, food: 500, safari: 500, currency: 'Rs.' },
+                'Academician': { base: 2000, food: 500, safari: 500, currency: 'Rs.' },
+                'Industry People': { base: 7500, food: 0, safari: 0, currency: 'Rs.' },
+                'Foreign Delegate': { base: 100, food: 0, safari: 0, currency: '$' }
+            };
+
+            function updateFeeSummary() {
+                const category = registrationCategorySelect.value;
+                if (!category || !feeData[category]) {
+                    baseFeeText.textContent = '-';
+                    foodRow.style.display = 'none';
+                    safariRow.style.display = 'none';
+                    totalFeeText.textContent = 'Select category';
+                    return;
+                }
+
+                const fees = feeData[category];
+                let total = fees.base;
+
+                baseFeeText.textContent = `${fees.currency}${fees.base}`;
+
+                if (addonFoodCheckbox.checked) {
+                    total += fees.food;
+                    foodFeeText.textContent = `+${fees.currency}${fees.food}`;
+                    foodRow.style.display = 'flex';
+                } else {
+                    foodRow.style.display = 'none';
+                }
+
+                if (addonSafariCheckbox.checked) {
+                    total += fees.safari;
+                    safariFeeText.textContent = `+${fees.currency}${fees.safari}`;
+                    safariRow.style.display = 'flex';
+                    safariRouteBlock.style.display = 'block';
+                } else {
+                    safariRow.style.display = 'none';
+                    safariRouteBlock.style.display = 'none';
+                }
+
+                totalFeeText.textContent = `${fees.currency}${total}`;
+            }
+
+            function updateAddonVisibility() {
+                const category = registrationCategorySelect.value;
+                if (category === 'Student' || category === 'Academician') {
+                    addonOptions.style.display = 'block';
+                } else {
+                    addonOptions.style.display = 'none';
+                    addonFoodCheckbox.checked = false;
+                    addonSafariCheckbox.checked = false;
+                }
+                updateFeeSummary();
+            }
+
 
             document.querySelectorAll('.select-plan-btn').forEach(button => {
                 button.addEventListener('click', function () {
@@ -809,34 +877,62 @@
 
                     selectedPlanText.textContent = category;
                     categoryInput.value = category;
+                    
+                    if (registrationCategorySelect) {
+                        registrationCategorySelect.value = category;
+                    }
+
+                    addonFoodCheckbox.checked = foodAddon;
+                    addonSafariCheckbox.checked = safariAddon;
                     foodAddonInput.value = foodAddon;
                     safariAddonInput.value = safariAddon;
 
-                    // Hide all fee pills
                     Object.values(feePills).forEach(pill => {
                         if (pill) pill.style.display = 'none';
                     });
 
-                    // Show only the selected fee pill
                     if (feePills[category]) {
                         feePills[category].style.display = 'block';
                     } else {
-                        // If a specific pill isn't found, show all as a fallback.
                          Object.values(feePills).forEach(pill => {
                             if (pill) pill.style.display = 'block';
                         });
                     }
-
+                    
+                    updateAddonVisibility();
                     registrationModal.show();
                 });
             });
 
+            if (registrationCategorySelect) {
+                registrationCategorySelect.addEventListener('change', function() {
+                    const category = this.value;
+                    selectedPlanText.textContent = category;
+                    categoryInput.value = category;
+
+                    Object.values(feePills).forEach(pill => {
+                        if (pill) pill.style.display = 'none';
+                    });
+
+                    if (feePills[category]) {
+                        feePills[category].style.display = 'block';
+                    }
+                    updateAddonVisibility();
+                });
+            }
+
+            [addonFoodCheckbox, addonSafariCheckbox].forEach(checkbox => {
+                if(checkbox) {
+                    checkbox.addEventListener('change', updateFeeSummary);
+                }
+            });
+
             registrationForm.addEventListener('submit', function (event) {
                 event.preventDefault();
-                // Handle form submission logic here
+                foodAddonInput.value = addonFoodCheckbox.checked;
+                safariAddonInput.value = addonSafariCheckbox.checked;
                 console.log('Form submitted');
                 registrationModal.hide();
-                // You can use fetch() to send the form data to your backend
             });
         });
     </script>
