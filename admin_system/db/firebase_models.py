@@ -44,7 +44,9 @@ class Registration(FirestoreModel):
     def __init__(self, **kwargs):
         self.id = kwargs.get('id')
         self.event_id = kwargs.get('event_id')  # Link to Event
+        self.title = kwargs.get('title')
         self.name = kwargs.get('name')
+        self.gender = kwargs.get('gender')
         self.email = kwargs.get('email')
         self.institution = kwargs.get('institution')
         self.role = kwargs.get('role')
@@ -99,7 +101,9 @@ class Registration(FirestoreModel):
         return {
             'id': self.id,
             'event_id': self.event_id,
+            'title': self.title,
             'name': self.name,
+            'gender': self.gender,
             'email': self.email,
             'institution': self.institution,
             'role': self.role,
@@ -537,6 +541,195 @@ class HackathonRegistration(FirestoreModel):
         """Delete hackathon registration"""
         db = get_firestore_db()
         db.collection(COLLECTIONS['hackathon_registrations']).document(doc_id).delete()
+
+
+class SimpleHackathonRegistration(FirestoreModel):
+    """Simple Hackathon Registration model - stores basic hackathon participant info (name, college, track)"""
+    
+    def __init__(self, **kwargs):
+        status = kwargs.get('status') or 'new'
+        if status == 'registered':
+            status = 'new'
+        elif status == 'confirmed':
+            status = 'approved'
+
+        self.id = kwargs.get('id')
+        self.name = kwargs.get('name')
+        self.email = kwargs.get('email')
+        self.phone = kwargs.get('phone')
+        self.college = kwargs.get('college')
+        self.track = kwargs.get('track')  # healthcare, edtech, smart_city, etc.
+        self.ticket_id = kwargs.get('ticket_id')
+        self.status = status
+        self.priority = kwargs.get('priority') or 'medium'
+        self.assigned_to = kwargs.get('assigned_to')
+        self.created_at = kwargs.get('created_at', datetime.utcnow())
+        self.updated_at = kwargs.get('updated_at', datetime.utcnow())
+        self.admin_notes = kwargs.get('admin_notes')
+        self.last_contact_at = kwargs.get('last_contact_at')
+        self.resolved_at = kwargs.get('resolved_at')
+        self.ticket_history = kwargs.get('ticket_history', [])
+    
+    def to_dict(self):
+        """Convert to dictionary for Firestore"""
+        return {
+            'id': self.id,
+            'ticket_id': self.ticket_id,
+            'name': self.name,
+            'email': self.email,
+            'phone': self.phone,
+            'college': self.college,
+            'track': self.track,
+            'status': self.status,
+            'priority': self.priority,
+            'assigned_to': self.assigned_to,
+            'created_at': self._serialize_datetime(self.created_at),
+            'updated_at': self._serialize_datetime(self.updated_at),
+            'admin_notes': self.admin_notes,
+            'last_contact_at': self._serialize_datetime(self.last_contact_at),
+            'resolved_at': self._serialize_datetime(self.resolved_at),
+            'ticket_history': self.ticket_history
+        }
+    
+    @classmethod
+    def from_dict(cls, doc_id, data):
+        """Create SimpleHackathonRegistration from Firestore document"""
+        data['id'] = doc_id
+        data['created_at'] = cls._deserialize_datetime(data.get('created_at'))
+        data['updated_at'] = cls._deserialize_datetime(data.get('updated_at'))
+        data['last_contact_at'] = cls._deserialize_datetime(data.get('last_contact_at'))
+        data['resolved_at'] = cls._deserialize_datetime(data.get('resolved_at'))
+        return cls(**data)
+
+    @staticmethod
+    def _generate_ticket_id():
+        """Generate a human-friendly ticket identifier."""
+        return f"HKT-{generate_unique_id(8)}"
+
+    def add_history_entry(self, action, actor=None, note=None, metadata=None):
+        """Append an audit trail entry for ticket actions."""
+        entry = {
+            'timestamp': self._serialize_datetime(datetime.utcnow()),
+            'action': action
+        }
+        if actor:
+            entry['actor'] = actor
+        if note:
+            entry['note'] = note
+        if metadata:
+            entry['metadata'] = metadata
+        self.ticket_history = (self.ticket_history or []) + [entry]
+    
+    def save(self):
+        """Save simple hackathon registration to Firestore"""
+        db = get_firestore_db()
+        self.updated_at = datetime.utcnow()
+        if not self.ticket_id:
+            self.ticket_id = self._generate_ticket_id()
+        
+        if self.id:
+            # Update existing
+            doc_ref = db.collection(COLLECTIONS['simple_hackathon_registrations']).document(self.id)
+            doc_ref.update(self.to_dict())
+        else:
+            # Create new - use email as document ID for easy duplicate checking
+            doc_ref = db.collection(COLLECTIONS['simple_hackathon_registrations']).document(self.email)
+            self.id = self.email
+            if not self.ticket_history:
+                self.add_history_entry('ticket_created', note='Hackathon registration submitted')
+            doc_ref.set(self.to_dict())
+        
+        return self.id
+    
+    @classmethod
+    def get_by_id(cls, doc_id):
+        """Get simple hackathon registration by ID"""
+        db = get_firestore_db()
+        doc = db.collection(COLLECTIONS['simple_hackathon_registrations']).document(doc_id).get()
+        
+        if doc.exists:
+            return cls.from_dict(doc.id, doc.to_dict())
+        return None
+    
+    @classmethod
+    def get_by_email(cls, email):
+        """Get simple hackathon registration by email"""
+        return cls.get_by_id(email)
+    
+    @classmethod
+    def get_all(cls, limit=100, offset=0, filters=None):
+        """Get all simple hackathon registrations with optional filters"""
+        try:
+            db = get_firestore_db()
+            query = db.collection(COLLECTIONS['simple_hackathon_registrations'])
+            
+            # Apply filters
+            if filters:
+                if filters.get('status'):
+                    query = query.where('status', '==', filters['status'])
+                if filters.get('track'):
+                    query = query.where('track', '==', filters['track'])
+                if filters.get('priority'):
+                    query = query.where('priority', '==', filters['priority'])
+                if filters.get('assigned_to'):
+                    query = query.where('assigned_to', '==', filters['assigned_to'])
+            
+            # Try with ordering first, fall back to unordered if index not available
+            try:
+                query = query.order_by('created_at', direction=firestore.Query.DESCENDING)
+                
+                if offset:
+                    query = query.offset(offset)
+                if limit:
+                    query = query.limit(limit)
+                
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                return results
+                
+            except Exception as e:
+                # Fallback: get without ordering
+                if offset:
+                    query = query.offset(offset)
+                if limit:
+                    query = query.limit(limit)
+                
+                docs = query.stream()
+                results = [cls.from_dict(doc.id, doc.to_dict()) for doc in docs]
+                return results
+                
+        except Exception as e:
+            print(f"❌ Error in SimpleHackathonRegistration.get_all(): {type(e).__name__}: {str(e)}")
+            return []
+    
+    @classmethod
+    def count(cls, filters=None):
+        """Count simple hackathon registrations"""
+        try:
+            db = get_firestore_db()
+            query = db.collection(COLLECTIONS['simple_hackathon_registrations'])
+            
+            if filters:
+                if filters.get('status'):
+                    query = query.where('status', '==', filters['status'])
+                if filters.get('track'):
+                    query = query.where('track', '==', filters['track'])
+                if filters.get('priority'):
+                    query = query.where('priority', '==', filters['priority'])
+                if filters.get('assigned_to'):
+                    query = query.where('assigned_to', '==', filters['assigned_to'])
+            
+            result = len(list(query.stream()))
+            return result
+        except Exception as e:
+            print(f"❌ Error in SimpleHackathonRegistration.count(): {type(e).__name__}: {str(e)}")
+            return 0
+    
+    @classmethod
+    def delete(cls, doc_id):
+        """Delete simple hackathon registration"""
+        db = get_firestore_db()
+        db.collection(COLLECTIONS['simple_hackathon_registrations']).document(doc_id).delete()
 
 
 class AdminUser(FirestoreModel):

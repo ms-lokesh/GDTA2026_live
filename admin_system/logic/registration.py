@@ -31,6 +31,27 @@ FEE_CONFIG = {
         "safari": 0,
         "fixed": True
     },
+    "Foreign Student": {
+        "currency": "USD",
+        "base": 15,
+        "food": 0,
+        "safari": 0,
+        "fixed": True
+    },
+    "Foreign Academician": {
+        "currency": "USD",
+        "base": 100,
+        "food": 0,
+        "safari": 0,
+        "fixed": True
+    },
+    "Foreign Industry People": {
+        "currency": "USD",
+        "base": 100,
+        "food": 0,
+        "safari": 0,
+        "fixed": True
+    },
     "Foreign Delegate": {
         "currency": "USD",
         "base": 100,
@@ -208,7 +229,14 @@ def get_current_question(registration_state):
         },
         RegistrationSteps.REGISTRATION_CATEGORY: {
             "question": "Please choose your registration category.",
-            "options": ["Student", "Academician", "Industry People", "Foreign Delegate"],
+            "options": [
+                "Student",
+                "Academician",
+                "Industry People",
+                "Foreign Student",
+                "Foreign Academician",
+                "Foreign Industry People"
+            ],
             "field": "registration_category",
             "validation_type": "options"
         },
@@ -235,7 +263,7 @@ def get_current_question(registration_state):
             "validation_type": "options"
         },
         RegistrationSteps.GDTA_MEMBER: {
-            "question": "Are you a GDTA member?",
+            "question": "Are you affiliated with GDTA?",
             "options": ["Yes", "No"],
             "field": "gdta_member",
             "validation_type": "options"
@@ -353,10 +381,16 @@ def validate_input(user_input, current_step):
             return True, "Academician", None
         elif normalized in ["industry people", "industrial people", "industry", "industrial", "industry professional"]:
             return True, "Industry People", None
+        elif normalized in ["foreign student", "international student"]:
+            return True, "Foreign Student", None
+        elif normalized in ["foreign academician", "foreign academic", "international academic", "foreign faculty"]:
+            return True, "Foreign Academician", None
+        elif normalized in ["foreign industry people", "foreign industrial people", "international industry", "foreign industry professional"]:
+            return True, "Foreign Industry People", None
         elif normalized in ["foreign delegate", "foreign delegates", "foreign", "international delegate"]:
             return True, "Foreign Delegate", None
         else:
-            return False, None, "Please choose: Student, Academician, Industry People, or Foreign Delegate."
+            return False, None, "Please choose: Student, Academician, Industry People, Foreign Student, Foreign Academician, or Foreign Industry People."
 
     elif current_step == RegistrationSteps.ADDON_FOOD_ACCOMMODATION:
         normalized = user_input.lower()
@@ -1031,11 +1065,14 @@ def submit_registration(registration_data):
         registration_source = (registration_data.get("registration_source") or "").strip().lower()
         required_fields = [
             "consent", "name", "institution", "registration_category",
-            "gdta_member", "gdta_affiliation", "country", "email"
+            "gdta_member", "country", "email"
         ]
 
         if registration_source != "form":
             required_fields.append("role")
+        else:
+            required_fields.append("title")
+            required_fields.append("gender")
         
         for field in required_fields:
             if not registration_data.get(field):
@@ -1044,6 +1081,23 @@ def submit_registration(registration_data):
                     "message": f"Missing required field: {field}",
                     "error_code": "MISSING_FIELD"
                 }
+
+        gdta_member_value = str(registration_data.get("gdta_member", "")).strip()
+        registration_category_value = str(registration_data.get("registration_category", "")).strip()
+        gdta_affiliation_value = str(registration_data.get("gdta_affiliation", "")).strip()
+        gdta_affiliation_required_categories = {
+            "Student",
+            "Academician",
+            "Foreign Student",
+            "Foreign Academician"
+        }
+
+        if gdta_member_value == "Yes" and registration_category_value in gdta_affiliation_required_categories and not gdta_affiliation_value:
+            return {
+                "success": False,
+                "message": "GDTA affiliation is required for GDTA members in the selected category.",
+                "error_code": "MISSING_GDTA_AFFILIATION"
+            }
         
         # Check consent
         if registration_data.get("consent") != "Yes":
@@ -1064,6 +1118,20 @@ def submit_registration(registration_data):
         # Validate and compute fee breakdown for form registrations
         registration_category = registration_data.get("registration_category")
         if registration_category:
+            if registration_source == "form":
+                designation_required_categories = {
+                    "Academician",
+                    "Industry People",
+                    "Foreign Academician",
+                    "Foreign Industry People"
+                }
+                if registration_category in designation_required_categories and not str(registration_data.get("role", "")).strip():
+                    return {
+                        "success": False,
+                        "message": "Designation is required for the selected registration category.",
+                        "error_code": "MISSING_DESIGNATION"
+                    }
+
             addon_food = str(registration_data.get("addon_food_accommodation", "No")).strip().lower() in ["yes", "true", "1"]
             addon_safari = str(registration_data.get("addon_safari", "No")).strip().lower() in ["yes", "true", "1"]
             fee_breakdown = _compute_fee(registration_category, addon_food=addon_food, addon_safari=addon_safari)
@@ -1102,7 +1170,9 @@ def submit_registration(registration_data):
 
             new_registration = Registration(
                 event_id='gdta-2026',  # Default event ID
+                title=registration_data.get("title"),
                 name=registration_data.get("name"),
+                gender=registration_data.get("gender"),
                 email=registration_data.get("email"),
                 institution=registration_data.get("institution"),
                 role=role_value,

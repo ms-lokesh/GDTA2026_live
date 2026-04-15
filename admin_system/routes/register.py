@@ -577,7 +577,9 @@ def submit_form_registration():
         
         # Prepare registration data with form source
         registration_data = {
+            "title": data.get("title", "").strip(),
             "name": data.get("name", "").strip(),
+            "gender": data.get("gender", "").strip(),
             "email": data.get("email", "").strip(),
             "institution": data.get("institution", "").strip(),
             "role": data.get("role", "").strip(),

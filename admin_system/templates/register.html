@@ -134,10 +134,25 @@
             border-radius: 16px;
             padding: 22px;
             height: 100%;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
             position: relative;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .pricing-card .price-note {
+            min-height: 42px;
+        }
+
+        .pricing-card .price-list {
+            margin-bottom: 16px;
+        }
+
+        .pricing-card .select-plan-btn {
+            margin-top: auto;
         }
 
         .pricing-card:hover {
@@ -405,7 +420,6 @@
                 <div class="col-lg-11 wow fadeInUp" data-wow-delay="0.2s">
                     <div class="pricing-grid">
                         <div class="pricing-card">
-                            <span class="pricing-badge">Most Popular</span>
                             <h5 style="font-weight: 800; color: #000;">Student</h5>
                             <div class="price-main">Rs.500</div>
                             <p class="price-note">Conference access with optional add-ons</p>
@@ -430,29 +444,41 @@
                         </div>
 
                         <div class="pricing-card">
-                            <span class="pricing-badge">All Inclusive</span>
                             <h5 style="font-weight: 800; color: #000;">Industrial People</h5>
                             <div class="price-main">Rs.7500</div>
                             <p class="price-note">Complete pass including food and safari</p>
                             <ul class="price-list">
-                                <li class="locked-check-item"><input type="checkbox" checked disabled>Conference + Food + Safari</li>
-                                <li class="locked-check-item"><input type="checkbox" checked disabled>No additional add-on selection</li>
-                                <li class="locked-check-item"><input type="checkbox" checked disabled>Fast-track payment step</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>General Pass</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>Food & Accommodation Add-on Available</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>Safari Add-on Available</li>
                             </ul>
                             <button class="btn btn-dark w-100 select-plan-btn" data-category="Industry People">Proceed with Industrial</button>
                         </div>
 
                         <div class="pricing-card">
-                            <span class="pricing-badge">International</span>
                             <h5 style="font-weight: 800; color: #000;">Foreign Delegate</h5>
-                            <div class="price-main">$100</div>
-                            <p class="price-note">All-inclusive international registration</p>
+                            <div class="price-main" id="foreignPriceDisplay">$15</div>
+                            <p class="price-note">Select your participant type</p>
+                            <div class="card-addon-choice">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="foreign_delegate_tier" id="foreign_student_choice" value="student" checked>
+                                    <label class="form-check-label" for="foreign_student_choice">Student ($15)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="foreign_delegate_tier" id="foreign_academician_choice" value="academician">
+                                    <label class="form-check-label" for="foreign_academician_choice">Academician ($100)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="foreign_delegate_tier" id="foreign_industry_choice" value="industry">
+                                    <label class="form-check-label" for="foreign_industry_choice">Industry Person ($100)</label>
+                                </div>
+                            </div>
                             <ul class="price-list">
-                                <li class="locked-check-item"><input type="checkbox" checked disabled>Conference + Food + Safari</li>
-                                <li class="locked-check-item"><input type="checkbox" checked disabled>No add-ons required</li>
-                                <li class="locked-check-item"><input type="checkbox" checked disabled>USD billing</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>General Pass</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>Food & Accommodation Add-on Available</li>
+                                <li class="locked-check-item"><input type="checkbox" checked disabled>Safari Add-on Available</li>
                             </ul>
-                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Foreign Delegate">Proceed with Foreign Delegate</button>
+                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Foreign Student" data-foreign-tier-group="foreign_delegate_tier">Proceed with Foreign Delegate</button>
                         </div>
                     </div>
 
@@ -502,7 +528,9 @@
                             </div>
                             <div class="fee-pill" id="foreign-fee-pill">
                                 <h6>Foreign Delegates</h6>
-                                <p>All Inclusive: <strong>$100</strong></p>
+                                <p>Student: <strong>$15</strong></p>
+                                <p>Academician: <strong>$100</strong></p>
+                                <p>Industry Person: <strong>$100</strong></p>
                             </div>
                         </div>
                     </div>
@@ -513,7 +541,22 @@
                         <input type="hidden" name="safari_addon" id="safariAddonInput">
 
                         <div class="row g-3">
-                            <div class="col-md-6">
+                            <div class="col-md-3">
+                                <label for="title" class="form-label" style="font-weight: 600;">
+                                    <span style="color: red;">*</span> Title
+                                </label>
+                                <select class="form-select" id="title" name="title" required>
+                                    <option value="">Select title</option>
+                                    <option value="Dr">Dr</option>
+                                    <option value="Prof">Prof</option>
+                                    <option value="Mr">Mr</option>
+                                    <option value="Ms">Ms</option>
+                                    <option value="Mrs">Mrs</option>
+                                    <option value="Prefer not to say">Prefer not to say</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-9">
                                 <label for="name" class="form-label" style="font-weight: 600;">
                                     <span style="color: red;">*</span> Full Name
                                 </label>
@@ -530,11 +573,32 @@
                             </div>
 
                             <div class="col-md-6">
+                                <label for="gender" class="form-label" style="font-weight: 600;">
+                                    <span style="color: red;">*</span> Gender
+                                </label>
+                                <select class="form-select" id="gender" name="gender" required>
+                                    <option value="">Select gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Non-binary">Non-binary</option>
+                                    <option value="Prefer not to say">Prefer not to say</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
                                 <label for="institution" class="form-label" style="font-weight: 600;">
                                     <span style="color: red;">*</span> Institution/Organization
                                 </label>
                                 <input type="text" class="form-control" id="institution" name="institution" required
                                     placeholder="Your institution or organization">
+                            </div>
+
+                            <div class="col-md-6" id="designationBlock" style="display: none;">
+                                <label for="role" class="form-label" style="font-weight: 600;">
+                                    <span style="color: red;">*</span> Designation
+                                </label>
+                                <input type="text" class="form-control" id="role" name="role"
+                                    placeholder="e.g., Assistant Professor, Senior Engineer, Product Manager">
                             </div>
 
                             <div class="col-md-6">
@@ -543,10 +607,16 @@
                                 </label>
                                 <select class="form-select" id="registration_category" name="registration_category" required>
                                     <option value="">Select registration category</option>
-                                    <option value="Student">Student</option>
-                                    <option value="Academician">Academician</option>
-                                    <option value="Industry People">Industrial People</option>
-                                    <option value="Foreign Delegate">Foreign Delegate</option>
+                                    <optgroup label="Indian Delegate">
+                                        <option value="Student">Student</option>
+                                        <option value="Academician">Academician</option>
+                                        <option value="Industry People">Industry People</option>
+                                    </optgroup>
+                                    <optgroup label="Foreign Delegate">
+                                        <option value="Foreign Student">Foreign Student</option>
+                                        <option value="Foreign Academician">Foreign Academician</option>
+                                        <option value="Foreign Industry People">Foreign Industry Person</option>
+                                    </optgroup>
                                 </select>
                             </div>
 
@@ -579,29 +649,10 @@
                                 <small class="text-muted">Delegates may select one safari route only.</small>
                             </div>
 
-                            <div class="mb-4 fee-summary-card" id="feeSummary">
-                                <div class="fee-row">
-                                    <span>Base Fee</span>
-                                    <span id="baseFeeText">-</span>
-                                </div>
-                                <div class="fee-row" id="foodRow" style="display: none;">
-                                    <span>Food & Accommodation Add-on</span>
-                                    <span id="foodFeeText">-</span>
-                                </div>
-                                <div class="fee-row" id="safariRow" style="display: none;">
-                                    <span>Safari Add-on</span>
-                                    <span id="safariFeeText">-</span>
-                                </div>
-                                <div class="fee-row fee-total">
-                                    <span>Total</span>
-                                    <span id="totalFeeText">Select category</span>
-                                </div>
-                            </div>
-
                             <!-- GDTA Member -->
                             <div class="mb-3">
                                 <label for="gdta_member" class="form-label" style="font-weight: 600;">
-                                    <span style="color: red;">*</span> Are you a GDTA member?
+                                    <span style="color: red;">*</span> Are you affiliated with GDTA?
                                 </label>
                                 <select class="form-select" id="gdta_member" name="gdta_member" required>
                                     <option value="">Select an option</option>
@@ -676,6 +727,25 @@
                                     placeholder="Your state or province (optional)">
                             </div>
 
+                            <div class="mb-4 fee-summary-card" id="feeSummary">
+                                <div class="fee-row">
+                                    <span>Base Fee</span>
+                                    <span id="baseFeeText">-</span>
+                                </div>
+                                <div class="fee-row" id="foodRow" style="display: none;">
+                                    <span>Food & Accommodation Add-on</span>
+                                    <span id="foodFeeText">-</span>
+                                </div>
+                                <div class="fee-row" id="safariRow" style="display: none;">
+                                    <span>Safari Add-on</span>
+                                    <span id="safariFeeText">-</span>
+                                </div>
+                                <div class="fee-row fee-total">
+                                    <span>Total</span>
+                                    <span id="totalFeeText">Select category</span>
+                                </div>
+                            </div>
+
                             <!-- Submit Button -->
                             <div class="d-grid gap-2 mt-4">
                                 <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
@@ -685,6 +755,7 @@
 
                             <!-- Success/Error Messages -->
                             <div id="alertContainer" class="mt-3"></div>
+                        </div>
                         </form>
                 </div>
             </div>
@@ -791,6 +862,11 @@
             const foodAddonInput = document.getElementById('foodAddonInput');
             const safariAddonInput = document.getElementById('safariAddonInput');
             const registrationCategorySelect = document.getElementById('registration_category');
+            const designationBlock = document.getElementById('designationBlock');
+            const designationInput = document.getElementById('role');
+            const gdtaMemberSelect = document.getElementById('gdta_member');
+            const gdtaAffiliationBlock = document.getElementById('gdtaAffiliationBlock');
+            const gdtaAffiliationSelect = document.getElementById('gdta_affiliation');
             const addonOptions = document.getElementById('addonOptions');
             const addonFoodCheckbox = document.getElementById('addon_food_accommodation');
             const addonSafariCheckbox = document.getElementById('addon_safari');
@@ -807,6 +883,9 @@
                 'Student': document.getElementById('student-fee-pill'),
                 'Academician': document.getElementById('academician-fee-pill'),
                 'Industry People': document.getElementById('industry-fee-pill'),
+                'Foreign Student': document.getElementById('foreign-fee-pill'),
+                'Foreign Academician': document.getElementById('foreign-fee-pill'),
+                'Foreign Industry People': document.getElementById('foreign-fee-pill'),
                 'Foreign Delegate': document.getElementById('foreign-fee-pill')
             };
 
@@ -814,8 +893,26 @@
                 'Student': { base: 500, food: 500, safari: 500, currency: 'Rs.' },
                 'Academician': { base: 2000, food: 500, safari: 500, currency: 'Rs.' },
                 'Industry People': { base: 7500, food: 0, safari: 0, currency: 'Rs.' },
+                'Foreign Student': { base: 15, food: 0, safari: 0, currency: '$' },
+                'Foreign Academician': { base: 100, food: 0, safari: 0, currency: '$' },
+                'Foreign Industry People': { base: 100, food: 0, safari: 0, currency: '$' },
                 'Foreign Delegate': { base: 100, food: 0, safari: 0, currency: '$' }
             };
+
+            const foreignTierToCategory = {
+                student: 'Foreign Student',
+                academician: 'Foreign Academician',
+                industry: 'Foreign Industry People'
+            };
+
+            function updateForeignPriceDisplay() {
+                const display = document.getElementById('foreignPriceDisplay');
+                if (!display) return;
+
+                const selected = document.querySelector('input[name="foreign_delegate_tier"]:checked');
+                const tier = selected ? selected.value : 'student';
+                display.textContent = tier === 'student' ? '$15' : '$100';
+            }
 
             function updateFeeSummary() {
                 const category = registrationCategorySelect.value;
@@ -865,15 +962,64 @@
                 updateFeeSummary();
             }
 
+            function updateDesignationVisibility() {
+                const category = registrationCategorySelect.value;
+                const needsDesignation = [
+                    'Academician',
+                    'Industry People',
+                    'Foreign Academician',
+                    'Foreign Industry People'
+                ].includes(category);
+
+                if (designationBlock && designationInput) {
+                    designationBlock.style.display = needsDesignation ? 'block' : 'none';
+                    designationInput.required = needsDesignation;
+
+                    if (!needsDesignation) {
+                        designationInput.value = '';
+                    }
+                }
+            }
+
+            function updateGdtaAffiliationVisibility() {
+                const category = registrationCategorySelect ? registrationCategorySelect.value : '';
+                const gdtaMember = gdtaMemberSelect ? gdtaMemberSelect.value : '';
+
+                const eligibleCategories = [
+                    'Student',
+                    'Academician',
+                    'Foreign Student',
+                    'Foreign Academician'
+                ];
+
+                const shouldShow = gdtaMember === 'Yes' && eligibleCategories.includes(category);
+
+                if (gdtaAffiliationBlock && gdtaAffiliationSelect) {
+                    gdtaAffiliationBlock.style.display = shouldShow ? 'block' : 'none';
+                    gdtaAffiliationSelect.required = shouldShow;
+
+                    if (!shouldShow) {
+                        gdtaAffiliationSelect.value = '';
+                    }
+                }
+            }
+
 
             document.querySelectorAll('.select-plan-btn').forEach(button => {
                 button.addEventListener('click', function () {
-                    const category = this.dataset.category;
+                    let category = this.dataset.category;
                     const foodCheckboxId = this.dataset.foodCheckboxId;
                     const safariCheckboxId = this.dataset.safariCheckboxId;
+                    const foreignTierGroup = this.dataset.foreignTierGroup;
 
-                    const foodAddon = foodCheckboxId ? document.getElementById(foodCheckboxId).checked : (category === 'Industry People' || category === 'Foreign Delegate');
-                    const safariAddon = safariCheckboxId ? document.getElementById(safariCheckboxId).checked : (category === 'Industry People' || category === 'Foreign Delegate');
+                    if (foreignTierGroup) {
+                        const selectedTier = document.querySelector(`input[name="${foreignTierGroup}"]:checked`);
+                        const tierValue = selectedTier ? selectedTier.value : 'student';
+                        category = foreignTierToCategory[tierValue] || 'Foreign Student';
+                    }
+
+                    const foodAddon = foodCheckboxId ? document.getElementById(foodCheckboxId).checked : false;
+                    const safariAddon = safariCheckboxId ? document.getElementById(safariCheckboxId).checked : false;
 
                     selectedPlanText.textContent = category;
                     categoryInput.value = category;
@@ -900,6 +1046,8 @@
                     }
                     
                     updateAddonVisibility();
+                    updateDesignationVisibility();
+                    updateGdtaAffiliationVisibility();
                     registrationModal.show();
                 });
             });
@@ -918,7 +1066,13 @@
                         feePills[category].style.display = 'block';
                     }
                     updateAddonVisibility();
+                    updateDesignationVisibility();
+                    updateGdtaAffiliationVisibility();
                 });
+            }
+
+            if (gdtaMemberSelect) {
+                gdtaMemberSelect.addEventListener('change', updateGdtaAffiliationVisibility);
             }
 
             [addonFoodCheckbox, addonSafariCheckbox].forEach(checkbox => {
@@ -927,13 +1081,49 @@
                 }
             });
 
+            document.querySelectorAll('input[name="foreign_delegate_tier"]').forEach(radio => {
+                radio.addEventListener('change', updateForeignPriceDisplay);
+            });
+
+            updateForeignPriceDisplay();
+
             registrationForm.addEventListener('submit', function (event) {
                 event.preventDefault();
                 foodAddonInput.value = addonFoodCheckbox.checked;
                 safariAddonInput.value = addonSafariCheckbox.checked;
+
+                const selectedCategory = registrationCategorySelect ? registrationCategorySelect.value : '';
+                const needsDesignation = [
+                    'Academician',
+                    'Industry People',
+                    'Foreign Academician',
+                    'Foreign Industry People'
+                ].includes(selectedCategory);
+
+                if (needsDesignation && designationInput && !designationInput.value.trim()) {
+                    alert('Designation is required for the selected category.');
+                    return;
+                }
+
+                const eligibleGdtaCategories = [
+                    'Student',
+                    'Academician',
+                    'Foreign Student',
+                    'Foreign Academician'
+                ];
+                const needsGdtaAffiliation = gdtaMemberSelect && gdtaMemberSelect.value === 'Yes' && eligibleGdtaCategories.includes(selectedCategory);
+
+                if (needsGdtaAffiliation && gdtaAffiliationSelect && !gdtaAffiliationSelect.value) {
+                    alert('Please select your GDTA affiliation.');
+                    return;
+                }
+
                 console.log('Form submitted');
                 registrationModal.hide();
             });
+
+            updateDesignationVisibility();
+            updateGdtaAffiliationVisibility();
         });
     </script>
 

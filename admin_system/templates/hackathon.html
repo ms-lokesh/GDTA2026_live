@@ -3,10 +3,10 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Hackathon - GDTA 2026</title>
+    <title>GDTA'26 Hackathon</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="GDTA, Hackathon, Build4Change, Conference" name="keywords">
-    <meta content="GDTA Build4Change Hackathon - Build what truly matters." name="description">
+    <meta content="GDTA, Hackathon, Conference" name="keywords">
+    <meta content="GDTA'26 Hackathon - Build what truly matters." name="description">
 
     <link href="/static/img/Logo/Screenshot 2026-01-24 143837.png" rel="icon"
         onerror="this.onerror=null;this.href='../static/img/Logo/Screenshot 2026-01-24 143837.png';">
@@ -262,12 +262,31 @@
                     style="height: 65px; width: auto;">
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+    <!-- Mobile Back Button Start -->
+    <button id="mobileBackBtn" onclick="window.history.back()" class="btn btn-outline-secondary d-lg-none position-fixed" style="top: 16px; left: 16px; z-index: 1200; display: none;">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <!-- Mobile Back Button End -->
+    <script>
+        // Show mobile back button only on mobile screens
+        function toggleMobileBackBtn() {
+            const btn = document.getElementById('mobileBackBtn');
+            if (!btn) return;
+            if (window.innerWidth < 992) {
+                btn.style.display = 'block';
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+        window.addEventListener('resize', toggleMobileBackBtn);
+        window.addEventListener('DOMContentLoaded', toggleMobileBackBtn);
+    </script>
 
             <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto">
+                <div class="navbar-nav ms-auto" style="font-size: 1.18rem; font-weight: 600;">
                     <a href="/index.html" class="nav-item nav-link" style="color: #495057 !important;">Home</a>
 
                     <div class="nav-item dropdown">
@@ -314,13 +333,14 @@
             <p class="text-uppercase mb-3 wow fadeInUp" data-wow-delay="0.2s"
                 style="color: #FFFFFF !important; letter-spacing: 2px; font-weight: 600;">Part of GDTA 2026</p>
             <h1 class="display-3 mb-3 wow fadeInDown" data-wow-delay="0.2s"
-                style="color: #FFFFFF !important; font-weight: 800;">GDTA Build4Change Hackathon</h1>
+                style="color: #FFFFFF !important; font-weight: 800;">GDTA'26 Hackathon</h1>
             <p class="fs-5 wow fadeInUp" data-wow-delay="0.3s" style="color: #FFFFFF !important; max-width: 900px; margin: 0 auto;">
                 Build what truly matters — solve real-world challenges in Education Policy, Smart City, and Healthcare.
             </p>
             <div class="mt-4 wow fadeInUp" data-wow-delay="0.4s">
-                <a href="/register.html" class="btn btn-light btn-lg px-4 py-2 me-2">Register Interest</a>
-                <a href="/program-sessions.html" class="btn btn-outline-light btn-lg px-4 py-2">Explore Tracks</a>
+                <a href="/register-hackathon.html" class="btn btn-light btn-lg px-4 py-2 me-2" style="font-weight: 700;">Register for Hackathon</a>
+                <a href="/register.html" class="btn btn-outline-light btn-lg px-4 py-2 me-2" style="color: #FFFFFF !important; font-weight: 700; border-color: #FFFFFF !important;">Conference Interest</a>
+                <a href="#hackathon-tracks" class="btn btn-outline-light btn-lg px-4 py-2" style="color: #FFFFFF !important; font-weight: 700; border-color: #FFFFFF !important;">Explore Tracks</a>
             </div>
         </div>
     </div>
@@ -334,7 +354,7 @@
                     <h5 class="text-uppercase mb-2" style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">About the Hackathon</h5>
                     <h2 class="mb-4" style="font-weight: 800; color: #000000 !important;">Solving problems that matter</h2>
                     <p class="mb-3" style="line-height: 1.9; color: #495057 !important;">
-                        GDTA Build4Change invites students to go beyond code and create solutions grounded in human needs.
+                        GDTA'26 Hackathon invites students to go beyond code and create solutions grounded in human needs.
                         This hackathon blends design thinking, empathy, and technology to tackle meaningful challenges.
                     </p>
                     <p class="mb-0" style="line-height: 1.9; color: #495057 !important;">
@@ -348,7 +368,7 @@
     <!-- About End -->
 
     <!-- Tracks Start -->
-    <div class="container-fluid section-soft py-5">
+    <div class="container-fluid section-soft py-5" id="hackathon-tracks">
         <div class="container py-5">
             <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.2s">
                 <h5 class="text-uppercase mb-2" style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Hackathon Tracks</h5>
@@ -360,9 +380,12 @@
                     <div class="track-card">
                         <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1200&auto=format&fit=crop" alt="Education Policy" class="track-img">
                         <div class="p-4">
-                            <span class="badge bg-dark mb-2">Sponsor Track</span>
-                            <h4 style="color: #000000 !important; font-weight: 700;">Education Policy</h4>
-                            <p class="mb-0" style="color: #495057 !important;">Design inclusive systems and experiences that improve learning outcomes and student access.</p>
+                            <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #DEE2E6;">
+                                <span class="badge bg-dark mb-2" style="margin-right: 8px;">Sponsor Track</span>
+                                <img src="/static/img/Logo/simens-color.png" alt="Siemens Foundation" style="height: 44px; max-width: 180px; object-fit: contain; vertical-align: middle;">
+                            </div>
+                            <h4 style="color: #000000 !important; font-weight: 700;">EdTech Transformation</h4>
+                            <p class="mb-0" style="color: #495057 !important;">Design inclusive systems and experiences that improve learning outcomes and student access. <strong>Supported by Siemens Foundation.</strong></p>
                         </div>
                     </div>
                 </div>
@@ -398,69 +421,80 @@
         <div class="container py-5">
             <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.2s">
                 <h5 class="text-uppercase mb-2" style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Timeline</h5>
-                <h2 class="mb-0" style="font-weight: 800; color: #000000 !important;">Dummy Timeline (Animated)</h2>
+                <!-- Removed Dummy Timeline (Animated) heading -->
             </div>
 
-            <div class="animated-timeline" id="dummyTimeline">
+            <div class="animated-timeline" id="gdtaTimeline">
                 <span class="timeline-progress" aria-hidden="true"></span>
 
-                <div class="timeline-item left" data-delay="0">
+                <div class="timeline-item right" data-delay="0">
                     <span class="timeline-dot" aria-hidden="true"></span>
-                    <div class="timeline-content">
-                        <span class="timeline-date">Dummy Date 01</span>
-                        <h5 style="color: #000000 !important; font-weight: 700;">Announcement</h5>
-                        <p class="mb-0" style="color: #495057 !important;">Hackathon announcement goes live with theme reveal and participation guidelines.</p>
+                    <div class="timeline-content text-start">
+                        <span class="timeline-date">April – May</span>
+                        <h5 style="color: #000000 !important; font-weight: 700;">Phase 1: Announcement & Recruitment</h5>
+                        <ul class="mb-0" style="color: #495057 !important;">
+                            <li>Event launch & registration (April)</li>
+                            <li>Marketing: Posters to all member institutions</li>
+                            <li>Online Registration Portal opens</li>
+                            <li>Registration closes by 2nd week of May</li>
+                        </ul>
                     </div>
                 </div>
 
-                <div class="timeline-item right" data-delay="120">
+                <div class="timeline-item left" data-delay="120">
                     <span class="timeline-dot" aria-hidden="true"></span>
-                    <div class="timeline-content">
-                        <span class="timeline-date">Dummy Date 02</span>
-                        <h5 style="color: #000000 !important; font-weight: 700;">Registration Window</h5>
-                        <p class="mb-0" style="color: #495057 !important;">Teams register, confirm members, and select their preferred impact track.</p>
+                    <div class="timeline-content text-start">
+                        <span class="timeline-date">June</span>
+                        <h5 style="color: #000000 !important; font-weight: 700;">Phase 2: Screening & Selection</h5>
+                        <ul class="mb-0" style="color: #495057 !important;">
+                            <li>Ideation & Proposal Submission (3rd week of June)</li>
+                            <li>Idea Pitch session</li>
+                            <li>Online Jury Screening & team selection</li>
+                        </ul>
                     </div>
                 </div>
 
-                <div class="timeline-item left" data-delay="240">
+                <div class="timeline-item right" data-delay="240">
                     <span class="timeline-dot" aria-hidden="true"></span>
-                    <div class="timeline-content">
-                        <span class="timeline-date">Dummy Date 03</span>
-                        <h5 style="color: #000000 !important; font-weight: 700;">Problem Statements Released</h5>
-                        <p class="mb-0" style="color: #495057 !important;">Final challenge briefs, scoring rubric, and expected outcomes are shared.</p>
+                    <div class="timeline-content text-start">
+                        <span class="timeline-date">August</span>
+                        <h5 style="color: #000000 !important; font-weight: 700;">Phase 3: Development & Mentorship</h5>
+                        <ul class="mb-0" style="color: #495057 !important;">
+                            <li>Build Sprint (1st week of August)</li>
+                            <li>Mentor Office Hours (1:1 feedback with experts)</li>
+                            <li>Webinar by GDTA Experts</li>
+                        </ul>
                     </div>
                 </div>
 
-                <div class="timeline-item right" data-delay="360">
+                <div class="timeline-item left" data-delay="360">
                     <span class="timeline-dot" aria-hidden="true"></span>
-                    <div class="timeline-content">
-                        <span class="timeline-date">Dummy Date 04</span>
-                        <h5 style="color: #000000 !important; font-weight: 700;">Mentor Checkpoint</h5>
-                        <p class="mb-0" style="color: #495057 !important;">Mid-sprint review with mentors for feedback, scope tuning, and risk checks.</p>
+                    <div class="timeline-content text-start">
+                        <span class="timeline-date">September</span>
+                        <h5 style="color: #000000 !important; font-weight: 700;">Phase 4: Progress Evaluation</h5>
+                        <ul class="mb-0" style="color: #495057 !important;">
+                            <li>Progress Check: Online Demo Day (1st week of September)</li>
+                            <li>Demo + Q&A format for judges</li>
+                        </ul>
                     </div>
                 </div>
 
-                <div class="timeline-item left" data-delay="480">
+                <div class="timeline-item right" data-delay="480">
                     <span class="timeline-dot" aria-hidden="true"></span>
-                    <div class="timeline-content">
-                        <span class="timeline-date">Dummy Date 05</span>
-                        <h5 style="color: #000000 !important; font-weight: 700;">Final Submission</h5>
-                        <p class="mb-0" style="color: #495057 !important;">Teams submit prototype links, pitch deck, and implementation notes.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item right" data-delay="600">
-                    <span class="timeline-dot" aria-hidden="true"></span>
-                    <div class="timeline-content">
-                        <span class="timeline-date">Dummy Date 06</span>
-                        <h5 style="color: #000000 !important; font-weight: 700;">Demo Day & Winners</h5>
-                        <p class="mb-0" style="color: #495057 !important;">Live demos, final jury scoring, and winner announcement ceremony.</p>
+                    <div class="timeline-content text-start">
+                        <span class="timeline-date">Conference Finale</span>
+                        <h5 style="color: #000000 !important; font-weight: 700;">Phase 5: The Grand Finale</h5>
+                        <ul class="mb-0" style="color: #495057 !important;">
+                            <li>Integration with main GDTA Conference</li>
+                            <li>Winner Announcement during Conference Valedictory Session</li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
             <p class="timeline-note">
-                Replace each <strong>Dummy Date</strong> and text block with final milestones when your actual schedule is ready.
+                Demo Day sessions will be scheduled to accommodate international time zones.<br>
+                Track Details: <span class="badge border border-primary text-primary bg-white">Healthcare</span> <span class="badge border border-success text-success bg-white">Education Transformation</span> <span class="badge border border-info text-info bg-white">Smart City & Infrastructure</span>
             </p>
         </div>
     </div>

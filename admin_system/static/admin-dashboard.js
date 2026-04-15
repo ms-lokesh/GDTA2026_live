@@ -10,6 +10,40 @@ let currentRegistrationId = null;
 let currentEventId = null; // For filtering by event
 let allEvents = []; // Cache of all events
 let selectedRegistrations = []; // Track selected registration IDs for bulk operations
+const SIDEBAR_STORAGE_KEY = 'gdta_admin_sidebar_collapsed';
+
+function applySidebarState(isCollapsed) {
+    document.body.classList.toggle('sidebar-collapsed', Boolean(isCollapsed));
+}
+
+function initSidebarState() {
+    const collapsed = localStorage.getItem(SIDEBAR_STORAGE_KEY) === 'true';
+    applySidebarState(collapsed);
+}
+
+function toggleSidebar() {
+    const nextCollapsed = !document.body.classList.contains('sidebar-collapsed');
+    localStorage.setItem(SIDEBAR_STORAGE_KEY, String(nextCollapsed));
+    applySidebarState(nextCollapsed);
+}
+
+function getRequestedPageFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const page = params.get('page');
+    const validPages = new Set([
+        'dashboard',
+        'registrations',
+        'venues',
+        'volunteers',
+        'access-logs',
+        'email',
+        'email-templates',
+        'export',
+        'events',
+        'admins'
+    ]);
+    return validPages.has(page) ? page : 'dashboard';
+}
 
 function getPaymentBadge(paymentStatus) {
     const normalized = String(paymentStatus || 'pending').toLowerCase();
@@ -25,6 +59,22 @@ function getPaymentBadge(paymentStatus) {
     return '<span class="badge badge-payment-pending">Pending</span>';
 }
 
+function getRegistrationStatusPill(status) {
+    const normalized = String(status || 'pending').toLowerCase();
+    return `<span class="registration-pill ${normalized}">${normalized}</span>`;
+}
+
+function getRegistrationPaymentPill(paymentStatus) {
+    const normalized = String(paymentStatus || 'pending').toLowerCase();
+    if (normalized === 'paid') {
+        return '<span class="registration-pill payment-paid">Paid</span>';
+    }
+    if (normalized === 'payment_link_created') {
+        return '<span class="registration-pill payment-link">Link Created</span>';
+    }
+    return '<span class="registration-pill payment-pending">Pending</span>';
+}
+
 // ========== AUTHENTICATION ==========
 
 function showLogin() {
@@ -35,7 +85,7 @@ function showLogin() {
 function showDashboard() {
     $('#loginPage').addClass('hidden');
     $('#dashboardPage').removeClass('hidden');
-    loadDashboard();
+    switchPage(getRequestedPageFromUrl());
 }
 
 function applyRoleBasedUI() {
@@ -45,7 +95,7 @@ function applyRoleBasedUI() {
         $('.super_admin_only').show();
         $('.admin_only').show();
         $('#eventSelectorContainer').show();
-        $('.sidebar-brand h4').html('<i class="fas fa-crown me-2"></i>Super Admin');
+        $('.sidebar-brand h4').html('<i class="fas fa-crown me-2"></i><span class="brand-label">Super Admin</span>');
     } else {
         // Regular admin: show registration management features only
         $('.super_admin_only').hide();
@@ -58,7 +108,7 @@ function applyRoleBasedUI() {
         }
 
         // Update sidebar branding for regular admin
-        $('.sidebar-brand h4').html('<i class="fas fa-chart-line me-2"></i>GDTA Admin');
+        $('.sidebar-brand h4').html('<i class="fas fa-chart-line me-2"></i><span class="brand-label">GDTA Admin</span>');
     }
 }
 
@@ -694,9 +744,10 @@ function displayRegistrations(registrations) {
     tbody.empty();
     
     registrations.forEach(reg => {
-        const statusBadge = `<span class="badge badge-${reg.status}">${reg.status}</span>`;
-        const paymentBadge = getPaymentBadge(reg.payment_status);
-        const date = new Date(reg.created_at).toLocaleDateString();
+        const statusBadge = getRegistrationStatusPill(reg.status);
+        const paymentBadge = getRegistrationPaymentPill(reg.payment_status);
+        const createdDate = new Date(reg.created_at).toLocaleDateString();
+        const updatedDate = reg.updated_at ? new Date(reg.updated_at).toLocaleDateString() : createdDate;
         const uniqueId = reg.unique_id ? `<code class="text-primary">${reg.unique_id}</code>` : '<span class="text-muted">-</span>';
         const feeDisplay = (reg.fee_currency && reg.total_fee !== null && reg.total_fee !== undefined)
             ? (reg.fee_currency === 'USD' ? `$${reg.total_fee}` : `Rs.${reg.total_fee}`)
@@ -727,21 +778,43 @@ function displayRegistrations(registrations) {
         tbody.append(`
             <tr>
                 <td><input type="checkbox" class="registration-checkbox" value="${reg.id}" onchange="updateSelectedRegistrations()"></td>
-                <td>${reg.id}</td>
-                <td>${uniqueId}</td>
-                <td>${reg.name}</td>
-                <td>${reg.email}</td>
-                <td>${reg.institution}</td>
-                <td>${reg.country}</td>
+                <td class="registration-id-cell">
+                    <div class="registration-id-primary">${reg.id}</div>
+                    <div class="registration-id-secondary">Created ${createdDate}</div>
+                </td>
                 <td>
-                    <div>${reg.role}</div>
-                    <small class="text-muted">Fee: ${feeDisplay}</small>
+                    <div class="registration-uid">${uniqueId}</div>
+                    <div class="registration-id-secondary">Updated ${updatedDate}</div>
+                </td>
+                <td class="registration-person-cell">
+                    <div class="registration-person-name">${reg.name || '-'}</div>
+                    <div class="registration-person-email">${reg.title ? `${reg.title}. ` : ''}${reg.gender || ''}</div>
+                </td>
+                <td class="registration-person-cell">
+                    <div class="registration-person-name">${reg.email || '-'}</div>
+                    <div class="registration-person-email">${reg.registration_source || 'system'}</div>
+                </td>
+                <td>
+                    <div class="registration-person-name">${reg.institution || '-'}</div>
+                    <div class="registration-meta-line">${reg.state || 'State not provided'}</div>
+                </td>
+                <td>
+                    <div class="registration-person-name">${reg.country || '-'}</div>
+                    <div class="registration-meta-line">${reg.gdta_member === 'yes' ? 'GDTA Member' : 'Non-member'}</div>
+                </td>
+                <td class="registration-person-cell">
+                    <div class="registration-person-name">${reg.role || '-'}</div>
+                    <div class="registration-meta-line">Fee: ${feeDisplay}</div>
                     ${safariRouteInline}
                 </td>
                 <td>${statusBadge}</td>
                 <td>${paymentBadge}</td>
-                <td>${date}</td>
                 <td>
+                    <div class="registration-person-name">${createdDate}</div>
+                    <div class="registration-meta-line">${updatedDate !== createdDate ? `Updated ${updatedDate}` : 'No later updates'}</div>
+                </td>
+                <td>
+                    <div class="registration-actions">
                     <button class="btn btn-sm btn-primary me-1" onclick="viewDetails('${reg.id}')" title="View Details">
                         <i class="fas fa-eye"></i>
                     </button>
@@ -749,6 +822,7 @@ function displayRegistrations(registrations) {
                     <button class="btn btn-sm btn-danger" onclick="deleteRegistration('${reg.id}', '${reg.name.replace(/'/g, "\\'")}')" title="Delete Registration">
                         <i class="fas fa-trash"></i>
                     </button>
+                    </div>
                 </td>
             </tr>
         `);
@@ -757,6 +831,8 @@ function displayRegistrations(registrations) {
     registrationsTable = $('#registrationsTable').DataTable({
         pageLength: 25,
         order: [[1, 'desc']], // Sort by ID column (now index 1 instead of 0)
+        scrollX: true,
+        autoWidth: false,
         columnDefs: [
             { orderable: false, targets: 0 } // Disable sorting on checkbox column
         ]
@@ -1867,6 +1943,8 @@ async function deleteVolunteer(username, name) {
 // ========== EVENT HANDLERS ==========
 
 $(document).ready(function() {
+    initSidebarState();
+
     // Check if already logged in
     checkAuth();
     
@@ -1890,6 +1968,10 @@ $(document).ready(function() {
     $('#logoutBtn').on('click', function(e) {
         e.preventDefault();
         logout();
+    });
+
+    $('#sidebarToggleBtn').on('click', function() {
+        toggleSidebar();
     });
     
     // Navigation

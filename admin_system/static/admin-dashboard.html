@@ -99,6 +99,62 @@
             margin-right: 10px;
             width: 20px;
         }
+
+        .sidebar-toggle {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
+            background: white;
+            color: var(--primary-color);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #000;
+        }
+
+        .sidebar-brand .brand-label,
+        .sidebar-menu .nav-label {
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            white-space: nowrap;
+        }
+
+        body.sidebar-collapsed .sidebar {
+            width: 84px;
+        }
+
+        body.sidebar-collapsed .main-content {
+            margin-left: 84px;
+        }
+
+        body.sidebar-collapsed .sidebar-brand {
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+
+        body.sidebar-collapsed .sidebar-brand .brand-label,
+        body.sidebar-collapsed .sidebar-menu .nav-label {
+            opacity: 0;
+            visibility: hidden;
+            width: 0;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        body.sidebar-collapsed .sidebar-menu li a {
+            padding-left: 28px;
+            padding-right: 18px;
+        }
+
+        body.sidebar-collapsed .sidebar-menu li a i {
+            margin-right: 0;
+        }
         
         /* Main Content */
         .main-content {
@@ -116,6 +172,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
         
         .user-info {
@@ -261,6 +323,197 @@
             margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
+
+        .registrations-shell {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .registrations-hero {
+            background: linear-gradient(135deg, #111111 0%, #242424 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 24px 26px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.14);
+        }
+
+        .registrations-hero h4 {
+            margin: 0 0 8px;
+            font-size: 1.7rem;
+            font-weight: 700;
+        }
+
+        .registrations-hero p {
+            margin: 0;
+            color: rgba(255,255,255,0.78);
+            max-width: 760px;
+        }
+
+        .registrations-toolbar {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 14px;
+            align-items: end;
+        }
+
+        .registrations-toolbar .toolbar-span-3 { grid-column: span 3; }
+        .registrations-toolbar .toolbar-span-4 { grid-column: span 4; }
+        .registrations-toolbar .toolbar-span-2 { grid-column: span 2; }
+        .registrations-toolbar .toolbar-actions {
+            grid-column: span 12;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .toolbar-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .registration-table-wrap {
+            overflow-x: auto;
+        }
+
+        .registration-table {
+            min-width: 1500px;
+        }
+
+        .registration-table thead th {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #6c757d;
+            white-space: nowrap;
+        }
+
+        .registration-table tbody td {
+            padding-top: 14px;
+            padding-bottom: 14px;
+        }
+
+        .registration-id-cell {
+            min-width: 210px;
+        }
+
+        .registration-id-primary {
+            font-weight: 700;
+            color: #212529;
+            word-break: break-all;
+        }
+
+        .registration-id-secondary {
+            font-size: 0.84rem;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
+        .registration-uid {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .registration-person-cell {
+            min-width: 210px;
+        }
+
+        .registration-person-name {
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .registration-person-email,
+        .registration-meta-line {
+            color: #6c757d;
+            font-size: 0.88rem;
+            margin-top: 4px;
+        }
+
+        .registration-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 72px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .registration-pill.pending {
+            background: #fff3cd;
+            color: #8a6100;
+        }
+
+        .registration-pill.approved {
+            background: #d1f7df;
+            color: #0f7a3f;
+        }
+
+        .registration-pill.rejected {
+            background: #fde2e4;
+            color: #b42318;
+        }
+
+        .registration-pill.payment-paid {
+            background: #d1f7df;
+            color: #0f7a3f;
+        }
+
+        .registration-pill.payment-link {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .registration-pill.payment-pending {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .registration-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            min-width: 132px;
+        }
+
+        .registration-actions .btn {
+            border-radius: 10px;
+        }
+
+        @media (max-width: 1200px) {
+            .registrations-toolbar .toolbar-span-3,
+            .registrations-toolbar .toolbar-span-4,
+            .registrations-toolbar .toolbar-span-2 {
+                grid-column: span 6;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .registrations-toolbar .toolbar-span-3,
+            .registrations-toolbar .toolbar-span-4,
+            .registrations-toolbar .toolbar-span-2 {
+                grid-column: span 12;
+            }
+
+            .registrations-toolbar .toolbar-actions {
+                justify-content: stretch;
+            }
+
+            .registrations-toolbar .toolbar-actions .btn {
+                flex: 1 1 180px;
+            }
+        }
         
         .hidden {
             display: none !important;
@@ -306,23 +559,24 @@
 <div id="dashboardPage" class="hidden">
     <!-- Sidebar -->
     <nav class="sidebar">
-        <div class="sidebar-brand">
-            <h4><i class="fas fa-chart-line me-2"></i>GDTA Admin</h4>
+            <div class="sidebar-brand">
+            <h4><i class="fas fa-chart-line me-2"></i><span class="brand-label">GDTA Admin</span></h4>
         </div>
         
         <ul class="sidebar-menu">
-            <li><a href="#" class="active" data-page="dashboard"><i class="fas fa-home"></i>Dashboard</a></li>
-            <li class="admin_only" style="display:none;"><a href="#" data-page="registrations"><i class="fas fa-users"></i>Registrations</a></li>
-            <li class="admin_only" style="display:none;"><a href="check-in-scanner.html"><i class="fas fa-qrcode"></i>Check-in Scanner</a></li>
-            <li class="admin_only" style="display:none;"><a href="#" data-page="venues"><i class="fas fa-map-marker-alt"></i>Venue Management</a></li>
-            <li class="admin_only" style="display:none;"><a href="#" data-page="volunteers"><i class="fas fa-user-friends"></i>Volunteers</a></li>
-            <li class="admin_only" style="display:none;"><a href="#" data-page="access-logs"><i class="fas fa-qrcode"></i>Access Logs</a></li>
-            <li class="admin_only" style="display:none;"><a href="#" data-page="email"><i class="fas fa-envelope"></i>Send Email</a></li>
-            <li class="admin_only" style="display:none;"><a href="#" data-page="email-templates"><i class="fas fa-file-alt"></i>Email Templates</a></li>
-            <li class="admin_only" style="display:none;"><a href="#" data-page="export"><i class="fas fa-download"></i>Export Data</a></li>
-            <li class="super_admin_only" style="display:none;"><a href="#" data-page="events"><i class="fas fa-calendar-alt"></i>Event Management</a></li>
-            <li class="admin_only" style="display:none;"><a href="#" data-page="admins"><i class="fas fa-user-shield"></i>Admin Management</a></li>
-            <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+            <li><a href="#" class="active" data-page="dashboard"><i class="fas fa-home"></i><span class="nav-label">Dashboard</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="registrations"><i class="fas fa-users"></i><span class="nav-label">Registrations</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="/admin/hackathon-registrations"><i class="fas fa-rocket"></i><span class="nav-label">Hackathon Registrations</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="check-in-scanner.html"><i class="fas fa-qrcode"></i><span class="nav-label">Check-in Scanner</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="venues"><i class="fas fa-map-marker-alt"></i><span class="nav-label">Venue Management</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="volunteers"><i class="fas fa-user-friends"></i><span class="nav-label">Volunteers</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="access-logs"><i class="fas fa-qrcode"></i><span class="nav-label">Access Logs</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="email"><i class="fas fa-envelope"></i><span class="nav-label">Send Email</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="email-templates"><i class="fas fa-file-alt"></i><span class="nav-label">Email Templates</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="export"><i class="fas fa-download"></i><span class="nav-label">Export Data</span></a></li>
+            <li class="super_admin_only" style="display:none;"><a href="#" data-page="events"><i class="fas fa-calendar-alt"></i><span class="nav-label">Event Management</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="admins"><i class="fas fa-user-shield"></i><span class="nav-label">Admin Management</span></a></li>
+            <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span class="nav-label">Logout</span></a></li>
         </ul>
     </nav>
     
@@ -330,12 +584,17 @@
     <div class="main-content">
         <!-- Top Bar -->
         <div class="top-bar">
-            <div>
+            <div class="top-bar-left">
+                <button class="sidebar-toggle" id="sidebarToggleBtn" type="button" title="Toggle sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
                 <h4 class="mb-0" id="pageTitle">Dashboard</h4>
                 <div id="eventSelectorContainer" style="display:none; margin-top: 8px;">
                     <select class="form-select form-select-sm" id="eventSelector" style="width: 300px;">
                         <option value="">Loading events...</option>
                     </select>
+                </div>
                 </div>
             </div>
             <div class="user-info">
@@ -451,6 +710,12 @@
         
         <!-- Registrations View -->
         <div id="registrationsView" class="page-view hidden">
+            <div class="registrations-shell">
+            <div class="registrations-hero">
+                <h4><i class="fas fa-users me-2"></i>Registration Management</h4>
+                <p>Review applications, track payment status, manage safari selections, and take action without losing context.</p>
+            </div>
+
             <!-- Bulk Actions Panel -->
             <div id="bulkActionsPanel" class="alert alert-info" style="display: none; position: sticky; top: 0; z-index: 100;">
                 <div class="d-flex justify-content-between align-items-center">
@@ -478,8 +743,9 @@
             </div>
             
             <div class="filters-bar">
-                <div class="row g-3">
-                    <div class="col-md-3">
+                <div class="registrations-toolbar">
+                    <div class="toolbar-span-3">
+                        <label class="toolbar-label" for="filterStatus">Status</label>
                         <select class="form-select" id="filterStatus">
                             <option value="">All Status</option>
                             <option value="pending">Pending</option>
@@ -488,26 +754,28 @@
                         </select>
                     </div>
                     
-                    <div class="col-md-3">
+                    <div class="toolbar-span-3">
+                        <label class="toolbar-label" for="filterCountry">Country</label>
                         <select class="form-select" id="filterCountry">
                             <option value="">All Countries</option>
                         </select>
                     </div>
                     
-                    <div class="col-md-4">
+                    <div class="toolbar-span-4">
+                        <label class="toolbar-label" for="searchBox">Search</label>
                         <input type="text" class="form-control" id="searchBox" placeholder="Search name, email, institution...">
                     </div>
                     
-                    <div class="col-md-2">
+                    <div class="toolbar-span-2">
+                        <label class="toolbar-label">&nbsp;</label>
                         <button class="btn btn-accent w-100" id="refreshBtn">
                             <i class="fas fa-sync-alt me-2"></i>Refresh
                         </button>
                     </div>
-                </div>
+                
                 
                 <!-- Advanced Filters Toggle -->
-                <div class="row mt-2">
-                    <div class="col-12">
+                    <div class="toolbar-actions">
                         <button class="btn btn-sm btn-outline-secondary" id="toggleAdvancedFilters" onclick="toggleAdvancedFilters()">
                             <i class="fas fa-filter me-1"></i>Advanced Filters
                             <i class="fas fa-chevron-down ms-1" id="advancedFiltersIcon"></i>
@@ -628,7 +896,8 @@
             </div>
             
             <div class="data-table-container">
-                <table id="registrationsTable" class="table table-hover">
+                <div class="registration-table-wrap">
+                <table id="registrationsTable" class="table table-hover registration-table">
                     <thead>
                         <tr>
                             <th style="width: 30px;">
@@ -649,6 +918,8 @@
                     </thead>
                     <tbody></tbody>
                 </table>
+                </div>
+            </div>
             </div>
         </div>
         

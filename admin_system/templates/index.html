@@ -428,12 +428,31 @@
                 <img src="/static/img/Logo/gdta_main_logo.png" alt="GDTA Logo" style="height: 65px; width: auto;">
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+    <!-- Mobile Back Button Start -->
+    <button id="mobileBackBtn" onclick="window.history.back()" class="btn btn-outline-secondary d-lg-none position-fixed" style="top: 16px; left: 16px; z-index: 1200; display: none;">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <!-- Mobile Back Button End -->
+    <script>
+        // Show mobile back button only on mobile screens
+        function toggleMobileBackBtn() {
+            const btn = document.getElementById('mobileBackBtn');
+            if (!btn) return;
+            if (window.innerWidth < 992) {
+                btn.style.display = 'block';
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+        window.addEventListener('resize', toggleMobileBackBtn);
+        window.addEventListener('DOMContentLoaded', toggleMobileBackBtn);
+    </script>
 
             <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto">
+                <div class="navbar-nav ms-auto" style="font-size: 1.18rem; font-weight: 600;">
                     <a href="/index.html" class="nav-item nav-link active" style="color: #000000 !important;">Home</a>
 
                     <div class="nav-item dropdown">
@@ -583,13 +602,13 @@
             <div class="row g-5 align-items-start">
                 <div class="col-lg-7">
                     <div class="wow fadeInLeft" data-wow-delay="0.2s">
-                        <p class="mb-4" style="line-height: 1.8; text-align: justify; color: #495057 !important;">The
+                        <p class="mb-4" style="line-height: 1.8; text-align: justify; color: #495057 !important; font-size: 1.45rem; font-weight: 500;">The
                             GDTA Indian Chapter is proud to host the D Conference 2026, bringing together design
                             thinkers, innovators, and change-makers from across the globe.</p>
-                        <p class="mb-4" style="line-height: 1.8; text-align: justify; color: #495057 !important;">This
+                        <p class="mb-4" style="line-height: 1.8; text-align: justify; color: #495057 !important; font-size: 1.45rem; font-weight: 500;">This
                             two-day conference will explore how design thinking can navigate chaos to create clarity,
                             driving meaningful progress in organizations, communities, and society.</p>
-                        <p class="mb-0" style="line-height: 1.8; text-align: justify; color: #495057 !important;">
+                        <p class="mb-0" style="line-height: 1.8; text-align: justify; color: #495057 !important; font-size: 1.45rem; font-weight: 500;">
                             Experience engaging sessions, hands-on workshops, design safaris, and networking
                             opportunities with leading practitioners.</p>
                     </div>
@@ -622,7 +641,7 @@
                     <div class="content-card" style="height: 100%;">
                         <div class="mb-3"
                             style="width: 100%; height: 220px; background-color: #FFFFFF; border-radius: 10px; overflow: hidden;">
-                            <img src="/static/img/cards/home-events/keynote.jpg" alt="Keynote Sessions"
+                            <img src="/static/img/Sessions/8688e6d2-5ec8-41b0-a2f3-ef139e0e779a.jpg" alt="Keynote Sessions"
                                 style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                         <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 10px;">Keynote Sessions
@@ -636,7 +655,7 @@
                     <div class="content-card" style="height: 100%;">
                         <div class="mb-3"
                             style="width: 100%; height: 220px; background-color: #FFFFFF; border-radius: 10px; overflow: hidden;">
-                            <img src="/static/img/cards/home-events/handson_workshop.jpg" alt="Workshops"
+                            <img src="/static/img/Sessions/1630476Bearbeitet029-scaled.jpg" alt="Workshops"
                                 style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                         <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 10px;">Hands-On Workshops
@@ -650,7 +669,7 @@
                     <div class="content-card" style="height: 100%;">
                         <div class="mb-3"
                             style="width: 100%; height: 220px; background-color: #FFFFFF; border-radius: 10px; overflow: hidden;">
-                            <img src="/static/img/cards/home-events/safari.jpg" alt="Design Safari"
+                            <img src="/static/img/Sessions/Global-Design-Thinking-Week-in-Cairo.jpg" alt="Design Safari"
                                 style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                         <h4 style="color: #000000 !important; font-weight: 700; margin-bottom: 10px;">Design Safari</h4>

@@ -72,6 +72,7 @@ COLLECTIONS = {
     'events': 'events',
     'registrations': 'registrations',
     'hackathon_registrations': 'hackathon_registrations',
+    'simple_hackathon_registrations': 'simple_hackathon_registrations',
     'admin_users': 'admin_users',
     'email_logs': 'email_logs',
     'email_templates': 'email_templates',

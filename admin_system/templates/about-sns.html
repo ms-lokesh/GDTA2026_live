@@ -17,6 +17,16 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/style.css" rel="stylesheet">
     <link href="/static/css/custom-overrides.css" rel="stylesheet">
+    <style>
+        .navbar-nav #homeNavLink.nav-link,
+        .navbar-nav #homeNavLink.nav-link:visited,
+        .navbar-nav #homeNavLink.nav-link:hover,
+        .navbar-nav #homeNavLink.nav-link:focus,
+        .navbar-nav #homeNavLink.nav-link:active {
+            color: #FFFFFF !important;
+            opacity: 1 !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -32,7 +42,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto">
-                    <a href="/index.html" class="nav-item nav-link" style="color: #495057 !important;">Home</a>
+                    <a href="/index.html" id="homeNavLink" class="nav-item nav-link" style="color: #FFFFFF !important; opacity: 1 !important;">Home</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown"
                             style="color: #000000 !important;">About</a>
@@ -75,8 +85,8 @@
                 style="color: #FFFFFF !important; font-weight: 700;">About SNS</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/index.html"
-                            style="color: #FFFFFF; text-decoration: none;">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/index.html"
+                            style="color: #FFFFFF !important; opacity: 1 !important; text-decoration: none;">Home</a></li>
                     <li class="breadcrumb-item" style="color: #FFFFFF;">» About SNS</li>
                 </ol>
             </nav>
@@ -89,23 +99,9 @@
             <div class="row g-5 align-items-start">
                 <div class="col-lg-7">
                     <div class="wow fadeInLeft" data-wow-delay="0.2s">
-                        <p class="mb-4" style="line-height: 1.8; color: #495057 !important; text-align: justify;">We
-                            started our journey in 1997 through Sri SNS Charitable Trust with a philanthropic outlook of
-                            serving the society in the fields of Education, Textiles, Software and several other allied
-                            Industries. Ever since the inception of Sri SNS Charitable Trust, we have been expanding its
-                            wide spectrum of educational streams from pre-school to advanced levels of graduate and post
-                            graduate programmes in Arts, Science, Education, Management, Engineering, Pharmacy, Allied
-                            health sciences, Nursing, Physiotherapy and Research centers.</p>
-                        <p class="mb-4" style="line-height: 1.8; color: #495057 !important; text-align: justify;">Every
-                            institution has a well-defined vision, highly committed mission and dedicated faculty
-                            members to deliver excellence in design thinking based education and innovation through our
-                            five pillar theme. Ranking among the top 5 colleges in Coimbatore, we opt to shine as one of
-                            the premier institutions in the country and become an internationally recognized university
-                            worldwide.</p>
-                        <p class="mb-0" style="line-height: 1.8; color: #495057 !important; text-align: justify;">By
-                            extending, strengthening and deepening the collaborative ties between educators and
-                            practitioners of Design Thinking, the alliance will create a suitable institutional
-                            framework to accelerate this global exploration.</p>
+                        <p class="mb-4" style="line-height: 1.8; color: #495057 !important; text-align: justify;">SNS Group is one of South India's most dynamic multi-sector conglomerates, anchored by Sri SNS Charitable Trust, a philanthropic organisation founded in 1997. Headquartered in Coimbatore, Tamil Nadu, the group operates at the intersection of education, technology, entrepreneurship, real estate, and venture capital — unified by a singular philosophy: building an entrepreneurial mindset through GenAI-powered Design Thinking.</p>
+                        <p class="mb-4" style="line-height: 1.8; color: #495057 !important; text-align: justify;">From a single engineering college in 1997 to a sprawling ecosystem of 9 institutions, a technology company, a startup incubator targeting 1,000 AI ventures, and a portfolio of digital platforms, SNS Group has grown into an institution-building powerhouse that shapes over 16,000 students annually and maintains a global alumni network of 40,000+ across 105+ countries.</p>
+                        <p class="mb-0" style="line-height: 1.8; color: #495057 !important; text-align: justify;">SNS is India's first institution to implement a patented GenAI-powered Design Thinking Framework across K-12 through PhD education — integrating purpose, process, and people into every aspect of learning and institutional culture.</p>
                     </div>
                 </div>
                 <div class="col-lg-5">
@@ -122,29 +118,33 @@
     <!-- Values Section Start -->
     <div class="container-fluid py-5" style="background-color: #F8F9FA;">
         <div class="container py-5">
-            <h4 class="mb-4" style="color: #000000 !important; font-weight: 700;">27 Years of Building Powerful Learning
-                Experience</h4>
-            <ul style="list-style: none; padding-left: 0;">
-                <li class="mb-3" style="color: #495057 !important; line-height: 1.7;"><i
-                        class="fas fa-check-circle me-2" style="color: #000000;"></i>Providing an outstanding
-                    educational experience rooted in strong disciplines and enhanced by a broad range of experiences.
-                </li>
-                <li class="mb-3" style="color: #495057 !important; line-height: 1.7;"><i
-                        class="fas fa-check-circle me-2" style="color: #000000;"></i>Empowering our students to be
-                    creative, innovative, enterprising and global in their outlook.</li>
-                <li class="mb-3" style="color: #495057 !important; line-height: 1.7;"><i
-                        class="fas fa-check-circle me-2" style="color: #000000;"></i>Implementing our
-                    technology-enhanced learning roadmap so that we are recognized as a leading university for the use
-                    of technology to support campus-based education.</li>
-                <li class="mb-3" style="color: #495057 !important; line-height: 1.7;"><i
-                        class="fas fa-check-circle me-2" style="color: #000000;"></i>Developing and implementing a new
-                    Design Thinking Framework to support and prepare students to shape the societies in which they will
-                    live and the professions they choose to enter.</li>
-                <li class="mb-0" style="color: #495057 !important; line-height: 1.7;"><i
-                        class="fas fa-check-circle me-2" style="color: #000000;"></i>Aiming to establish an
-                    inter-disciplinary teaching to facilitate multi- and inter- disciplinary opportunities for the
-                    students.</li>
-            </ul>
+            <div class="mb-4">
+                <h5 style="color: #000000 !important; font-weight: 700;">Vision</h5>
+                <p class="mb-0" style="line-height: 1.8; color: #495057 !important;">To become an internationally recognised ecosystem that produces entrepreneurial, empathetic, and technologically fluent leaders who transform industries and serve society.</p>
+            </div>
+
+            <div class="mb-4">
+                <h5 style="color: #000000 !important; font-weight: 700;">Mission</h5>
+                <p class="mb-0" style="line-height: 1.8; color: #495057 !important;">To redesign the common mind and elevate business excellence by embedding Design Thinking, AI literacy, and 3P Culture into every dimension of education, research, and enterprise.</p>
+            </div>
+
+            <div class="mb-4">
+                <h5 class="mb-3" style="color: #000000 !important; font-weight: 700;">Core Philosophy — 3P Culture</h5>
+                <ul style="list-style: none; padding-left: 0; margin-bottom: 0;">
+                    <li class="mb-3" style="color: #495057 !important; line-height: 1.7;"><i class="fas fa-check-circle me-2" style="color: #000000;"></i><strong>Purpose:</strong> Every venture and curriculum begins with a compelling 'why' — a north star that guides decisions and galvanises teams.</li>
+                    <li class="mb-3" style="color: #495057 !important; line-height: 1.7;"><i class="fas fa-check-circle me-2" style="color: #000000;"></i><strong>Process:</strong> Empathize → Define → Ideate → Prototype → Test &amp; Scale — a human-centred design cycle applied to education and business alike.</li>
+                    <li class="mb-0" style="color: #495057 !important; line-height: 1.7;"><i class="fas fa-check-circle me-2" style="color: #000000;"></i><strong>People:</strong> Mentors, investors, educators, and entrepreneurs united in a shared commitment to excellence and social good.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="mb-3" style="color: #000000 !important; font-weight: 700;">3C Competency Circle</h5>
+                <ul style="list-style: none; padding-left: 0; margin-bottom: 0;">
+                    <li class="mb-3" style="color: #495057 !important; line-height: 1.7;"><i class="fas fa-check-circle me-2" style="color: #000000;"></i><strong>Attitude:</strong> Curiosity &amp; accountability; growth mindset cultivated through design thinking practices.</li>
+                    <li class="mb-3" style="color: #495057 !important; line-height: 1.7;"><i class="fas fa-check-circle me-2" style="color: #000000;"></i><strong>Technical:</strong> Domain expertise powered by AI &amp; emerging technologies — from GenAI to core engineering.</li>
+                    <li class="mb-0" style="color: #495057 !important; line-height: 1.7;"><i class="fas fa-check-circle me-2" style="color: #000000;"></i><strong>Logical &amp; Business:</strong> Critical thinking, problem-solving, and business acumen for real-world success.</li>
+                </ul>
+            </div>
         </div>
     </div>
     <!-- Values Section End -->

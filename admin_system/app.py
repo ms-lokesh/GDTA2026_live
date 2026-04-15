@@ -240,6 +240,13 @@ def create_app():
         import os
         static_dir = os.path.join(os.path.dirname(__file__), 'static')
         return send_from_directory(static_dir, 'admin-dashboard.html')
+
+    @app.route('/admin/hackathon-registrations')
+    def admin_hackathon_registrations_route():
+        """Serve the hackathon registrations admin page."""
+        import os
+        static_dir = os.path.join(os.path.dirname(__file__), 'static')
+        return send_from_directory(static_dir, 'hackathon-registrations.html')
     
     # Serve admin system registration UI at /register (different from main site register.html)
     @app.route('/register')
