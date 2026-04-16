@@ -8,6 +8,10 @@ from services.firebase.firestore import create_document, get_document, query_doc
 from .state_machine import compute_fee, initial_state, process
 
 
+def _yes(value):
+    return str(value or "").strip().lower() in {"yes", "y", "true", "1"}
+
+
 def start_registration(session_id=None):
     sid = session_id or str(uuid.uuid4())
     state = initial_state()
@@ -81,14 +85,38 @@ def submit_registration(payload):
     if not email:
         raise AppError("Email required", ERROR_CODES["VALIDATION_ERROR"], 400)
 
+    if str(payload.get("consent") or "").strip().lower() not in {"yes", "y", "true", "1"}:
+        raise AppError("Registration requires consent", ERROR_CODES["VALIDATION_ERROR"], 400)
+
+    gdta_member_raw = str(payload.get("gdta_member") or "").strip()
+    if not gdta_member_raw:
+        raise AppError("GDTA member response is required", ERROR_CODES["VALIDATION_ERROR"], 400)
+
+    gdta_member = gdta_member_raw.lower()
+    if gdta_member not in {"yes", "y", "true", "1", "no", "n", "false", "0"}:
+        raise AppError("GDTA member must be Yes or No", ERROR_CODES["VALIDATION_ERROR"], 400)
+
+    if _yes(gdta_member_raw) and not str(payload.get("gdta_affiliation") or "").strip():
+        raise AppError("GDTA affiliation is required when GDTA member is Yes", ERROR_CODES["VALIDATION_ERROR"], 400)
+
     duplicate = query_documents(COLLECTIONS["registrations"], filters=[("email", "==", email)], limit=1)
     if duplicate:
         raise AppError("Email already registered", ERROR_CODES["DUPLICATE_EMAIL"], 409)
 
+    addon_food = _yes(payload.get("addon_food")) or _yes(payload.get("addon_food_accommodation"))
+    addon_safari = _yes(payload.get("addon_safari"))
+
+    if addon_safari and not str(payload.get("safari_route") or "").strip():
+        raise AppError("Safari route required when safari add-on is selected", ERROR_CODES["VALIDATION_ERROR"], 400)
+
+    country = str(payload.get("country") or "").strip()
+    if country.lower() == "india" and not str(payload.get("state") or "").strip():
+        raise AppError("State required for registrations from India", ERROR_CODES["VALIDATION_ERROR"], 400)
+
     fee = compute_fee(
         payload.get("registration_category"),
-        bool(payload.get("addon_food")),
-        bool(payload.get("addon_safari")),
+        addon_food=addon_food,
+        addon_safari=addon_safari,
     )
     if not fee:
         raise AppError("Invalid category", ERROR_CODES["VALIDATION_ERROR"], 400)
@@ -96,8 +124,15 @@ def submit_registration(payload):
     doc = {
         **payload,
         **fee,
+        "addon_food_accommodation": "Yes" if addon_food else "No",
+        "addon_safari": "Yes" if addon_safari else "No",
         "email": email,
         "status": "pending",
+        "payment_status": "payment_pending",
+        "payment_link": None,
+        "invoice_id": None,
+        "payment_amount": fee["total_fee"],
+        "currency": fee["fee_currency"],
         "unique_id": str(uuid.uuid4()).replace("-", "")[:10].upper(),
         "created_at": datetime.utcnow().isoformat(),
         "updated_at": datetime.utcnow().isoformat(),

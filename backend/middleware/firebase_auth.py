@@ -27,6 +27,29 @@ class FirebaseAuthMiddleware:
     def __call__(self, request):
         request.user = None
 
+        host = (request.get_host() or "").split(":")[0]
+        is_local_host = host in {"localhost", "127.0.0.1", "0.0.0.0", "[::1]"}
+
+        # Public site assets/pages are not API-protected.
+        if not request.path.startswith("/api/"):
+            return self.get_response(request)
+
+        # Local dashboard demo mode: allow admin panel APIs without Bearer token.
+        if (
+            getattr(settings, "ADMIN_DASHBOARD_DEMO_MODE", False)
+            and is_local_host
+            and (request.path.startswith("/api/admin-panel/") or request.path.startswith("/api/hackathon/"))
+        ):
+            request.user = {
+                "uid": "local-admin-demo",
+                "username": "admin",
+                "name": "Local Admin",
+                "role": "SUPER_ADMIN",
+                "is_active": True,
+                "assigned_events": [],
+            }
+            return self.get_response(request)
+
         for prefix in settings.PUBLIC_PATH_PREFIXES:
             if request.path.startswith(prefix):
                 return self.get_response(request)

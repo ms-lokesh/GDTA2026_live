@@ -16,6 +16,10 @@ def _split_csv(value: str):
 SECRET_KEY = os.getenv("SECRET_KEY", "replace-in-production")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = _split_csv(os.getenv("ALLOWED_HOSTS", "*"))
+if "*" not in ALLOWED_HOSTS:
+    for local_host in ("localhost", "127.0.0.1", "0.0.0.0", "[::1]"):
+        if local_host not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(local_host)
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
@@ -40,12 +44,24 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "project.urls"
 
-TEMPLATES = []
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+            ],
+        },
+    }
+]
 
 WSGI_APPLICATION = "project.wsgi.application"
 ASGI_APPLICATION = "project.asgi.application"
 
-# Django ORM is intentionally unused. Kept minimal for framework boot.
+# NOTE: Django ORM is not used. Firestore is the primary database.
+# SQLite config remains only for Django framework bootstrap requirements.
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -55,6 +71,7 @@ DATABASES = {
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
     "UNAUTHENTICATED_USER": None,
     "EXCEPTION_HANDLER": "core.exceptions.drf_exception_handler",
 }
@@ -65,6 +82,9 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+MEDIA_ROOT = BASE_DIR / "generated_ids"
+MEDIA_URL = "/generated_ids/"
 
 # Firebase
 FIREBASE_CREDENTIALS = os.getenv("FIREBASE_CREDENTIALS", "")
@@ -88,7 +108,7 @@ PUBLIC_PATH_PREFIXES = set(
     _split_csv(
         os.getenv(
             "PUBLIC_PATH_PREFIXES",
-            "/api/health,/api/registrations/start,/api/registrations/answer,/api/registrations/status,/api/registrations/cancel,/api/registrations/submit",
+            "/api/health,/api/registrations/start,/api/registrations/answer,/api/registrations/status,/api/registrations/cancel,/api/registrations/submit,/api/registrations/payment/create-link,/api/registrations/payment/status",
         )
     )
 )
@@ -100,3 +120,33 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True").lower() == "true"
 EMAIL_USERNAME = os.getenv("EMAIL_USERNAME", "")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "")
 EMAIL_FROM_NAME = os.getenv("EMAIL_FROM_NAME", "GDTA 2026 Team")
+
+# Zoho Payments
+ZOHO_CLIENT_ID = os.getenv("ZOHO_CLIENT_ID", "")
+ZOHO_CLIENT_SECRET = os.getenv("ZOHO_CLIENT_SECRET", "")
+ZOHO_REFRESH_TOKEN = os.getenv("ZOHO_REFRESH_TOKEN", "")
+ZOHO_ORGANIZATION_ID = os.getenv("ZOHO_ORGANIZATION_ID", "")
+ZOHO_ACCOUNTS_BASE_URL = os.getenv("ZOHO_ACCOUNTS_BASE_URL", "https://accounts.zoho.com")
+ZOHO_BOOKS_API_BASE_URL = os.getenv("ZOHO_BOOKS_API_BASE_URL", "https://www.zohoapis.com/books/v3")
+ZOHO_REDIRECT_URI = os.getenv("ZOHO_REDIRECT_URI", "")
+PAYMENT_MOCK_MODE = os.getenv("PAYMENT_MOCK_MODE", "False").lower() == "true"
+ADMIN_DASHBOARD_DEMO_MODE = os.getenv("ADMIN_DASHBOARD_DEMO_MODE", "False").lower() == "true"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "%(asctime)s %(levelname)s %(name)s %(message)s",
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "default",
+        }
+    },
+    "loggers": {
+        "": {"handlers": ["console"], "level": "INFO"},
+    },
+}

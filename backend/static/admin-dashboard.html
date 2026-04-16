@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - GDTA 2026</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #000000;
+            --accent-color: #F2B705;
+            --bg-gray: #F8F9FA;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-gray);
+        }
+        
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #333 100%);
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 450px;
+            width: 100%;
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-logo h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-top: 20px;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            overflow-y: auto;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-brand {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-brand h4 {
+            margin: 0;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-menu li a {
+            display: block;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background: rgba(242, 183, 5, 0.2);
+            color: var(--accent-color);
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        .sidebar-menu li a i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .sidebar-toggle {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
+            background: white;
+            color: var(--primary-color);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #000;
+        }
+
+        .sidebar-brand .brand-label,
+        .sidebar-menu .nav-label {
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            white-space: nowrap;
+        }
+
+        body.sidebar-collapsed .sidebar {
+            width: 84px;
+        }
+
+        body.sidebar-collapsed .main-content {
+            margin-left: 84px;
+        }
+
+        body.sidebar-collapsed .sidebar-brand {
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+
+        body.sidebar-collapsed .sidebar-brand .brand-label,
+        body.sidebar-collapsed .sidebar-menu .nav-label {
+            opacity: 0;
+            visibility: hidden;
+            width: 0;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        body.sidebar-collapsed .sidebar-menu li a {
+            padding-left: 28px;
+            padding-right: 18px;
+        }
+
+        body.sidebar-collapsed .sidebar-menu li a i {
+            margin-right: 0;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .top-bar {
+            background: white;
+            padding: 15px 30px;
+            margin: -20px -20px 20px -20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        /* Stats Cards */
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card.primary .stat-icon {
+            background: rgba(0,0,0,0.1);
+            color: var(--primary-color);
+        }
+        
+        .stat-card.success .stat-icon {
+            background: rgba(25,135,84,0.1);
+            color: #198754;
+        }
+        
+        .stat-card.warning .stat-icon {
+            background: rgba(255,193,7,0.1);
+            color: #ffc107;
+        }
+        
+        .stat-card.info .stat-icon {
+            background: rgba(13,202,240,0.1);
+            color: #0dcaf0;
+        }
+        
+        .stat-card h3 {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .stat-card p {
+            color: #6c757d;
+            margin: 0;
+        }
+        
+        /* Table */
+        .data-table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .badge-pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+        
+        .badge-approved {
+            background-color: #198754;
+        }
+        
+        .badge-rejected {
+            background-color: #dc3545;
+        }
+
+        .badge-payment-paid {
+            background-color: #198754;
+        }
+
+        .badge-payment-link {
+            background-color: #0d6efd;
+        }
+
+        .badge-payment-pending {
+            background-color: #6c757d;
+        }
+        
+        /* Modal */
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #333;
+            border-color: #333;
+        }
+        
+        .btn-accent {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #000;
+        }
+        
+        .btn-accent:hover {
+            background-color: #d9a604;
+            border-color: #d9a604;
+            color: #000;
+        }
+        
+        /* Filters */
+        .filters-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .registrations-shell {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .registrations-hero {
+            background: linear-gradient(135deg, #111111 0%, #242424 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 24px 26px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.14);
+        }
+
+        .registrations-hero h4 {
+            margin: 0 0 8px;
+            font-size: 1.7rem;
+            font-weight: 700;
+        }
+
+        .registrations-hero p {
+            margin: 0;
+            color: rgba(255,255,255,0.78);
+            max-width: 760px;
+        }
+
+        .registrations-toolbar {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 14px;
+            align-items: end;
+        }
+
+        .registrations-toolbar .toolbar-span-3 { grid-column: span 3; }
+        .registrations-toolbar .toolbar-span-4 { grid-column: span 4; }
+        .registrations-toolbar .toolbar-span-2 { grid-column: span 2; }
+        .registrations-toolbar .toolbar-actions {
+            grid-column: span 12;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .toolbar-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .registration-table-wrap {
+            overflow-x: auto;
+        }
+
+        .registration-table {
+            min-width: 1500px;
+        }
+
+        .registration-table thead th {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #6c757d;
+            white-space: nowrap;
+        }
+
+        .registration-table tbody td {
+            padding-top: 14px;
+            padding-bottom: 14px;
+        }
+
+        .registration-id-cell {
+            min-width: 210px;
+        }
+
+        .registration-id-primary {
+            font-weight: 700;
+            color: #212529;
+            word-break: break-all;
+        }
+
+        .registration-id-secondary {
+            font-size: 0.84rem;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
+        .registration-uid {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .registration-person-cell {
+            min-width: 210px;
+        }
+
+        .registration-person-name {
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .registration-person-email,
+        .registration-meta-line {
+            color: #6c757d;
+            font-size: 0.88rem;
+            margin-top: 4px;
+        }
+
+        .registration-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 72px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .registration-pill.pending {
+            background: #fff3cd;
+            color: #8a6100;
+        }
+
+        .registration-pill.approved {
+            background: #d1f7df;
+            color: #0f7a3f;
+        }
+
+        .registration-pill.rejected {
+            background: #fde2e4;
+            color: #b42318;
+        }
+
+        .registration-pill.payment-paid {
+            background: #d1f7df;
+            color: #0f7a3f;
+        }
+
+        .registration-pill.payment-link {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .registration-pill.payment-pending {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .registration-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            min-width: 132px;
+        }
+
+        .registration-actions .btn {
+            border-radius: 10px;
+        }
+
+        @media (max-width: 1200px) {
+            .registrations-toolbar .toolbar-span-3,
+            .registrations-toolbar .toolbar-span-4,
+            .registrations-toolbar .toolbar-span-2 {
+                grid-column: span 6;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .registrations-toolbar .toolbar-span-3,
+            .registrations-toolbar .toolbar-span-4,
+            .registrations-toolbar .toolbar-span-2 {
+                grid-column: span 12;
+            }
+
+            .registrations-toolbar .toolbar-actions {
+                justify-content: stretch;
+            }
+
+            .registrations-toolbar .toolbar-actions .btn {
+                flex: 1 1 180px;
+            }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Login Page -->
+<div id="loginPage" class="login-container">
+    <div class="login-card">
+        <div class="login-logo">
+            <i class="fas fa-user-shield fa-3x" style="color: var(--accent-color);"></i>
+            <h2>GDTA 2026</h2>
+            <p class="text-muted">Coordinator Dashboard</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            
+            <div id="loginError" class="alert alert-danger hidden"></div>
+            
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-sign-in-alt me-2"></i>Login
+            </button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <small class="text-muted">Default: admin / admin123</small>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboardPage" class="hidden">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+            <div class="sidebar-brand">
+            <h4><i class="fas fa-chart-line me-2"></i><span class="brand-label">GDTA Admin</span></h4>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active" data-page="dashboard"><i class="fas fa-home"></i><span class="nav-label">Dashboard</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="registrations"><i class="fas fa-users"></i><span class="nav-label">Registrations</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="/static/hackathon-registrations.html"><i class="fas fa-rocket"></i><span class="nav-label">Hackathon Registrations</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="check-in-scanner.html"><i class="fas fa-qrcode"></i><span class="nav-label">Check-in Scanner</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="venues"><i class="fas fa-map-marker-alt"></i><span class="nav-label">Venue Management</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="volunteers"><i class="fas fa-user-friends"></i><span class="nav-label">Volunteers</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="access-logs"><i class="fas fa-qrcode"></i><span class="nav-label">Access Logs</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="email"><i class="fas fa-envelope"></i><span class="nav-label">Send Email</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="email-templates"><i class="fas fa-file-alt"></i><span class="nav-label">Email Templates</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="export"><i class="fas fa-download"></i><span class="nav-label">Export Data</span></a></li>
+            <li class="super_admin_only" style="display:none;"><a href="#" data-page="events"><i class="fas fa-calendar-alt"></i><span class="nav-label">Event Management</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="admins"><i class="fas fa-user-shield"></i><span class="nav-label">Admin Management</span></a></li>
+            <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span class="nav-label">Logout</span></a></li>
+        </ul>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <button class="sidebar-toggle" id="sidebarToggleBtn" type="button" title="Toggle sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                <h4 class="mb-0" id="pageTitle">Dashboard</h4>
+                <div id="eventSelectorContainer" style="display:none; margin-top: 8px;">
+                    <select class="form-select form-select-sm" id="eventSelector" style="width: 300px;">
+                        <option value="">Loading events...</option>
+                    </select>
+                </div>
+                </div>
+            </div>
+            <div class="user-info">
+                <div>
+                    <div class="fw-bold" id="adminName">Administrator</div>
+                    <small class="text-muted" id="adminRole">Admin</small>
+                </div>
+                <div class="user-avatar" id="adminAvatar">A</div>
+            </div>
+        </div>
+        
+        <!-- Dashboard View -->
+        <div id="dashboardView" class="page-view">
+            <div class="mb-4">
+                <h4 id="dashboardTitle"><i class="fas fa-chart-line me-2"></i>Dashboard Overview</h4>
+                <p class="text-muted" id="dashboardSubtitle">Welcome to your dashboard</p>
+            </div>
+            
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card primary">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <h3 id="totalRegistrations">-</h3>
+                        <p>Total Registrations</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="stat-card warning">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <h3 id="pendingRegistrations">-</h3>
+                        <p>Pending Review</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="stat-card success">
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <h3 id="approvedRegistrations">-</h3>
+                        <p>Approved</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="stat-card info">
+                        <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+                        <h3 id="todayRegistrations">-</h3>
+                        <p>Today</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Check-in Statistics -->
+            <div class="row g-4 mb-4 admin_only" style="display:none;">
+                <div class="col-12">
+                    <div class="data-table-container">
+                        <h5 class="mb-3">
+                            <i class="fas fa-clipboard-check me-2"></i>Check-in Statistics
+                            <a href="check-in-scanner.html" class="btn btn-sm btn-primary float-end">
+                                <i class="fas fa-qrcode me-1"></i>Open Scanner
+                            </a>
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <div class="stat-card success">
+                                    <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+                                    <h3 id="checkinStatCheckedIn">-</h3>
+                                    <p>Checked In</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card warning">
+                                    <div class="stat-icon"><i class="fas fa-user-clock"></i></div>
+                                    <h3 id="checkinStatPending">-</h3>
+                                    <p>Not Checked In</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card info">
+                                    <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+                                    <h3 id="checkinStatPercentage">-</h3>
+                                    <p>Check-in Rate</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card primary">
+                                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                                    <h3 id="checkinStatTotal">-</h3>
+                                    <p>Total Approved</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="data-table-container">
+                        <h5 class="mb-3"><i class="fas fa-globe me-2"></i>Top Countries</h5>
+                        <div id="countryStats"></div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="data-table-container">
+                        <h5 class="mb-3"><i class="fas fa-user-tag me-2"></i>Roles Distribution</h5>
+                        <div id="roleStats"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Registrations View -->
+        <div id="registrationsView" class="page-view hidden">
+            <div class="registrations-shell">
+            <div class="registrations-hero">
+                <h4><i class="fas fa-users me-2"></i>Registration Management</h4>
+                <p>Review applications, track payment status, manage safari selections, and take action without losing context.</p>
+            </div>
+
+            <!-- Bulk Actions Panel -->
+            <div id="bulkActionsPanel" class="alert alert-info" style="display: none; position: sticky; top: 0; z-index: 100;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong><i class="fas fa-check-square me-2"></i><span id="selectedCount">0</span> selected</strong>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-success" onclick="bulkApprove()">
+                            <i class="fas fa-check me-1"></i>Approve
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="bulkReject()">
+                            <i class="fas fa-times me-1"></i>Reject
+                        </button>
+                        <button class="btn btn-sm btn-warning" onclick="bulkSetPending()">
+                            <i class="fas fa-clock me-1"></i>Set Pending
+                        </button>
+                        <button class="btn btn-sm btn-primary" onclick="bulkEmail()">
+                            <i class="fas fa-envelope me-1"></i>Send Email
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="clearSelection()">
+                            <i class="fas fa-times me-1"></i>Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filters-bar">
+                <div class="registrations-toolbar">
+                    <div class="toolbar-span-3">
+                        <label class="toolbar-label" for="filterStatus">Status</label>
+                        <select class="form-select" id="filterStatus">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    
+                    <div class="toolbar-span-3">
+                        <label class="toolbar-label" for="filterCountry">Country</label>
+                        <select class="form-select" id="filterCountry">
+                            <option value="">All Countries</option>
+                        </select>
+                    </div>
+                    
+                    <div class="toolbar-span-4">
+                        <label class="toolbar-label" for="searchBox">Search</label>
+                        <input type="text" class="form-control" id="searchBox" placeholder="Search name, email, institution...">
+                    </div>
+                    
+                    <div class="toolbar-span-2">
+                        <label class="toolbar-label">&nbsp;</label>
+                        <button class="btn btn-accent w-100" id="refreshBtn">
+                            <i class="fas fa-sync-alt me-2"></i>Refresh
+                        </button>
+                    </div>
+                
+                
+                <!-- Advanced Filters Toggle -->
+                    <div class="toolbar-actions">
+                        <button class="btn btn-sm btn-outline-secondary" id="toggleAdvancedFilters" onclick="toggleAdvancedFilters()">
+                            <i class="fas fa-filter me-1"></i>Advanced Filters
+                            <i class="fas fa-chevron-down ms-1" id="advancedFiltersIcon"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger ms-2" id="clearFiltersBtn" onclick="clearAllFilters()" style="display: none;">
+                            <i class="fas fa-times me-1"></i>Clear All Filters
+                        </button>
+                        <span class="ms-2 text-muted small" id="activeFiltersCount"></span>
+                    </div>
+                </div>
+                
+                <!-- Advanced Filters Panel -->
+                <div id="advancedFiltersPanel" class="card mt-3" style="display: none;">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3">
+                            <i class="fas fa-sliders-h me-2"></i>Advanced Filters
+                        </h6>
+                        
+                        <div class="row g-3">
+                            <!-- Date Range Filters -->
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Created Date Range</label>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <input type="date" class="form-control form-control-sm" id="filterDateFrom" placeholder="From">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="date" class="form-control form-control-sm" id="filterDateTo" placeholder="To">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Updated Date Range</label>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <input type="date" class="form-control form-control-sm" id="filterUpdatedFrom" placeholder="From">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="date" class="form-control form-control-sm" id="filterUpdatedTo" placeholder="To">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Multi-select Status -->
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Status (Multi-select)</label>
+                                <select class="form-select form-select-sm" id="filterStatusMulti" multiple size="3">
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                                <small class="text-muted">Hold Ctrl/Cmd to select multiple</small>
+                            </div>
+                            
+                            <!-- Multi-select Country -->
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Country (Multi-select)</label>
+                                <select class="form-select form-select-sm" id="filterCountryMulti" multiple size="3">
+                                </select>
+                                <small class="text-muted">Hold Ctrl/Cmd to select multiple</small>
+                            </div>
+                            
+                            <!-- GDTA Member Filter -->
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold">GDTA Member</label>
+                                <select class="form-select form-select-sm" id="filterGdtaMember">
+                                    <option value="">All</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Registration Source Filter -->
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold">Registration Source</label>
+                                <select class="form-select form-select-sm" id="filterRegSource">
+                                    <option value="">All</option>
+                                    <option value="form">Form</option>
+                                    <option value="chatbot">Chatbot</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Check-in Status Filter -->
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold">Check-in Status</label>
+                                <select class="form-select form-select-sm" id="filterCheckedIn">
+                                    <option value="">All</option>
+                                    <option value="true">Checked In</option>
+                                    <option value="false">Not Checked In</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold">Payment Status</label>
+                                <select class="form-select form-select-sm" id="filterPaymentStatus">
+                                    <option value="">All</option>
+                                    <option value="paid">Paid</option>
+                                    <option value="payment_link_created">Link Created</option>
+                                    <option value="payment_pending">Pending</option>
+                                    <option value="pending">Pending</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-12 text-end">
+                                <button class="btn btn-sm btn-secondary me-2" onclick="resetAdvancedFilters()">
+                                    <i class="fas fa-undo me-1"></i>Reset
+                                </button>
+                                <button class="btn btn-sm btn-primary" onclick="applyAdvancedFilters()">
+                                    <i class="fas fa-check me-1"></i>Apply Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="data-table-container">
+                <div class="registration-table-wrap">
+                <table id="registrationsTable" class="table table-hover registration-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px;">
+                                <input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll()" title="Select All">
+                            </th>
+                            <th>ID</th>
+                            <th>Unique ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Institution</th>
+                            <th>Country</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Payment</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                </div>
+            </div>
+            </div>
+        </div>
+        
+        <!-- Email View -->
+        <div id="emailView" class="page-view hidden">
+            <div class="data-table-container">
+                <h5 class="mb-4"><i class="fas fa-paper-plane me-2"></i>Send Email to Registrants</h5>
+                
+                <form id="emailForm">
+                    <div class="mb-3">
+                        <label class="form-label">Recipients</label>
+                        <select class="form-select" id="emailRecipients">
+                            <option value="all">All Registrants</option>
+                            <option value="pending">Pending Only</option>
+                            <option value="approved">Approved Only</option>
+                            <option value="custom">Custom Selection</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Custom Selection List -->
+                    <div id="customSelectionList" class="mb-3 hidden">
+                        <label class="form-label">Select Recipients (click to load registrations)</label>
+                        <button type="button" class="btn btn-sm btn-outline-primary mb-2" id="loadRecipientsBtn">
+                            <i class="fas fa-sync-alt me-1"></i>Load Registrations
+                        </button>
+                        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 5px; padding: 15px; background: white;">
+                            <div id="recipientsList">
+                                <p class="text-muted text-center">Click "Load Registrations" to see available recipients</p>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <span id="selectedCount">0</span> recipients selected
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="emailSubject" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Message</label>
+                        <textarea class="form-control" id="emailMessage" rows="8" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="attachIDCard">
+                            <label class="form-check-label" for="attachIDCard">
+                                <i class="fas fa-id-card me-1"></i>Attach ID Card to Email
+                                <small class="text-muted d-block">ID cards will be automatically generated and attached as PNG files</small>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-accent">
+                        <i class="fas fa-paper-plane me-2"></i>Send Email
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Email Templates View -->
+        <div id="email-templatesView" class="page-view hidden">
+            <div class="mb-4">
+                <h4><i class="fas fa-file-alt me-2"></i>Email Templates</h4>
+                <p class="text-muted">Create and manage reusable email templates</p>
+                <button class="btn btn-primary" onclick="showCreateTemplateModal()">
+                    <i class="fas fa-plus me-2"></i>Create Template
+                </button>
+            </div>
+            
+            <div class="data-table-container">
+                <table class="table table-hover" id="templatesTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Subject</th>
+                            <th>Variables</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Export View -->
+        <div id="exportView" class="page-view hidden">
+            <div class="data-table-container">
+                <h5 class="mb-4"><i class="fas fa-file-export me-2"></i>Export Data</h5>
+                
+                <p class="text-muted mb-4">Export conference data in various formats for offline analysis, reporting, and sharing.</p>
+                
+                <!-- Registrations Export -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h6 class="mb-0"><i class="fas fa-users me-2"></i>Registrations</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Export all conference registrations with complete participant details.</p>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary" onclick="exportData('registrations', 'csv')">
+                                <i class="fas fa-file-csv me-2"></i>CSV
+                            </button>
+                            <button class="btn btn-outline-success" onclick="exportData('registrations', 'excel')">
+                                <i class="fas fa-file-excel me-2"></i>Excel
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="exportData('registrations', 'pdf')">
+                                <i class="fas fa-file-pdf me-2"></i>PDF Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Venues Export -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h6 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Venues</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Export venue information including capacity, location, and access settings.</p>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary" onclick="exportData('venues', 'csv')">
+                                <i class="fas fa-file-csv me-2"></i>CSV
+                            </button>
+                            <button class="btn btn-outline-success" onclick="exportData('venues', 'excel')">
+                                <i class="fas fa-file-excel me-2"></i>Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Volunteers Export -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h6 class="mb-0"><i class="fas fa-hands-helping me-2"></i>Volunteers</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Export volunteer details including contact information and assigned venues.</p>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary" onclick="exportData('volunteers', 'csv')">
+                                <i class="fas fa-file-csv me-2"></i>CSV
+                            </button>
+                            <button class="btn btn-outline-success" onclick="exportData('volunteers', 'excel')">
+                                <i class="fas fa-file-excel me-2"></i>Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ID Cards & Badges Export -->
+                <div class="card mb-4 border-info">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0"><i class="fas fa-id-card me-2"></i>ID Cards & Badges</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text mb-3">Generate and export ID cards, badge printing lists, and QR verification codes.</p>
+                        
+                        <!-- Bulk QR Codes -->
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-2"><i class="fas fa-qrcode me-2"></i>Bulk QR Codes</h6>
+                            <button class="btn btn-primary" onclick="exportIDCards('bulk')">
+                                <i class="fas fa-file-archive me-2"></i>Download All QR Codes (ZIP)
+                            </button>
+                            <small class="text-muted d-block mt-1">ZIP file with QR codes + names for all participants</small>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Badge Printing List -->
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-2"><i class="fas fa-list-ul me-2"></i>Badge Printing List</h6>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-primary" onclick="exportIDCards('badge-list', 'csv')">
+                                    <i class="fas fa-file-csv me-2"></i>CSV
+                                </button>
+                                <button class="btn btn-outline-success" onclick="exportIDCards('badge-list', 'excel')">
+                                    <i class="fas fa-file-excel me-2"></i>Excel
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mt-1">Names and details ready for badge printing</small>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- QR Code List -->
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-2"><i class="fas fa-qrcode me-2"></i>QR Code List</h6>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-primary" onclick="exportIDCards('qr-codes', 'csv')">
+                                    <i class="fas fa-file-csv me-2"></i>CSV
+                                </button>
+                                <button class="btn btn-outline-success" onclick="exportIDCards('qr-codes', 'excel')">
+                                    <i class="fas fa-file-excel me-2"></i>Excel
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mt-1">All unique IDs for verification scanning</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mt-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Note:</strong> Exports include data for the currently selected event. All files are timestamped for your records.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Venue Management View -->
+        <div id="venuesView" class="page-view hidden">
+            <div class="mb-3">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#venueModal" id="addVenueBtn">
+                    <i class="fas fa-plus me-2"></i>Add New Venue
+                </button>
+                <a href="/static/qr-scanner.html" target="_blank" class="btn btn-accent">
+                    <i class="fas fa-qrcode me-2"></i>Open QR Scanner
+                </a>
+            </div>
+            
+            <div class="data-table-container">
+                <h5 class="mb-3"><i class="fas fa-map-marker-alt me-2"></i>Venue List</h5>
+                <table id="venuesTable" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Capacity</th>
+                            <th>Scan Limit</th>
+                            <th>Status</th>
+                            <th>Created By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Volunteers Management View -->
+        <div id="volunteersView" class="page-view hidden">
+            <div class="mb-3">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#volunteerModal" id="addVolunteerBtn">
+                    <i class="fas fa-plus me-2"></i>Add New Volunteer
+                </button>
+                <a href="/static/volunteer-login.html" target="_blank" class="btn btn-info">
+                    <i class="fas fa-sign-in-alt me-2"></i>Volunteer Login Page
+                </a>
+            </div>
+            
+            <div class="data-table-container">
+                <h5 class="mb-3"><i class="fas fa-user-friends me-2"></i>Volunteer Accounts</h5>
+                <table id="volunteersTable" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Assigned Venues</th>
+                            <th>Status</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Access Logs View -->
+        <div id="access-logsView" class="page-view hidden">
+            <div class="filters-bar">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <select class="form-select" id="filterVenue">
+                            <option value="">All Venues</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <select class="form-select" id="filterActionType">
+                            <option value="">All Actions</option>
+                            <option value="check-in">Check-in</option>
+                            <option value="denied">Denied</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <input type="number" class="form-control" id="filterLimit" placeholder="Limit" value="100">
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <button class="btn btn-accent w-100" id="refreshLogsBtn">
+                            <i class="fas fa-sync-alt me-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="stat-card success">
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <h3 id="totalCheckIns">-</h3>
+                        <p>Total Check-ins</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="stat-card warning">
+                        <div class="stat-icon"><i class="fas fa-ban"></i></div>
+                        <h3 id="totalDenied">-</h3>
+                        <p>Access Denied</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="stat-card info">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <h3 id="uniqueParticipants">-</h3>
+                        <p>Unique Participants</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="data-table-container">
+                <h5 class="mb-3"><i class="fas fa-history me-2"></i>Access Log History</h5>
+                <table id="accessLogsTable" class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Participant</th>
+                            <th>Email</th>
+                            <th>Venue</th>
+                            <th>Action</th>
+                            <th>Scanned By</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Event Management View (Super Admin Only) -->
+        <div id="eventsView" class="page-view hidden">
+            <div class="mb-3">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eventModal" id="addEventBtn">
+                    <i class="fas fa-plus me-2"></i>Create New Event
+                </button>
+            </div>
+            
+            <div class="data-table-container">
+                <h5 class="mb-3"><i class="fas fa-calendar-alt me-2"></i>Event List</h5>
+                <table id="eventsTable" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Year</th>
+                            <th>Dates</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Created By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eventsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Admin Management View (Super Admin Only) -->
+        <div id="adminsView" class="page-view hidden">
+            <div class="mb-3">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#adminModal" id="addAdminBtn">
+                    <i class="fas fa-plus me-2"></i>Create New Admin
+                </button>
+            </div>
+            
+            <div class="data-table-container">
+                <h5 class="mb-3"><i class="fas fa-user-shield me-2"></i>Admin List</h5>
+                <table id="adminsTable" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Assigned Events</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Venue Modal -->
+<div class="modal fade" id="venueModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="venueModalTitle">Add New Venue</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="venueForm">
+                    <input type="hidden" id="venueId">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Venue Name *</label>
+                        <input type="text" class="form-control" id="venueName" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Type *</label>
+                        <select class="form-select" id="venueType" required>
+                            <option value="">-- Select Type --</option>
+                            <option value="entry">Entry/Exit Point</option>
+                            <option value="food">Food Counter</option>
+                            <option value="session">Session Hall</option>
+                            <option value="lounge">Lounge/Networking</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" id="venueLocation" placeholder="e.g., Building A, Floor 1">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Capacity</label>
+                        <input type="number" class="form-control" id="venueCapacity" placeholder="Maximum capacity">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="venueDescription" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Scan Limit</label>
+                        <select class="form-select" id="venueAccessLimit">
+                            <option value="unlimited">Unlimited (no restrictions)</option>
+                            <option value="once">Once Only (single entry)</option>
+                            <option value="2">2 Times</option>
+                            <option value="3">3 Times</option>
+                            <option value="5">5 Times</option>
+                            <option value="10">10 Times</option>
+                        </select>
+                        <small class="text-muted">Controls how many times a participant can scan at this venue</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="venueActive" checked>
+                            <label class="form-check-label" for="venueActive">
+                                Venue is Active
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-accent" id="saveVenueBtn">Save Venue</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Volunteer Modal -->
+<div class="modal fade" id="volunteerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="volunteerModalTitle">Add New Volunteer</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="volunteerForm">
+                    <input type="hidden" id="volunteerIdOriginal">
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Username * <small class="text-muted">(cannot be changed)</small></label>
+                            <input type="text" class="form-control" id="volunteerUsername" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="volunteerName" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="volunteerEmail">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input type="text" class="form-control" id="volunteerPhone">
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label class="form-label">Password <span id="passwordHint" class="text-muted">(min 6 characters)</span></label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="volunteerPassword">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePasswordBtn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label class="form-label">Assigned Venues (optional)</label>
+                            <div id="venueCheckboxes" style="max-height: 200px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
+                                <p class="text-muted">Loading venues...</p>
+                            </div>
+                            <small class="text-muted">Select venues this volunteer can manage (leave empty for all venues)</small>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="volunteerActive" checked>
+                                <label class="form-check-label" for="volunteerActive">
+                                    Account is Active
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-accent" id="saveVolunteerBtn">Save Volunteer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Event Modal (Super Admin) -->
+<div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eventModalTitle">Create New Event</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="eventForm">
+                    <input type="hidden" id="eventId">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Event Name *</label>
+                        <input type="text" class="form-control" id="eventName" required placeholder="e.g., GDTA 2027">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Year *</label>
+                        <input type="number" class="form-control" id="eventYear" required min="2020" max="2100" placeholder="2027">
+                    </div>
+                    
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="eventStartDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="eventEndDate">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" id="eventLocation" placeholder="e.g., New York, USA">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="eventDescription" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="eventActive" checked>
+                            <label class="form-check-label" for="eventActive">
+                                Event is Active
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-accent" id="saveEventBtn">Save Event</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Modal (Super Admin) -->
+<div class="modal fade" id="adminModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminModalTitle">Create New Admin</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="adminForm">
+                    <input type="hidden" id="adminIdOriginal">
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Username * <small class="text-muted">(cannot be changed)</small></label>
+                            <input type="text" class="form-control" id="adminUsername" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="adminFullName" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="adminEmail">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Role *</label>
+                            <select class="form-select" id="adminRole" required>
+                                <option value="admin">Regular Admin</option>
+                                <option value="super_admin">Super Admin</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label class="form-label">Password <span id="adminPasswordHint" class="text-muted">(min 8 characters)</span></label>
+                            <input type="password" class="form-control" id="adminPassword" minlength="8">
+                        </div>
+                        
+                        <div class="col-md-12" id="assignedEventsContainer">
+                            <label class="form-label">Assigned Events <small class="text-muted">(for regular admins only)</small></label>
+                            <div id="eventCheckboxes" style="max-height: 200px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
+                                <p class="text-muted">Loading events...</p>
+                            </div>
+                            <small class="text-muted">Super admins have access to all events</small>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="adminActive" checked>
+                                <label class="form-check-label" for="adminActive">
+                                    Account is Active
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-accent" id="saveAdminBtn">Save Admin</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Registration Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registration Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="detailContent"></div>
+                
+                <hr>
+                
+                <h6>Admin Actions</h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="detailStatus">
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-12">
+                        <label class="form-label">Admin Notes</label>
+                        <textarea class="form-control" id="detailNotes" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-accent" id="saveDetailsBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Email Modal -->
+<div class="modal fade" id="bulkEmailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-envelope me-2"></i>Send Email to Selected Participants
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <strong><span id="bulkEmailCount">0</span> participants</strong> will receive this email
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">
+                        <input type="radio" name="emailMode" value="template" onclick="toggleEmailMode('template')">
+                        Use Template
+                        <input type="radio" name="emailMode" value="custom" onclick="toggleEmailMode('custom')" checked class="ms-3">
+                        Custom Message
+                    </label>
+                </div>
+                
+                <div id="templateSelection" style="display: none;">
+                    <div class="mb-3">
+                        <label for="templateSelect" class="form-label">Select Template</label>
+                        <select class="form-select" id="templateSelect" onchange="updateTemplatePreview()">
+                            <option value="">-- Choose a template --</option>
+                        </select>
+                    </div>
+                    <div id="templatePreview" class="alert alert-secondary d-none">
+                        <strong>Preview:</strong>
+                        <div class="mt-2">
+                            <strong>Subject:</strong> <span id="previewSubject"></span><br>
+                            <strong>Body:</strong> <pre id="previewBody" style="white-space: pre-wrap; font-size: 0.9em;"></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="bulkEmailForm" class="customEmail">
+                    <div class="mb-3">
+                        <label for="bulkEmailSubject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="bulkEmailSubject" required 
+                               placeholder="Enter email subject">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="bulkEmailMessage" class="form-label">Message</label>
+                        <textarea class="form-control" id="bulkEmailMessage" rows="8" required
+                                  placeholder="Enter your message here..."></textarea>
+                        <small class="text-muted">Plain text email - HTML not supported</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="sendBulkEmailBtn" onclick="sendBulkEmail()">
+                    <i class="fas fa-paper-plane me-2"></i>Send Email
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create/Edit Template Modal -->
+<div class="modal fade" id="templateModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="templateModalTitle">
+                    <i class="fas fa-file-alt me-2"></i>Create Email Template
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="templateForm">
+                    <input type="hidden" id="templateId">
+                    
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="templateName" class="form-label">Template Name</label>
+                            <input type="text" class="form-control" id="templateName" required
+                                   placeholder="e.g., Welcome Email">
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="templateCategory" class="form-label">Category</label>
+                            <select class="form-select" id="templateCategory" required>
+                                <option value="welcome">Welcome</option>
+                                <option value="approval">Approval</option>
+                                <option value="rejection">Rejection</option>
+                                <option value="reminder">Reminder</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="templateSubject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="templateSubject" required
+                               placeholder="Welcome to {{event_name}}, {{name}}!">
+                        <small class="text-muted">Use {{variable}} for dynamic content</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="templateBody" class="form-label">Email Body</label>
+                        <textarea class="form-control" id="templateBody" rows="10" required
+                                  placeholder="Dear {{name}},
+
+Welcome to {{event_name}}!
+
+Your registration has been received. Your unique ID is {{unique_id}}.
+
+Best regards,
+GDTA Team"></textarea>
+                        <small class="text-muted">Use {{variable}} for dynamic content</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Available Variables (click to copy)</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('name')">{{name}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('email')">{{email}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('institution')">{{institution}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('role')">{{role}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('country')">{{country}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('unique_id')">{{unique_id}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('registration_category')">{{registration_category}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('fee_display')">{{fee_display}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('total_fee')">{{total_fee}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('safari_route')">{{safari_route}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('event_name')">{{event_name}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('event_year')">{{event_year}}</span>
+                            <span class="badge bg-secondary" style="cursor: pointer;" onclick="copyVariable('event_location')">{{event_location}}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="templateActive" checked>
+                        <label class="form-check-label" for="templateActive">
+                            Active Template
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveTemplate()">
+                    <i class="fas fa-save me-2"></i>Save Template
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="/static/admin-dashboard.js"></script>
+
+</body>
+</html>

@@ -26,6 +26,10 @@ COLLECTIONS = {
     "venues": "venues",
     "access_logs": "access_logs",
     "email_logs": "email_logs",
+    "payment_logs": "payment_logs",
+    "email_templates": "email_templates",
+    "audit_logs": "audit_logs",
+    "id_cards": "id_cards",
 }
 
 ERROR_CODES = {
@@ -36,4 +40,7 @@ ERROR_CODES = {
     "INTERNAL_ERROR": "INTERNAL_ERROR",
     "DUPLICATE_EMAIL": "DUPLICATE_EMAIL",
     "INVALID_STATE": "INVALID_STATE",
+    "CONFLICT": "CONFLICT",
+    "PAYMENT_ERROR": "PAYMENT_ERROR",
+    "RATE_LIMITED": "RATE_LIMITED",
 }

@@ -23,9 +23,33 @@ class SecurityHeadersMiddleware:
         response["X-Frame-Options"] = "DENY"
         response["X-Content-Type-Options"] = "nosniff"
         response["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response["Content-Security-Policy"] = (
-            "default-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
-        )
+
+        # Keep production strict, but allow development UI dependencies (CDNs + inline blocks)
+        # for local-host runs (even if DEBUG=False in env).
+        host = (request.get_host() or "").split(":")[0]
+        is_local_host = host in {"localhost", "127.0.0.1", "0.0.0.0", "[::1]"}
+
+        if settings.DEBUG or is_local_host:
+            csp_policy = (
+                "default-src 'self'; "
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.jquery.com https://cdn.jsdelivr.net https://cdn.datatables.net; "
+                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.datatables.net; "
+                "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "
+                "img-src 'self' data: blob: https:; "
+                "connect-src 'self' https:; "
+                "frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+            )
+        else:
+            csp_policy = (
+                "default-src 'self'; "
+                "script-src 'self'; "
+                "style-src 'self'; "
+                "img-src 'self' data:; "
+                "font-src 'self'; "
+                "frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+            )
+
+        response["Content-Security-Policy"] = csp_policy
         response["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
 
         return response

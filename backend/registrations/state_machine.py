@@ -23,8 +23,13 @@ FLOW = [
     "INSTITUTION",
     "ROLE",
     "CATEGORY",
-    "ADDONS",
+    "ADDON_FOOD_ACCOMMODATION",
+    "ADDON_SAFARI",
+    "SAFARI_ROUTE",
+    "GDTA_MEMBER",
+    "GDTA_AFFILIATION",
     "COUNTRY",
+    "STATE",
     "EMAIL",
     "REVIEW",
     "CONFIRM",
@@ -41,7 +46,7 @@ def compute_fee(category, addon_food=False, addon_safari=False):
     return {
         "fee_currency": cfg["currency"],
         "base_fee": cfg["base"],
-        "addon_food_fee": food,
+        "addon_food_accommodation_fee": food,
         "addon_safari_fee": safari,
         "total_fee": cfg["base"] + food + safari,
         "fixed_all_inclusive": cfg["fixed"],
@@ -52,6 +57,10 @@ def _valid_email(email):
     return bool(re.match(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", email or ""))
 
 
+def _yes(value):
+    return str(value or "").strip().lower() in {"yes", "y", "true", "1"}
+
+
 def initial_state():
     return {
         "current_step": "CONSENT",
@@ -59,12 +68,16 @@ def initial_state():
         "data": {
             "consent": None,
             "name": None,
+            "title": None,
+            "gender": None,
             "institution": None,
             "role": None,
             "registration_category": None,
-            "addon_food": False,
-            "addon_safari": False,
+            "addon_food_accommodation": "No",
+            "addon_safari": "No",
             "safari_route": None,
+            "gdta_member": None,
+            "gdta_affiliation": None,
             "country": None,
             "state": None,
             "email": None,
@@ -113,26 +126,90 @@ def process(state, answer):
         if value not in FEE_CONFIG:
             raise ValueError("Invalid category")
         state["data"]["registration_category"] = value
-        state["current_step"] = "ADDONS"
+        cfg = FEE_CONFIG[value]
+        if cfg["fixed"]:
+            state["data"]["addon_food_accommodation"] = "No"
+            state["data"]["addon_safari"] = "No"
+            state["data"]["safari_route"] = None
+            state["current_step"] = "GDTA_MEMBER"
+        else:
+            state["current_step"] = "ADDON_FOOD_ACCOMMODATION"
         return state, "Category recorded.", False
 
-    if step == "ADDONS":
-        parts = [p.strip().lower() for p in value.split(",")]
-        state["data"]["addon_food"] = "food" in parts
-        state["data"]["addon_safari"] = "safari" in parts
-        if not state["data"]["addon_safari"]:
+    if step == "ADDON_FOOD_ACCOMMODATION":
+        if low not in {"yes", "y", "no", "n"}:
+            raise ValueError("Food & accommodation add-on must be Yes or No")
+        state["data"]["addon_food_accommodation"] = "Yes" if low in {"yes", "y"} else "No"
+        state["current_step"] = "ADDON_SAFARI"
+        return state, "Food & accommodation add-on recorded.", False
+
+    if step == "ADDON_SAFARI":
+        if low not in {"yes", "y", "no", "n"}:
+            raise ValueError("Safari add-on must be Yes or No")
+        state["data"]["addon_safari"] = "Yes" if low in {"yes", "y"} else "No"
+        if state["data"]["addon_safari"] == "Yes":
+            state["current_step"] = "SAFARI_ROUTE"
+        else:
             state["data"]["safari_route"] = None
+            state["current_step"] = "GDTA_MEMBER"
+        return state, "Safari add-on recorded.", False
+
+    if step == "SAFARI_ROUTE":
+        normalized = low
+        route_value = None
+        if normalized in {"route 01", "route 1", "1", "01"}:
+            route_value = SAFARI_ROUTES["route 01"]
+        elif normalized in {"route 02", "route 2", "2", "02"}:
+            route_value = SAFARI_ROUTES["route 02"]
+        elif normalized in {"route 03", "route 3", "3", "03"}:
+            route_value = SAFARI_ROUTES["route 03"]
+        elif normalized in [x.lower() for x in SAFARI_ROUTES.values()]:
+            for route in SAFARI_ROUTES.values():
+                if normalized == route.lower():
+                    route_value = route
+                    break
+        if not route_value:
+            raise ValueError("Invalid safari route")
+        state["data"]["safari_route"] = route_value
+        state["current_step"] = "GDTA_MEMBER"
+        return state, "Safari route recorded.", False
+
+    if step == "GDTA_MEMBER":
+        if low not in {"yes", "y", "no", "n"}:
+            raise ValueError("GDTA member response must be Yes or No")
+        state["data"]["gdta_member"] = "Yes" if low in {"yes", "y"} else "No"
+        state["current_step"] = "GDTA_AFFILIATION"
+        return state, "GDTA member response recorded.", False
+
+    if step == "GDTA_AFFILIATION":
+        if low not in {"yes", "y", "no", "n", "not sure", "notsure", "unsure"}:
+            raise ValueError("GDTA affiliation must be Yes, No, or Not sure")
+        if low in {"yes", "y"}:
+            state["data"]["gdta_affiliation"] = "Yes"
+        elif low in {"no", "n"}:
+            state["data"]["gdta_affiliation"] = "No"
+        else:
+            state["data"]["gdta_affiliation"] = "Not sure"
         state["current_step"] = "COUNTRY"
-        return state, "Add-ons recorded.", False
+        return state, "GDTA affiliation recorded.", False
 
     if step == "COUNTRY":
         if len(value) < 2:
             raise ValueError("Invalid country")
         state["data"]["country"] = value.title()
-        if value.lower() != "india":
+        if low == "india":
+            state["current_step"] = "STATE"
+        else:
             state["data"]["state"] = None
-        state["current_step"] = "EMAIL"
+            state["current_step"] = "EMAIL"
         return state, "Country recorded.", False
+
+    if step == "STATE":
+        if len(value) < 2:
+            raise ValueError("Invalid state")
+        state["data"]["state"] = value.title()
+        state["current_step"] = "EMAIL"
+        return state, "State recorded.", False
 
     if step == "EMAIL":
         if not _valid_email(value):

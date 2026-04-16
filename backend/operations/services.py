@@ -1,8 +1,10 @@
 from datetime import datetime
 
+from core.audit import write_audit_log
 from core.constants import COLLECTIONS, ERROR_CODES
 from core.exceptions import AppError
 from services.firebase.firestore import create_document, get_collection, get_document, query_documents, update_document
+from utils.permissions import assert_event_scope
 
 
 def list_venues(user):
@@ -13,23 +15,36 @@ def list_venues(user):
     return [v for v in all_rows if v.get("event_id") in allowed]
 
 
-def create_venue(payload):
+def create_venue(payload, actor_user):
+    assert_event_scope(actor_user, payload.get("event_id"))
     payload = {
         **payload,
         "created_at": datetime.utcnow().isoformat(),
         "updated_at": datetime.utcnow().isoformat(),
     }
-    return create_document(COLLECTIONS["venues"], payload)
+    venue_id = create_document(COLLECTIONS["venues"], payload)
+    write_audit_log("venue_created", actor_user.get("uid"), target={"venue_id": venue_id}, details={"event_id": payload.get("event_id")})
+    return venue_id
 
 
-def update_venue(venue_id, payload):
+def update_venue(venue_id, payload, actor_user):
+    existing = get_document(COLLECTIONS["venues"], venue_id)
+    if not existing:
+        raise AppError("Venue not found", ERROR_CODES["NOT_FOUND"], 404)
+    assert_event_scope(actor_user, existing.get("event_id"))
     payload = {**payload, "updated_at": datetime.utcnow().isoformat()}
     update_document(COLLECTIONS["venues"], venue_id, payload)
+    write_audit_log("venue_updated", actor_user.get("uid"), target={"venue_id": venue_id}, details={"patch": payload})
     return True
 
 
-def delete_venue(venue_id):
+def delete_venue(venue_id, actor_user):
+    existing = get_document(COLLECTIONS["venues"], venue_id)
+    if not existing:
+        raise AppError("Venue not found", ERROR_CODES["NOT_FOUND"], 404)
+    assert_event_scope(actor_user, existing.get("event_id"))
     get_collection(COLLECTIONS["venues"]).document(venue_id).delete()
+    write_audit_log("venue_deleted", actor_user.get("uid"), target={"venue_id": venue_id}, details={"event_id": existing.get("event_id")})
     return True
 
 
@@ -78,4 +93,11 @@ def validate_qr(unique_id, venue_id, scanned_by):
             "timestamp": datetime.utcnow().isoformat(),
         },
     )
+    write_audit_log(
+        "qr_validated",
+        scanned_by,
+        target={"registration_id": reg.get("id"), "venue_id": venue_id},
+        details={"access_limit": access_limit, "prior_count": count},
+    )
+
     return {"access_granted": True, "access_log_id": log_id, "registration": reg, "venue": venue}

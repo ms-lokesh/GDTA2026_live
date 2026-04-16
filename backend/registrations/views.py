@@ -6,6 +6,8 @@ from core.response import error_response, success_response
 from registrations.serializers import (
     AnswerRegistrationSerializer,
     CancelRegistrationSerializer,
+    PaymentCreateLinkSerializer,
+    PaymentStatusSerializer,
     StartRegistrationSerializer,
     SubmitRegistrationSerializer,
 )
@@ -16,6 +18,7 @@ from registrations.services import (
     start_registration,
     submit_registration,
 )
+from services.payments.zoho import create_payment_link, get_payment_status
 
 
 class RegistrationStartView(APIView):
@@ -88,5 +91,51 @@ class RegistrationSubmitView(APIView):
         try:
             out = submit_registration(serializer.validated_data)
             return success_response(out, status=201)
+        except AppError as exc:
+            return error_response(exc.message, exc.code, exc.status_code)
+
+
+class RegistrationPaymentCreateLinkView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        serializer = PaymentCreateLinkSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(str(serializer.errors), ERROR_CODES["VALIDATION_ERROR"], 400)
+        try:
+            idempotency_key = request.headers.get("X-Idempotency-Key", "").strip()
+            data = create_payment_link(
+                actor_uid=(getattr(request, "user", None) or {}).get("uid", "public"),
+                registration_id=serializer.validated_data["registration_id"],
+                name=serializer.validated_data["name"],
+                email=serializer.validated_data["email"],
+                category=serializer.validated_data["registration_category"],
+                addon_food=serializer.validated_data.get("addon_food", False),
+                addon_safari=serializer.validated_data.get("addon_safari", False),
+                idempotency_key=idempotency_key,
+                payment_method=serializer.validated_data.get("payment_method", ""),
+            )
+            return success_response(data)
+        except AppError as exc:
+            return error_response(exc.message, exc.code, exc.status_code)
+
+
+class RegistrationPaymentStatusView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        serializer = PaymentStatusSerializer(data=request.query_params)
+        if not serializer.is_valid():
+            return error_response(str(serializer.errors), ERROR_CODES["VALIDATION_ERROR"], 400)
+        try:
+            data = get_payment_status(
+                actor_uid=(getattr(request, "user", None) or {}).get("uid", "public"),
+                invoice_id=serializer.validated_data["invoice_id"],
+                registration_id=serializer.validated_data.get("registration_id", ""),
+                email=serializer.validated_data.get("email", ""),
+            )
+            return success_response(data)
         except AppError as exc:
             return error_response(exc.message, exc.code, exc.status_code)
