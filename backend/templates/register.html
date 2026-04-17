@@ -1492,11 +1492,6 @@
                         paymentStatus.innerHTML = '<div class="alert alert-info">Payment link created. Complete payment in the opened tab, then check status here.</div>';
                         checkPaymentStatusBtn.style.display = 'block';
 
-                        if (paymentData.mock_mode || paymentData.provider === 'mock_gateway') {
-                            showPaymentResultCard('success', 'Payment simulation ready', 'Mock mode is enabled. Click "Check Status" to simulate successful payment.');
-                            return;
-                        }
-
                         const popup = window.open(paymentLink, '_blank', 'noopener');
                         if (!popup) {
                             paymentStatus.innerHTML = `<div class="alert alert-warning">Popup blocked. <a href="${paymentLink}" target="_blank" rel="noopener">Click here to open payment page</a>.</div>`;

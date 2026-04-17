@@ -7,7 +7,7 @@
     // Create and inject widget HTML
     const widgetHTML = `
         <style>
-            .chatbot-widget-container{position:fixed;bottom:20px;right:20px;z-index:9999;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}.chatbot-button{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);box-shadow:0 4px 20px rgba(102,126,234,.4);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s ease;position:relative;overflow:hidden}.chatbot-button:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(102,126,234,.6)}.chatbot-button:active{transform:scale(.95)}.chatbot-button-icon{width:30px;height:30px;fill:white;transition:all .3s ease}.chatbot-button.open .chatbot-button-icon{transform:rotate(180deg)}@keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(102,126,234,.4)}50%{box-shadow:0 4px 30px rgba(102,126,234,.8)}}.chatbot-button.pulse{animation:pulse 2s infinite}.chatbot-window{position:fixed;bottom:90px;right:20px;width:400px;height:600px;background:white;border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,.2);display:none;flex-direction:column;overflow:hidden;transition:all .3s ease;opacity:0;transform:translateY(20px)}.chatbot-window.open{display:flex;opacity:1;transform:translateY(0)}.chatbot-window-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:15px 20px;display:flex;justify-content:space-between;align-items:center}.chatbot-window-title{font-size:1.1em;font-weight:600}.chatbot-window-subtitle{font-size:.8em;opacity:.9;margin-top:2px}.chatbot-close-btn{background:rgba(255,255,255,.2);border:none;color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.chatbot-close-btn:hover{background:rgba(255,255,255,.3);transform:rotate(90deg)}.chatbot-iframe{width:100%;height:100%;border:none;flex:1}@media (max-width:768px){.chatbot-window{width:calc(100vw - 40px);height:calc(100vh - 140px);right:20px;bottom:90px}.chatbot-widget-container{bottom:15px;right:15px}.chatbot-button{width:55px;height:55px}}.chatbot-notification-badge{position:absolute;top:-5px;right:-5px;background:#ff4444;color:white;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7em;font-weight:bold;animation:bounceIn .5s ease}@keyframes bounceIn{0%{transform:scale(0)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+            .chatbot-widget-container{position:fixed;bottom:20px;right:20px;z-index:9999;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}.chatbot-button{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);box-shadow:0 4px 20px rgba(102,126,234,.4);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s ease;position:relative;overflow:hidden}.chatbot-button:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(102,126,234,.6)}.chatbot-button:active{transform:scale(.95)}.chatbot-button-icon{width:30px;height:30px;fill:white;transition:all .3s ease}.chatbot-button.open .chatbot-button-icon{transform:rotate(180deg)}@keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(102,126,234,.4)}50%{box-shadow:0 4px 30px rgba(102,126,234,.8)}}.chatbot-button.pulse{animation:pulse 2s infinite}.chatbot-window{position:fixed;bottom:90px;right:20px;width:400px;height:600px;background:white;border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,.2);display:none;flex-direction:column;overflow:hidden;transition:all .3s ease;opacity:0;transform:translateY(20px)}.chatbot-window.open{display:flex;opacity:1;transform:translateY(0)}.chatbot-close-btn{background:rgba(255,255,255,.2);border:none;color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.chatbot-close-btn:hover{background:rgba(255,255,255,.3);transform:rotate(90deg)}.chatbot-iframe{width:100%;height:100%;border:none;flex:1}@media (max-width:768px){.chatbot-window{width:calc(100vw - 40px);height:calc(100vh - 140px);right:20px;bottom:90px}.chatbot-widget-container{bottom:15px;right:15px}.chatbot-button{width:55px;height:55px}}.chatbot-notification-badge{position:absolute;top:-5px;right:-5px;background:#ff4444;color:white;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7em;font-weight:bold;animation:bounceIn .5s ease}@keyframes bounceIn{0%{transform:scale(0)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
         </style>
         <div class="chatbot-widget-container" id="chatbotWidget">
             <button class="chatbot-button pulse" id="chatbotButton" aria-label="Open GDTA Chatbot">
@@ -16,18 +16,7 @@
                 </svg>
             </button>
             <div class="chatbot-window" id="chatbotWindow">
-                <div class="chatbot-window-header">
-                    <div>
-                        <div class="chatbot-window-title">GDTA 2026 Assistant</div>
-                        <div class="chatbot-window-subtitle">Ask me anything about the conference</div>
-                    </div>
-                    <button class="chatbot-close-btn" id="chatbotCloseBtn" aria-label="Close chatbot">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M8 6.94L13.47 1.47a.75.75 0 0 1 1.06 1.06L9.06 8l5.47 5.47a.75.75 0 0 1-1.06 1.06L8 9.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L6.94 8 1.47 2.53a.75.75 0 0 1 1.06-1.06L8 6.94z"/>
-                        </svg>
-                    </button>
-                </div>
-                <iframe class="chatbot-iframe" id="chatbotIframe" src="" title="GDTA 2026 Chatbot" allow="cross-origin"></iframe>
+                <iframe class="chatbot-iframe" id="chatbotIframe" src="/chatbot.html" title="GDTA 2026 Chatbot" allow="cross-origin"></iframe>
             </div>
         </div>
     `;
@@ -48,7 +37,6 @@
         // Initialize functionality
         const chatbotButton = document.getElementById('chatbotButton');
         const chatbotWindow = document.getElementById('chatbotWindow');
-        const chatbotCloseBtn = document.getElementById('chatbotCloseBtn');
         const chatbotIframe = document.getElementById('chatbotIframe');
         
         console.log('Chatbot elements:', { chatbotButton, chatbotWindow, chatbotIframe });
@@ -73,7 +61,6 @@
 
         // Event Listeners
         if (chatbotButton) chatbotButton.addEventListener('click', toggleChatbot);
-        if (chatbotCloseBtn) chatbotCloseBtn.addEventListener('click', toggleChatbot);
 
         // Close on Escape key
         document.addEventListener('keydown', function(e) {

@@ -18,10 +18,6 @@ _rate_limit_store = {}
 _rate_limit_lock = threading.Lock()
 
 
-def _mock_payment_enabled() -> bool:
-    return bool(getattr(settings, "PAYMENT_MOCK_MODE", False))
-
-
 def _rate_limit(key: str, limit: int = 20, window_seconds: int = 60) -> bool:
     now = int(time.time())
     with _rate_limit_lock:
@@ -131,64 +127,6 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
             "idempotent": True,
         }
 
-    if _mock_payment_enabled():
-        registration = _find_registration(registration_id=registration_id, email=email)
-        if not registration:
-            raise AppError("Registration not found", ERROR_CODES["NOT_FOUND"], 404)
-
-        invoice_id = f"MOCK-{registration_id[:8]}-{int(time.time())}"
-        payment_link = f"/register.html?mock_payment=1&invoice_id={invoice_id}"
-
-        update_document(
-            COLLECTIONS["registrations"],
-            registration["id"],
-            {
-                "payment_status": "payment_link_created",
-                "payment_link": payment_link,
-                "invoice_id": invoice_id,
-                "payment_amount": fee["total_fee"],
-                "currency": fee["fee_currency"],
-                "payment_provider": "mock_gateway",
-                "payment_method": payment_method or None,
-                "payment_updated_at": datetime.utcnow().isoformat(),
-            },
-        )
-
-        create_document(
-            COLLECTIONS["payment_logs"],
-            {
-                "registration_id": registration["id"],
-                "email": registration.get("email"),
-                "invoice_id": invoice_id,
-                "payment_link": payment_link,
-                "currency": fee["fee_currency"],
-                "amount": fee["total_fee"],
-                "idempotency_key": idempotency_key or None,
-                "provider": "mock_gateway",
-                "action": "create_link",
-                "status": "success",
-                "mock_mode": True,
-                "created_at": datetime.utcnow().isoformat(),
-            },
-        )
-
-        write_audit_log(
-            "payment_link_created",
-            actor_uid,
-            target={"registration_id": registration["id"], "invoice_id": invoice_id},
-            details={"amount": fee["total_fee"], "currency": fee["fee_currency"], "provider": "mock_gateway"},
-        )
-
-        return {
-            "provider": "mock_gateway",
-            "invoice_id": invoice_id,
-            "payment_link": payment_link,
-            "currency": fee["fee_currency"],
-            "amount": fee["total_fee"],
-            "idempotent": False,
-            "mock_mode": True,
-        }
-
     if not settings.ZOHO_ORGANIZATION_ID:
         raise AppError("Zoho organization is not configured", ERROR_CODES["VALIDATION_ERROR"], 400)
 
@@ -294,57 +232,6 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
 def get_payment_status(*, actor_uid: str, invoice_id: str, registration_id="", email=""):
     if not _rate_limit(f"status:{invoice_id}"):
         raise AppError("Too many payment status checks", ERROR_CODES["RATE_LIMITED"], 429)
-
-    if _mock_payment_enabled():
-        registration = _find_registration(registration_id=registration_id, email=email)
-        paid = True
-        status_value = "paid"
-        balance = 0.0
-
-        if registration:
-            update_document(
-                COLLECTIONS["registrations"],
-                registration["id"],
-                {
-                    "payment_status": "paid",
-                    "invoice_id": invoice_id,
-                    "payment_provider": "mock_gateway",
-                    "payment_paid_at": datetime.utcnow().isoformat(),
-                    "payment_updated_at": datetime.utcnow().isoformat(),
-                },
-            )
-
-        create_document(
-            COLLECTIONS["payment_logs"],
-            {
-                "registration_id": registration.get("id") if registration else None,
-                "email": (registration or {}).get("email") or email,
-                "invoice_id": invoice_id,
-                "provider": "mock_gateway",
-                "action": "status_check",
-                "status": status_value,
-                "paid": paid,
-                "balance": balance,
-                "mock_mode": True,
-                "created_at": datetime.utcnow().isoformat(),
-            },
-        )
-
-        write_audit_log(
-            "payment_status_checked",
-            actor_uid,
-            target={"registration_id": (registration or {}).get("id"), "invoice_id": invoice_id},
-            details={"status": status_value, "paid": paid, "balance": balance, "provider": "mock_gateway"},
-        )
-
-        return {
-            "provider": "mock_gateway",
-            "invoice_id": invoice_id,
-            "status": status_value,
-            "balance": balance,
-            "paid": paid,
-            "mock_mode": True,
-        }
 
     if not settings.ZOHO_ORGANIZATION_ID:
         raise AppError("Zoho organization is not configured", ERROR_CODES["VALIDATION_ERROR"], 400)

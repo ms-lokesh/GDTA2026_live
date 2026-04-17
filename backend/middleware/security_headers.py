@@ -20,7 +20,9 @@ class SecurityHeadersMiddleware:
             response["Access-Control-Allow-Methods"] = "GET,POST,PUT,PATCH,DELETE,OPTIONS"
             response["Access-Control-Allow-Headers"] = "Authorization,Content-Type"
 
-        response["X-Frame-Options"] = "DENY"
+        # Allow same-origin iframe embeds (used by chatbot widget iframe)
+        # while still blocking external origins.
+        response["X-Frame-Options"] = "SAMEORIGIN"
         response["X-Content-Type-Options"] = "nosniff"
         response["Referrer-Policy"] = "strict-origin-when-cross-origin"
 
@@ -37,7 +39,7 @@ class SecurityHeadersMiddleware:
                 "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "
                 "img-src 'self' data: blob: https:; "
                 "connect-src 'self' https:; "
-                "frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+                "frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
             )
         else:
             csp_policy = (
@@ -46,7 +48,7 @@ class SecurityHeadersMiddleware:
                 "style-src 'self'; "
                 "img-src 'self' data:; "
                 "font-src 'self'; "
-                "frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+                "frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
             )
 
         response["Content-Security-Policy"] = csp_policy

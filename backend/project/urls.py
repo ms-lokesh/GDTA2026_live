@@ -16,6 +16,10 @@ def home(request):
     return render(request, "index.html")
 
 
+def chatbot_page(request):
+    return render(request, "chatbot.html")
+
+
 def legacy_admin_hackathon(_request):
     return redirect("/static/hackathon-registrations.html")
 
@@ -30,12 +34,14 @@ def html_page(request, page):
 
 urlpatterns = [
     path("", home),
+    path("chatbot", chatbot_page),
     path("admin/hackathon-registrations", legacy_admin_hackathon),
     re_path(r"^(?P<page>[\w\-]+\.html)$", html_page),
     path("api/health", health),
     path("api/accounts/", include("accounts.urls")),
     path("api/events/", include("events.urls")),
     path("api/registrations/", include("registrations.urls")),
+    path("api/chatbot/", include("chatbot.urls")),
     path("api/hackathon/", include("hackathon.urls")),
     path("api/operations/", include("operations.urls")),
     path("api/admin-panel/", include("admin_panel.urls")),

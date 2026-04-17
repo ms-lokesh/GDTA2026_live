@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",
     "rest_framework",
+    "chatbot",
     "accounts",
     "events",
     "registrations",
@@ -97,6 +98,7 @@ SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+X_FRAME_OPTIONS = "SAMEORIGIN"
 SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "True").lower() == "true"
 CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "True").lower() == "true"
 
@@ -108,7 +110,7 @@ PUBLIC_PATH_PREFIXES = set(
     _split_csv(
         os.getenv(
             "PUBLIC_PATH_PREFIXES",
-            "/api/health,/api/registrations/start,/api/registrations/answer,/api/registrations/status,/api/registrations/cancel,/api/registrations/submit,/api/registrations/payment/create-link,/api/registrations/payment/status",
+            "/api/health,/api/registrations/start,/api/registrations/answer,/api/registrations/status,/api/registrations/cancel,/api/registrations/submit,/api/registrations/payment/create-link,/api/registrations/payment/status,/api/chatbot/start,/api/chatbot/message,/api/chatbot/session,/api/chatbot/reset",
         )
     )
 )
@@ -121,6 +123,10 @@ EMAIL_USERNAME = os.getenv("EMAIL_USERNAME", "")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "")
 EMAIL_FROM_NAME = os.getenv("EMAIL_FROM_NAME", "GDTA 2026 Team")
 
+# LLM / NLU (Chatbot)
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+
 # Zoho Payments
 ZOHO_CLIENT_ID = os.getenv("ZOHO_CLIENT_ID", "")
 ZOHO_CLIENT_SECRET = os.getenv("ZOHO_CLIENT_SECRET", "")
@@ -129,7 +135,6 @@ ZOHO_ORGANIZATION_ID = os.getenv("ZOHO_ORGANIZATION_ID", "")
 ZOHO_ACCOUNTS_BASE_URL = os.getenv("ZOHO_ACCOUNTS_BASE_URL", "https://accounts.zoho.com")
 ZOHO_BOOKS_API_BASE_URL = os.getenv("ZOHO_BOOKS_API_BASE_URL", "https://www.zohoapis.com/books/v3")
 ZOHO_REDIRECT_URI = os.getenv("ZOHO_REDIRECT_URI", "")
-PAYMENT_MOCK_MODE = os.getenv("PAYMENT_MOCK_MODE", "False").lower() == "true"
 ADMIN_DASHBOARD_DEMO_MODE = os.getenv("ADMIN_DASHBOARD_DEMO_MODE", "False").lower() == "true"
 
 LOGGING = {
