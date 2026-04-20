@@ -4,10 +4,10 @@ import re
 FEE_CONFIG = {
     "Student": {"currency": "INR", "base": 500, "food": 500, "safari": 500, "fixed": False},
     "Academician": {"currency": "INR", "base": 2000, "food": 500, "safari": 500, "fixed": False},
-    "Industry People": {"currency": "INR", "base": 7500, "food": 0, "safari": 0, "fixed": True},
+    "Corporate Delegate": {"currency": "INR", "base": 7500, "food": 0, "safari": 0, "fixed": True},
     "Foreign Student": {"currency": "USD", "base": 15, "food": 0, "safari": 0, "fixed": True},
     "Foreign Academician": {"currency": "USD", "base": 100, "food": 0, "safari": 0, "fixed": True},
-    "Foreign Industry People": {"currency": "USD", "base": 100, "food": 0, "safari": 0, "fixed": True},
+    "Foreign Corporate Delegate": {"currency": "USD", "base": 100, "food": 0, "safari": 0, "fixed": True},
     "Foreign Delegate": {"currency": "USD", "base": 100, "food": 0, "safari": 0, "fixed": True},
 }
 

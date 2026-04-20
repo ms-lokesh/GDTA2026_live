@@ -142,9 +142,11 @@ def _normalize_category(value: str) -> str:
     if "academ" in raw:
         return "Academician"
     if "industry" in raw and "foreign" in raw:
-        return "Foreign Industry People"
+        return "Foreign Corporate Delegate"
     if "industry" in raw:
-        return "Industry People"
+        return "Corporate Delegate"
+    if "corporate" in raw:
+        return "Corporate Delegate"
     if "delegate" in raw and "foreign" in raw:
         return "Foreign Delegate"
 

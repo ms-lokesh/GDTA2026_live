@@ -258,6 +258,20 @@
             margin: 0 0 14px;
         }
 
+        .card-addon-choice .form-check-input[type="radio"] {
+            accent-color: #000000;
+        }
+
+        .card-addon-choice .form-check-input[type="radio"]:checked {
+            background-color: #000000;
+            border-color: #000000;
+        }
+
+        .card-addon-choice .form-check-input[type="radio"]:focus {
+            border-color: #000000;
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.18);
+        }
+
         .card-addon-choice .form-check {
             margin-bottom: 4px;
         }
@@ -490,7 +504,7 @@
         style="background-color: #F8F9FA; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;">
         <nav class="navbar navbar-expand-lg navbar-dark px-4 py-1">
             <a href="/index.html" class="navbar-brand">
-                <img src="/static/img/Logo/gdta_main_logo.png" alt="GDTA Logo" style="height: 65px; width: auto;">
+                <img src="/static/img/Logo/GIC-cropped.png" alt="GDTA Logo" style="height: 80px; width: auto;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
@@ -580,7 +594,7 @@
                         </div>
 
                         <div class="pricing-card">
-                            <h5 style="font-weight: 800; color: #000;">Industrial People</h5>
+                            <h5 style="font-weight: 800; color: #000;">Corporate Delegate</h5>
                             <div class="price-main">Rs.7500</div>
                             <p class="price-note">Complete pass including food and safari</p>
                             <ul class="price-list">
@@ -588,7 +602,7 @@
                                 <li class="locked-check-item"><input type="checkbox" checked disabled>Food & Accommodation Add-on Available</li>
                                 <li class="locked-check-item"><input type="checkbox" checked disabled>Safari Add-on Available</li>
                             </ul>
-                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Industry People">Proceed with Industrial</button>
+                            <button class="btn btn-dark w-100 select-plan-btn" data-category="Corporate Delegate">Proceed with Corporate Delegate</button>
                         </div>
 
                         <div class="pricing-card">
@@ -606,7 +620,7 @@
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="foreign_delegate_tier" id="foreign_industry_choice" value="industry">
-                                    <label class="form-check-label" for="foreign_industry_choice">Industry Person ($100)</label>
+                                    <label class="form-check-label" for="foreign_industry_choice">Corporate Delegate ($100)</label>
                                 </div>
                             </div>
                             <ul class="price-list">
@@ -659,14 +673,14 @@
                                 <p>Safari: <strong>+Rs.500</strong></p>
                             </div>
                             <div class="fee-pill" id="industry-fee-pill">
-                                <h6>Industrial People</h6>
+                                <h6>Corporate Delegate</h6>
                                 <p>All Inclusive: <strong>Rs.7500</strong></p>
                             </div>
                             <div class="fee-pill" id="foreign-fee-pill">
                                 <h6>Foreign Delegates</h6>
                                 <p>Student: <strong>$15</strong></p>
                                 <p>Academician: <strong>$100</strong></p>
-                                <p>Industry Person: <strong>$100</strong></p>
+                                <p>Corporate Delegate: <strong>$100</strong></p>
                             </div>
                         </div>
                     </div>
@@ -746,12 +760,12 @@
                                     <optgroup label="Indian Delegate">
                                         <option value="Student">Student</option>
                                         <option value="Academician">Academician</option>
-                                        <option value="Industry People">Industry People</option>
+                                        <option value="Corporate Delegate">Corporate Delegate</option>
                                     </optgroup>
                                     <optgroup label="Foreign Delegate">
                                         <option value="Foreign Student">Foreign Student</option>
                                         <option value="Foreign Academician">Foreign Academician</option>
-                                        <option value="Foreign Industry People">Foreign Industry Person</option>
+                                        <option value="Foreign Corporate Delegate">Foreign Corporate Delegate</option>
                                     </optgroup>
                                 </select>
                             </div>
@@ -1062,27 +1076,27 @@
             const feePills = {
                 'Student': document.getElementById('student-fee-pill'),
                 'Academician': document.getElementById('academician-fee-pill'),
-                'Industry People': document.getElementById('industry-fee-pill'),
+                'Corporate Delegate': document.getElementById('industry-fee-pill'),
                 'Foreign Student': document.getElementById('foreign-fee-pill'),
                 'Foreign Academician': document.getElementById('foreign-fee-pill'),
-                'Foreign Industry People': document.getElementById('foreign-fee-pill'),
+                'Foreign Corporate Delegate': document.getElementById('foreign-fee-pill'),
                 'Foreign Delegate': document.getElementById('foreign-fee-pill')
             };
 
             const feeData = {
                 'Student': { base: 500, food: 500, safari: 500, currency: 'Rs.' },
                 'Academician': { base: 2000, food: 500, safari: 500, currency: 'Rs.' },
-                'Industry People': { base: 7500, food: 0, safari: 0, currency: 'Rs.' },
+                'Corporate Delegate': { base: 7500, food: 0, safari: 0, currency: 'Rs.' },
                 'Foreign Student': { base: 15, food: 0, safari: 0, currency: '$' },
                 'Foreign Academician': { base: 100, food: 0, safari: 0, currency: '$' },
-                'Foreign Industry People': { base: 100, food: 0, safari: 0, currency: '$' },
+                'Foreign Corporate Delegate': { base: 100, food: 0, safari: 0, currency: '$' },
                 'Foreign Delegate': { base: 100, food: 0, safari: 0, currency: '$' }
             };
 
             const foreignTierToCategory = {
                 student: 'Foreign Student',
                 academician: 'Foreign Academician',
-                industry: 'Foreign Industry People'
+                industry: 'Foreign Corporate Delegate'
             };
 
             function updateForeignPriceDisplay() {
@@ -1210,9 +1224,9 @@
                 const category = registrationCategorySelect.value;
                 const needsDesignation = [
                     'Academician',
-                    'Industry People',
+                    'Corporate Delegate',
                     'Foreign Academician',
-                    'Foreign Industry People'
+                    'Foreign Corporate Delegate'
                 ].includes(category);
 
                 if (designationBlock && designationInput) {
@@ -1331,9 +1345,9 @@
                 const selectedCategory = getSelectedCategory();
                 const needsDesignation = [
                     'Academician',
-                    'Industry People',
+                    'Corporate Delegate',
                     'Foreign Academician',
-                    'Foreign Industry People'
+                    'Foreign Corporate Delegate'
                 ].includes(selectedCategory);
 
                 if (needsDesignation && designationInput && !designationInput.value.trim()) {

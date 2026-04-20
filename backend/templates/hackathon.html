@@ -67,6 +67,41 @@
             object-fit: cover;
         }
 
+        .track-logo-slot {
+            height: 48px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .track-logo-img {
+            max-height: 56px;
+            max-width: 240px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .track-logo-img--siemens {
+            width: min(100%, 260px);
+            max-width: none;
+            max-height: none;
+        }
+
+        .track-logo-slot.is-placeholder {
+            border: 1px dashed #CED4DA;
+            border-radius: 8px;
+            padding: 0 10px;
+            background: #F8F9FA;
+        }
+
+        .track-logo-placeholder-text {
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.9px;
+            text-transform: uppercase;
+            color: #6C757D !important;
+        }
+
         .timeline-card {
             background: #FFFFFF;
             border: 1px solid #DEE2E6;
@@ -257,9 +292,9 @@
         style="background-color: #F8F9FA; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;">
         <nav class="navbar navbar-expand-lg navbar-dark px-4 py-1">
             <a href="/index.html" class="navbar-brand">
-                <img src="/static/img/Logo/gdta_main_logo.png" alt="GDTA Logo"
-                    onerror="this.onerror=null;this.src='../static/img/Logo/gdta_main_logo.png';"
-                    style="height: 65px; width: auto;">
+                <img src="/static/img/Logo/GIC-cropped.png" alt="GDTA Logo"
+                    onerror="this.onerror=null;this.src='../static/img/Logo/GIC-cropped.png';"
+                    style="height: 80px; width: auto;">
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -380,11 +415,11 @@
                     <div class="track-card">
                         <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1200&auto=format&fit=crop" alt="Education Policy" class="track-img">
                         <div class="p-4">
-                            <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #DEE2E6;">
-                                <span class="badge bg-dark mb-2" style="margin-right: 8px;">Sponsor Track</span>
-                                <img src="/static/img/Logo/simens-color.png" alt="Siemens Foundation" style="height: 44px; max-width: 180px; object-fit: contain; vertical-align: middle;">
+                            <div class="track-logo-slot">
+                                <img src="/static/img/Logo/simens-color-cropped.png" alt="Siemens logo" class="track-logo-img track-logo-img--siemens"
+                                    onerror="this.onerror=null;this.src='../static/img/Logo/simens-color-cropped.png';">
                             </div>
-                            <h4 style="color: #000000 !important; font-weight: 700;">EdTech Transformation</h4>
+                            <h4 style="color: #000000 !important; font-weight: 700;">Educational Transformation</h4>
                             <p class="mb-0" style="color: #495057 !important;">Design inclusive systems and experiences that improve learning outcomes and student access. <strong>Supported by Siemens Foundation.</strong></p>
                         </div>
                     </div>
@@ -394,8 +429,10 @@
                     <div class="track-card">
                         <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=1200&auto=format&fit=crop" alt="Smart City" class="track-img">
                         <div class="p-4">
-                            <span class="badge bg-secondary mb-2">Impact Track</span>
-                            <h4 style="color: #000000 !important; font-weight: 700;">Smart City</h4>
+                            <div class="track-logo-slot is-placeholder">
+                                <span class="track-logo-placeholder-text">Smart City Logo Placeholder</span>
+                            </div>
+                            <h4 style="color: #000000 !important; font-weight: 700;">Smart City & Infrastructure</h4>
                             <p class="mb-0" style="color: #495057 !important;">Build practical solutions for mobility, sustainability, accessibility, and better urban experiences.</p>
                         </div>
                     </div>
@@ -405,7 +442,9 @@
                     <div class="track-card">
                         <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1200&auto=format&fit=crop" alt="Healthcare" class="track-img">
                         <div class="p-4">
-                            <span class="badge bg-dark mb-2">Wellness Track</span>
+                            <div class="track-logo-slot is-placeholder">
+                                <span class="track-logo-placeholder-text">Healthcare Logo Placeholder</span>
+                            </div>
                             <h4 style="color: #000000 !important; font-weight: 700;">Healthcare</h4>
                             <p class="mb-0" style="color: #495057 !important;">Create patient-first digital services that improve care journeys and access to quality healthcare.</p>
                         </div>
@@ -494,7 +533,7 @@
 
             <p class="timeline-note">
                 Demo Day sessions will be scheduled to accommodate international time zones.<br>
-                Track Details: <span class="badge border border-primary text-primary bg-white">Healthcare</span> <span class="badge border border-success text-success bg-white">Education Transformation</span> <span class="badge border border-info text-info bg-white">Smart City & Infrastructure</span>
+                Track Details: <span class="badge border border-primary text-primary bg-white">Healthcare</span> <span class="badge border border-success text-success bg-white">Educational Transformation</span> <span class="badge border border-info text-info bg-white">Smart City & Infrastructure</span>
             </p>
         </div>
     </div>
