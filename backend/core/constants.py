@@ -27,6 +27,7 @@ COLLECTIONS = {
     "access_logs": "access_logs",
     "email_logs": "email_logs",
     "payment_logs": "payment_logs",
+    "payment_transactions": "payment_transactions",
     "email_templates": "email_templates",
     "audit_logs": "audit_logs",
     "id_cards": "id_cards",

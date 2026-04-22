@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 from django.urls import include, path, re_path
 from django.views.static import serve
+from registrations.views import PaytmCallbackView, UnifiedPaymentCreateView, UnifiedPaymentStatusView
 
 
 def health(_request):
@@ -41,6 +42,9 @@ urlpatterns = [
     path("api/accounts/", include("accounts.urls")),
     path("api/events/", include("events.urls")),
     path("api/registrations/", include("registrations.urls")),
+    path("api/payment/create", UnifiedPaymentCreateView.as_view()),
+    path("api/payment/paytm/callback", PaytmCallbackView.as_view()),
+    path("api/payment/status/<str:order_id>", UnifiedPaymentStatusView.as_view()),
     path("api/chatbot/", include("chatbot.urls")),
     path("api/hackathon/", include("hackathon.urls")),
     path("api/operations/", include("operations.urls")),

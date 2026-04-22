@@ -101,7 +101,14 @@ def submit_registration(payload):
 
     duplicate = query_documents(COLLECTIONS["registrations"], filters=[("email", "==", email)], limit=1)
     if duplicate:
-        raise AppError("Email already registered", ERROR_CODES["DUPLICATE_EMAIL"], 409)
+        existing = duplicate[0]
+        if str(existing.get("payment_status") or "").lower() == "paid":
+            raise AppError("Email already registered and payment is already completed", ERROR_CODES["DUPLICATE_EMAIL"], 409)
+        return {
+            "registration_id": existing.get("id"),
+            "unique_id": existing.get("unique_id"),
+            "reused_registration": True,
+        }
 
     addon_food = _yes(payload.get("addon_food")) or _yes(payload.get("addon_food_accommodation"))
     addon_safari = _yes(payload.get("addon_safari"))

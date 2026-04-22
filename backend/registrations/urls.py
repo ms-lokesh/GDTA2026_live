@@ -8,6 +8,10 @@ from registrations.views import (
     RegistrationStartView,
     RegistrationStatusView,
     RegistrationSubmitView,
+    PaytmInitiatePaymentView,
+    PaytmCallbackView,
+    UnifiedPaymentCreateView,
+    UnifiedPaymentStatusView,
 )
 
 urlpatterns = [
@@ -18,4 +22,8 @@ urlpatterns = [
     path("submit", RegistrationSubmitView.as_view()),
     path("payment/create-link", RegistrationPaymentCreateLinkView.as_view()),
     path("payment/status", RegistrationPaymentStatusView.as_view()),
+    path("payment/paytm/initiate", PaytmInitiatePaymentView.as_view()),
+    path("payment/paytm/callback", PaytmCallbackView.as_view()),
+    path("payment/create", UnifiedPaymentCreateView.as_view()),
+    path("payment/status/<str:order_id>", UnifiedPaymentStatusView.as_view()),
 ]

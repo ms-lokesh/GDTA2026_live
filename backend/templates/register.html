@@ -607,12 +607,12 @@
 
                         <div class="pricing-card">
                             <h5 style="font-weight: 800; color: #000;">Foreign Delegate</h5>
-                            <div class="price-main" id="foreignPriceDisplay">$15</div>
+                            <div class="price-main" id="foreignPriceDisplay">$1</div>
                             <p class="price-note">Select your participant type</p>
                             <div class="card-addon-choice">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="foreign_delegate_tier" id="foreign_student_choice" value="student" checked>
-                                    <label class="form-check-label" for="foreign_student_choice">Student ($15)</label>
+                                    <label class="form-check-label" for="foreign_student_choice">Student ($1)</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="foreign_delegate_tier" id="foreign_academician_choice" value="academician">
@@ -678,7 +678,7 @@
                             </div>
                             <div class="fee-pill" id="foreign-fee-pill">
                                 <h6>Foreign Delegates</h6>
-                                <p>Student: <strong>$15</strong></p>
+                                <p>Student: <strong>$1</strong></p>
                                 <p>Academician: <strong>$100</strong></p>
                                 <p>Corporate Delegate: <strong>$100</strong></p>
                             </div>
@@ -929,12 +929,10 @@
                             <p class="mb-0"><strong>Amount Payable:</strong> <span id="paymentAmountText">-</span></p>
                         </div>
 
-                        <label for="paymentMethod" class="form-label" style="font-weight: 600;">Payment Method</label>
-                        <select id="paymentMethod" class="form-select mb-3">
-                            <option value="UPI">UPI</option>
-                            <option value="Card">Credit/Debit Card</option>
-                            <option value="NetBanking">Net Banking</option>
-                        </select>
+                        <div class="p-3 mb-3 rounded-3" style="background: #ffffff; border: 1px solid #dee2e6;">
+                            <p class="mb-1"><strong>Payment Method:</strong> Paytm</p>
+                            <small class="text-muted">Direct secure checkout via Paytm gateway.</small>
+                        </div>
 
                         <div id="paymentStatus" class="mb-3"></div>
 
@@ -1050,7 +1048,6 @@
             const paymentNameText = document.getElementById('paymentNameText');
             const paymentEmailText = document.getElementById('paymentEmailText');
             const paymentAmountText = document.getElementById('paymentAmountText');
-            const paymentMethodSelect = document.getElementById('paymentMethod');
             const paymentStatus = document.getElementById('paymentStatus');
             const paymentFlowPanel = document.getElementById('paymentFlowPanel');
             const paymentResultCard = document.getElementById('paymentResultCard');
@@ -1065,6 +1062,9 @@
 
             let latestRegistration = null;
             let latestInvoiceId = null;
+            let latestOrderId = null;
+            let latestPaymentMethod = 'paytm';
+            let autoPaymentTriggered = false;
 
             const baseFeeText = document.getElementById('baseFeeText');
             const foodRow = document.getElementById('foodRow');
@@ -1086,8 +1086,13 @@
             const feeData = {
                 'Student': { base: 500, food: 500, safari: 500, currency: 'Rs.' },
                 'Academician': { base: 2000, food: 500, safari: 500, currency: 'Rs.' },
+<<<<<<< HEAD
                 'Corporate Delegate': { base: 7500, food: 0, safari: 0, currency: 'Rs.' },
                 'Foreign Student': { base: 15, food: 0, safari: 0, currency: '$' },
+=======
+                'Industry People': { base: 7500, food: 0, safari: 0, currency: 'Rs.' },
+                'Foreign Student': { base: 1, food: 0, safari: 0, currency: '$' },
+>>>>>>> 5386bc7 (payment gateway intergration)
                 'Foreign Academician': { base: 100, food: 0, safari: 0, currency: '$' },
                 'Foreign Corporate Delegate': { base: 100, food: 0, safari: 0, currency: '$' },
                 'Foreign Delegate': { base: 100, food: 0, safari: 0, currency: '$' }
@@ -1105,7 +1110,7 @@
 
                 const selected = document.querySelector('input[name="foreign_delegate_tier"]:checked');
                 const tier = selected ? selected.value : 'student';
-                display.textContent = tier === 'student' ? '$15' : '$100';
+                display.textContent = tier === 'student' ? '$1' : '$100';
             }
 
             function getSelectedCategory() {
@@ -1121,6 +1126,19 @@
                 return `${fees.currency}${total}`;
             }
 
+            function getNumericAmount(category, addonFood, addonSafari) {
+                const fees = feeData[category];
+                if (!fees) return 0;
+                let total = fees.base;
+                if (addonFood) total += fees.food;
+                if (addonSafari) total += fees.safari;
+                return Number(total.toFixed(2));
+            }
+
+            function getSelectedPaymentMethod() {
+                return 'paytm';
+            }
+
             function showFormAlert(type, message) {
                 if (!alertContainer) return;
                 alertContainer.innerHTML = `
@@ -1129,6 +1147,15 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 `;
+            }
+
+            function humanizeFetchError(error, fallbackMessage) {
+                const msg = (error && error.message ? String(error.message) : '').trim();
+                if (!msg) return fallbackMessage;
+                if (msg.toLowerCase() === 'failed to fetch') {
+                    return 'Unable to reach server. Ensure backend is running on http://127.0.0.1:8000 and open this page via http://127.0.0.1:8000/register.html (not https).';
+                }
+                return msg;
             }
 
             function setSubmitting(isSubmitting) {
@@ -1165,6 +1192,87 @@
             function resetPaymentSuccessCard() {
                 if (paymentFlowPanel) paymentFlowPanel.style.display = 'block';
                 if (paymentSuccessCard) paymentSuccessCard.style.display = 'none';
+            }
+
+            function startPaymentLinkFlow() {
+                if (!latestRegistration || !latestRegistration.registration_id) {
+                    paymentStatus.innerHTML = '<div class="alert alert-danger">Please complete registration first.</div>';
+                    showPaymentResultCard('failed', 'Payment not started', 'Please complete registration details before payment.');
+                    return;
+                }
+
+                const selectedMethod = getSelectedPaymentMethod();
+                latestPaymentMethod = selectedMethod;
+
+                hidePaymentResultCard();
+                payNowBtn.disabled = true;
+                payNowBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Initializing Paytm...';
+
+                fetch('/api/payment/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Idempotency-Key': `gdta-${selectedMethod}-${latestRegistration.registration_id}`
+                    },
+                    body: JSON.stringify({
+                        registration_id: latestRegistration.registration_id,
+                        user_name: latestRegistration.name,
+                        email: latestRegistration.email,
+                        category: latestRegistration.registration_category,
+                        amount: getNumericAmount(
+                            latestRegistration.registration_category,
+                            latestRegistration.addon_food,
+                            latestRegistration.addon_safari
+                        ),
+                        addon_food: latestRegistration.addon_food,
+                        addon_safari: latestRegistration.addon_safari,
+                        payment_method: selectedMethod
+                    })
+                })
+                .then(async (response) => {
+                    const data = await response.json().catch(() => ({}));
+                    if (!response.ok || data.success === false) {
+                        const message = data?.error?.message || 'Unable to create payment link.';
+                        throw new Error(message);
+                    }
+                    return data;
+                })
+                .then((result) => {
+                    const paymentData = result.data || {};
+                    const paymentLink = paymentData.payment_link || paymentData.paytm_redirect_url || paymentData?.paytm?.paytm_redirect_url;
+                    const txnToken = paymentData.txnToken || paymentData?.paytm?.txnToken;
+                    const mid = paymentData.mid || paymentData?.paytm?.mid;
+                    const orderId = paymentData.order_id || paymentData?.paytm?.order_id;
+                    latestInvoiceId = paymentData.invoice_id || null;
+                    latestOrderId = orderId || null;
+
+                    if (!paymentLink) {
+                        throw new Error('Payment link not returned by server.');
+                    }
+
+                    paymentStatus.innerHTML = '<div class="alert alert-info">Paytm checkout initialized. Complete payment in the opened tab, then check status here.</div>';
+                    checkPaymentStatusBtn.style.display = 'block';
+
+                    if (txnToken && mid && orderId) {
+                        // Use tokenized URL launch to avoid browser popup/form-post inconsistencies.
+                        const checkoutUrl = `${paymentLink}${paymentLink.includes('?') ? '&' : '?'}txnToken=${encodeURIComponent(txnToken)}`;
+                        const popup = window.open(checkoutUrl, '_blank', 'noopener');
+                        if (!popup) {
+                            window.location.href = checkoutUrl;
+                        }
+                    } else {
+                        throw new Error('Paytm checkout data is incomplete (missing txnToken/orderId/mid).');
+                    }
+                })
+                .catch((error) => {
+                    const safeMessage = humanizeFetchError(error, 'Payment initialization failed.');
+                    paymentStatus.innerHTML = `<div class="alert alert-danger">${safeMessage}</div>`;
+                    showPaymentResultCard('failed', 'Payment link failed', safeMessage || 'Unable to start payment.');
+                })
+                .finally(() => {
+                    payNowBtn.disabled = false;
+                    payNowBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Proceed to Pay';
+                });
             }
 
             function showPaymentSuccessCard() {
@@ -1415,6 +1523,7 @@
                         addon_food: payload.addon_food,
                         addon_safari: payload.addon_safari
                     };
+                    autoPaymentTriggered = false;
 
                     paymentCategoryText.textContent = latestRegistration.registration_category || '-';
                     paymentNameText.textContent = latestRegistration.name || '-';
@@ -1428,6 +1537,8 @@
                     paymentStatus.innerHTML = '<div class="alert alert-success">Registration submitted successfully. Continue to payment.</div>';
                     checkPaymentStatusBtn.style.display = 'none';
                     latestInvoiceId = null;
+                    latestOrderId = null;
+                    latestPaymentMethod = 'paytm';
                     resetPaymentSuccessCard();
 
                     const registrationModalEl = document.getElementById('registrationModal');
@@ -1437,6 +1548,10 @@
                         paymentShown = true;
                         try {
                             paymentModal.show();
+                            if (!autoPaymentTriggered) {
+                                autoPaymentTriggered = true;
+                                setTimeout(() => startPaymentLinkFlow(), 350);
+                            }
                         } catch (e) {
                             console.error('Unable to open payment modal:', e);
                             showFormAlert('warning', 'Registration successful, but payment modal could not open automatically. Please click Register again to continue payment.');
@@ -1451,7 +1566,7 @@
                     setTimeout(showPaymentStep, 500);
                 })
                 .catch((error) => {
-                    showFormAlert('danger', error.message || 'Registration failed.');
+                    showFormAlert('danger', humanizeFetchError(error, 'Registration failed.'));
                 })
                 .finally(() => {
                     setSubmitting(false);
@@ -1460,72 +1575,14 @@
 
             if (payNowBtn) {
                 payNowBtn.addEventListener('click', function () {
-                    if (!latestRegistration || !latestRegistration.registration_id) {
-                        paymentStatus.innerHTML = '<div class="alert alert-danger">Please complete registration first.</div>';
-                        showPaymentResultCard('failed', 'Payment not started', 'Please complete registration details before payment.');
-                        return;
-                    }
-
-                    hidePaymentResultCard();
-                    payNowBtn.disabled = true;
-                    payNowBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Payment Link...';
-
-                    fetch('/api/registrations/payment/create-link', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Idempotency-Key': `gdta-${latestRegistration.registration_id}`
-                        },
-                        body: JSON.stringify({
-                            registration_id: latestRegistration.registration_id,
-                            name: latestRegistration.name,
-                            email: latestRegistration.email,
-                            registration_category: latestRegistration.registration_category,
-                            addon_food: latestRegistration.addon_food,
-                            addon_safari: latestRegistration.addon_safari,
-                            payment_method: paymentMethodSelect ? paymentMethodSelect.value : 'UPI'
-                        })
-                    })
-                    .then(async (response) => {
-                        const data = await response.json().catch(() => ({}));
-                        if (!response.ok || data.success === false) {
-                            const message = data?.error?.message || 'Unable to create payment link.';
-                            throw new Error(message);
-                        }
-                        return data;
-                    })
-                    .then((result) => {
-                        const paymentData = result.data || {};
-                        const paymentLink = paymentData.payment_link;
-                        latestInvoiceId = paymentData.invoice_id || null;
-
-                        if (!paymentLink) {
-                            throw new Error('Payment link not returned by server.');
-                        }
-
-                        paymentStatus.innerHTML = '<div class="alert alert-info">Payment link created. Complete payment in the opened tab, then check status here.</div>';
-                        checkPaymentStatusBtn.style.display = 'block';
-
-                        const popup = window.open(paymentLink, '_blank', 'noopener');
-                        if (!popup) {
-                            paymentStatus.innerHTML = `<div class="alert alert-warning">Popup blocked. <a href="${paymentLink}" target="_blank" rel="noopener">Click here to open payment page</a>.</div>`;
-                        }
-                    })
-                    .catch((error) => {
-                        paymentStatus.innerHTML = `<div class="alert alert-danger">${error.message || 'Payment initialization failed.'}</div>`;
-                        showPaymentResultCard('failed', 'Payment link failed', error.message || 'Unable to start payment.');
-                    })
-                    .finally(() => {
-                        payNowBtn.disabled = false;
-                        payNowBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Proceed to Pay';
-                    });
+                    startPaymentLinkFlow();
                 });
             }
 
             if (checkPaymentStatusBtn) {
                 checkPaymentStatusBtn.addEventListener('click', function () {
-                    if (!latestInvoiceId || !latestRegistration?.registration_id) {
-                        paymentStatus.innerHTML = '<div class="alert alert-warning">No invoice found yet. Please click Proceed to Pay first.</div>';
+                    if (!latestOrderId) {
+                        paymentStatus.innerHTML = '<div class="alert alert-warning">No payment reference found yet. Please click Proceed to Pay first.</div>';
                         showPaymentResultCard('failed', 'No payment reference', 'Please generate a payment link before checking status.');
                         return;
                     }
@@ -1534,12 +1591,9 @@
                     checkPaymentStatusBtn.disabled = true;
                     checkPaymentStatusBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Checking...';
 
-                    const qs = new URLSearchParams({
-                        invoice_id: latestInvoiceId,
-                        registration_id: latestRegistration.registration_id
-                    }).toString();
+                    const statusRequest = fetch(`/api/payment/status/${encodeURIComponent(latestOrderId)}`);
 
-                    fetch(`/api/registrations/payment/status?${qs}`)
+                    statusRequest
                         .then(async (response) => {
                             const data = await response.json().catch(() => ({}));
                             if (!response.ok || data.success === false) {
@@ -1550,7 +1604,9 @@
                         })
                         .then((result) => {
                             const paymentData = result.data || {};
-                            if (paymentData.paid) {
+                            const paid = String(paymentData.payment_status || '').toLowerCase() === 'paid';
+
+                            if (paid) {
                                 paymentStatus.innerHTML = '<div class="alert alert-success">Payment confirmed! Registration is complete.</div>';
                                 showPaymentResultCard('success', 'Payment successful', 'Your registration is confirmed. See you at GDTA 2026!');
                                 showPaymentSuccessCard();
@@ -1560,8 +1616,9 @@
                             }
                         })
                         .catch((error) => {
-                            paymentStatus.innerHTML = `<div class="alert alert-danger">${error.message || 'Payment status check failed.'}</div>`;
-                            showPaymentResultCard('failed', 'Payment verification failed', error.message || 'Could not verify payment status.');
+                            const safeMessage = humanizeFetchError(error, 'Payment status check failed.');
+                            paymentStatus.innerHTML = `<div class="alert alert-danger">${safeMessage}</div>`;
+                            showPaymentResultCard('failed', 'Payment verification failed', safeMessage || 'Could not verify payment status.');
                         })
                         .finally(() => {
                             checkPaymentStatusBtn.disabled = false;
@@ -1576,6 +1633,8 @@
                     registrationForm.reset();
                     latestRegistration = null;
                     latestInvoiceId = null;
+                    latestOrderId = null;
+                    latestPaymentMethod = 'paytm';
                     hidePaymentResultCard();
                     resetPaymentSuccessCard();
                 });

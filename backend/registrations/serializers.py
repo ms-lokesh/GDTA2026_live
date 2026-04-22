@@ -48,3 +48,21 @@ class PaymentStatusSerializer(serializers.Serializer):
     invoice_id = serializers.CharField()
     registration_id = serializers.CharField(required=False, allow_blank=True)
     email = serializers.EmailField(required=False, allow_blank=True)
+
+
+class UnifiedPaymentCreateSerializer(serializers.Serializer):
+    registration_id = serializers.CharField()
+    user_name = serializers.CharField()
+    email = serializers.EmailField()
+    category = serializers.CharField()
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = serializers.ChoiceField(choices=["paytm"])
+    addon_food = serializers.BooleanField(default=False)
+    addon_safari = serializers.BooleanField(default=False)
+
+
+class PaytmCallbackSerializer(serializers.Serializer):
+    ORDERID = serializers.CharField()
+    TXNID = serializers.CharField(required=False, allow_blank=True)
+    STATUS = serializers.CharField(required=False, allow_blank=True)
+    CHECKSUMHASH = serializers.CharField()

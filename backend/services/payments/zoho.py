@@ -18,6 +18,15 @@ _rate_limit_store = {}
 _rate_limit_lock = threading.Lock()
 
 
+def _zoho_auth_hint(reason: str) -> str:
+    key = (reason or "").strip().lower()
+    if key == "invalid_code":
+        return "Zoho auth failed: refresh token is invalid/expired or is a one-time grant code. Generate a new refresh token and update ZOHO_REFRESH_TOKEN."
+    if key == "invalid_client":
+        return "Zoho auth failed: client ID/secret mismatch. Verify ZOHO_CLIENT_ID and ZOHO_CLIENT_SECRET from the same Zoho app."
+    return ""
+
+
 def _rate_limit(key: str, limit: int = 20, window_seconds: int = 60) -> bool:
     now = int(time.time())
     with _rate_limit_lock:
@@ -30,6 +39,15 @@ def _rate_limit(key: str, limit: int = 20, window_seconds: int = 60) -> bool:
         hits.append(now)
         _rate_limit_store[key] = hits
         return True
+
+
+def _billing_amount_and_currency(fee: Dict) -> tuple[float, str]:
+    amount = float(fee.get("total_fee") or 0)
+    currency = str(fee.get("fee_currency") or "").upper() or "INR"
+    if currency == "USD":
+        amount = round(amount * float(getattr(settings, "PAYMENT_USD_TO_INR_RATE", 83.0)), 2)
+        currency = "INR"
+    return amount, currency
 
 
 def _refresh_access_token(force=False):
@@ -52,12 +70,26 @@ def _refresh_access_token(force=False):
             timeout=20,
         )
         if response.status_code >= 400:
-            raise AppError("Unable to refresh Zoho token", ERROR_CODES["PAYMENT_ERROR"], 502)
+            try:
+                err = response.json() or {}
+                reason = err.get("error") or err.get("message") or err.get("error_description")
+            except Exception:
+                reason = None
+            hint = _zoho_auth_hint(reason)
+            if hint:
+                raise AppError(hint, ERROR_CODES["PAYMENT_ERROR"], 502)
+            detail = f": {reason}" if reason else ""
+            raise AppError(f"Unable to refresh Zoho token{detail}", ERROR_CODES["PAYMENT_ERROR"], 502)
 
         payload = response.json() or {}
         token = (payload.get("access_token") or "").strip()
         if not token:
-            raise AppError("Zoho token response invalid", ERROR_CODES["PAYMENT_ERROR"], 502)
+            reason = payload.get("error") or payload.get("message") or payload.get("error_description")
+            hint = _zoho_auth_hint(reason)
+            if hint:
+                raise AppError(hint, ERROR_CODES["PAYMENT_ERROR"], 502)
+            detail = f": {reason}" if reason else ""
+            raise AppError(f"Zoho token response invalid{detail}", ERROR_CODES["PAYMENT_ERROR"], 502)
 
         expires_in = int(payload.get("expires_in", 3600))
         _token_cache["token"] = token
@@ -115,17 +147,52 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
     fee = compute_fee(category, addon_food=bool(addon_food), addon_safari=bool(addon_safari))
     if not fee:
         raise AppError("Invalid registration category", ERROR_CODES["VALIDATION_ERROR"], 400)
+    billing_amount, billing_currency = _billing_amount_and_currency(fee)
+
+    selected_method = (payment_method or "paytm").strip().lower()
+    if selected_method != "paytm":
+        raise AppError("Zoho payment flow is disabled. Use Paytm.", ERROR_CODES["VALIDATION_ERROR"], 400)
 
     existing = _idempotent_existing_link(registration_id, idempotency_key)
     if existing:
-        return {
-            "provider": "zoho_books",
-            "invoice_id": existing.get("invoice_id"),
-            "payment_link": existing.get("payment_link"),
-            "currency": existing.get("currency"),
-            "amount": existing.get("amount"),
-            "idempotent": True,
-        }
+        existing_amount = float(existing.get("amount") or 0)
+        existing_currency = str(existing.get("currency") or "").upper()
+        requested_amount = float(billing_amount)
+        requested_currency = str(billing_currency or "").upper()
+        if existing_amount == requested_amount and existing_currency == requested_currency:
+            return {
+                "provider": "zoho_books",
+                "invoice_id": existing.get("invoice_id"),
+                "payment_link": existing.get("payment_link"),
+                "currency": existing.get("currency"),
+                "amount": existing.get("amount"),
+                "idempotent": True,
+            }
+
+    from services.payments.paytm import (
+        PaytmPaymentGateway,
+        create_transaction_record,
+        generate_order_id,
+        mark_transaction_initiated,
+    )
+
+    gateway = PaytmPaymentGateway()
+    order_id = generate_order_id(registration_id)
+    transaction = create_transaction_record(
+        registration_id=registration_id,
+        user_name=name,
+        email=email,
+        amount=billing_amount,
+        order_id=order_id,
+        payment_method="paytm",
+        category=category,
+    )
+    paytm_result = gateway.initiate_payment(order_id=order_id, amount=billing_amount, customer_id=email)
+    mark_transaction_initiated(transaction)
+    return {
+        "provider": "paytm",
+        "paytm": paytm_result,
+    }
 
     if not settings.ZOHO_ORGANIZATION_ID:
         raise AppError("Zoho organization is not configured", ERROR_CODES["VALIDATION_ERROR"], 400)
@@ -138,6 +205,7 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
             "email": email.lower().strip(),
         },
     )
+
     if str(contact_resp.get("code")) != "0":
         raise AppError("Failed to create Zoho contact", ERROR_CODES["PAYMENT_ERROR"], 502)
 
@@ -150,14 +218,14 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
         "/invoices",
         payload={
             "customer_id": contact_id,
-            "currency_code": fee["fee_currency"],
+            "currency_code": billing_currency,
             "reference_number": registration_id,
             "line_items": [
                 {
                     "name": f"GDTA 2026 - {category}",
                     "description": f"GDTA 2026 conference registration fee ({category})",
                     "quantity": 1,
-                    "rate": fee["total_fee"],
+                    "rate": billing_amount,
                 }
             ],
         },
@@ -167,6 +235,22 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
 
     invoice = invoice_resp.get("invoice") or {}
     invoice_id = (invoice.get("invoice_id") or "").strip()
+    if not invoice_id:
+        raise AppError("Zoho invoice response missing invoice_id", ERROR_CODES["PAYMENT_ERROR"], 502)
+
+    # Move invoice from draft to active/sent so hosted payment page can be opened.
+    sent_resp = _zoho_request("POST", f"/invoices/{invoice_id}/status/sent")
+    sent_code = str(sent_resp.get("code"))
+    if sent_code != "0":
+        sent_msg = str(sent_resp.get("message") or "")
+        if "already" not in sent_msg.lower():
+            raise AppError("Failed to mark Zoho invoice as active", ERROR_CODES["PAYMENT_ERROR"], 502)
+
+    # Re-fetch invoice to get latest customer-facing links after status update.
+    invoice_get_resp = _zoho_request("GET", f"/invoices/{invoice_id}")
+    if str(invoice_get_resp.get("code")) == "0":
+        invoice = invoice_get_resp.get("invoice") or invoice
+
     payment_link = (
         invoice.get("payment_link")
         or invoice.get("payment_url")
@@ -187,8 +271,8 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
             "payment_status": "payment_link_created",
             "payment_link": payment_link,
             "invoice_id": invoice_id,
-            "payment_amount": fee["total_fee"],
-            "currency": fee["fee_currency"],
+            "payment_amount": billing_amount,
+            "currency": billing_currency,
             "payment_provider": "zoho_books",
             "payment_method": payment_method or None,
             "payment_updated_at": datetime.utcnow().isoformat(),
@@ -202,8 +286,8 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
             "email": registration.get("email"),
             "invoice_id": invoice_id,
             "payment_link": payment_link,
-            "currency": fee["fee_currency"],
-            "amount": fee["total_fee"],
+            "currency": billing_currency,
+            "amount": billing_amount,
             "idempotency_key": idempotency_key or None,
             "provider": "zoho_books",
             "action": "create_link",
@@ -216,15 +300,15 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
         "payment_link_created",
         actor_uid,
         target={"registration_id": registration["id"], "invoice_id": invoice_id},
-        details={"amount": fee["total_fee"], "currency": fee["fee_currency"]},
+        details={"amount": billing_amount, "currency": billing_currency},
     )
 
     return {
         "provider": "zoho_books",
         "invoice_id": invoice_id,
         "payment_link": payment_link,
-        "currency": fee["fee_currency"],
-        "amount": fee["total_fee"],
+        "currency": billing_currency,
+        "amount": billing_amount,
         "idempotent": False,
     }
 

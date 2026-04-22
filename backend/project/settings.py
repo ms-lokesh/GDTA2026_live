@@ -99,6 +99,8 @@ SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 X_FRAME_OPTIONS = "SAMEORIGIN"
+_coop_value = os.getenv("SECURE_CROSS_ORIGIN_OPENER_POLICY", "")
+SECURE_CROSS_ORIGIN_OPENER_POLICY = _coop_value if _coop_value else None
 SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "True").lower() == "true"
 CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "True").lower() == "true"
 
@@ -110,7 +112,7 @@ PUBLIC_PATH_PREFIXES = set(
     _split_csv(
         os.getenv(
             "PUBLIC_PATH_PREFIXES",
-            "/api/health,/api/registrations/start,/api/registrations/answer,/api/registrations/status,/api/registrations/cancel,/api/registrations/submit,/api/registrations/payment/create-link,/api/registrations/payment/status,/api/chatbot/start,/api/chatbot/message,/api/chatbot/session,/api/chatbot/reset",
+            "/api/health,/api/registrations/start,/api/registrations/answer,/api/registrations/status,/api/registrations/cancel,/api/registrations/submit,/api/registrations/payment/create-link,/api/registrations/payment/status,/api/registrations/payment/create,/api/registrations/payment/status/,/api/registrations/payment/paytm/callback,/api/payment/create,/api/payment/paytm/callback,/api/payment/status/,/api/chatbot/start,/api/chatbot/message,/api/chatbot/session,/api/chatbot/reset",
         )
     )
 )
@@ -135,6 +137,18 @@ ZOHO_ORGANIZATION_ID = os.getenv("ZOHO_ORGANIZATION_ID", "")
 ZOHO_ACCOUNTS_BASE_URL = os.getenv("ZOHO_ACCOUNTS_BASE_URL", "https://accounts.zoho.com")
 ZOHO_BOOKS_API_BASE_URL = os.getenv("ZOHO_BOOKS_API_BASE_URL", "https://www.zohoapis.com/books/v3")
 ZOHO_REDIRECT_URI = os.getenv("ZOHO_REDIRECT_URI", "")
+
+# Paytm Payments
+PAYTM_MERCHANT_ID = os.getenv("PAYTM_MERCHANT_ID", "")
+PAYTM_MERCHANT_KEY = os.getenv("PAYTM_MERCHANT_KEY", "")
+PAYTM_WEBSITE = os.getenv("PAYTM_WEBSITE", "DEFAULT")
+PAYTM_INDUSTRY_TYPE = os.getenv("PAYTM_INDUSTRY_TYPE", "Retail")
+PAYTM_CALLBACK_URL = os.getenv("PAYTM_CALLBACK_URL", "")
+PAYTM_ENV = os.getenv("PAYTM_ENV", "staging")
+
+# Payment conversion
+PAYMENT_USD_TO_INR_RATE = float(os.getenv("PAYMENT_USD_TO_INR_RATE", "83.0"))
+
 ADMIN_DASHBOARD_DEMO_MODE = os.getenv("ADMIN_DASHBOARD_DEMO_MODE", "False").lower() == "true"
 
 LOGGING = {
