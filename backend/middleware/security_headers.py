@@ -45,10 +45,10 @@ class SecurityHeadersMiddleware:
         else:
             csp_policy = (
                 "default-src 'self'; "
-                "script-src 'self'; "
-                "style-src 'self'; "
-                "img-src 'self' data:; "
-                "font-src 'self'; "
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.jquery.com https://cdn.jsdelivr.net https://cdn.datatables.net https://cdn.tailwindcss.com; "
+                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.datatables.net; "
+                "img-src 'self' data: blob: https:; "
+                "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "
                 "frame-src 'self' https://www.google.com https://maps.google.com; "
                 "frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://securegw.paytm.in https://securegw-stage.paytm.in"
             )
