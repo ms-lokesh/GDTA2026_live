@@ -82,7 +82,12 @@
       toggle();
     });
 
-    backdrop.addEventListener('click', function () {
+    document.addEventListener('click', function (e) {
+      if (!isMobile()) return;
+      const target = e.target;
+      if (!target) return;
+      if (toggler.contains(target)) return;
+      if (collapse.contains(target)) return;
       close();
     });
 
@@ -91,13 +96,35 @@
       if (e.key === 'Escape') close();
     });
 
-    // Close when clicking a nav link (mobile)
+    // Handle dropdown toggles and items
     collapse.addEventListener('click', function (e) {
       const link = e.target && (e.target.closest('a') || e.target.closest('button'));
       if (!link) return;
       if (!isMobile()) return;
-      // Close if a normal link was clicked (not dropdown toggle)
-      if (link.classList.contains('dropdown-toggle')) return;
+
+      // If it's a dropdown toggle, prevent default and toggle the dropdown
+      if (link.classList.contains('dropdown-toggle')) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Let Bootstrap's dropdown JS handle it, or add show class manually
+        const parent = link.closest('.dropdown');
+        if (parent) {
+          const menu = parent.querySelector('.dropdown-menu');
+          if (menu) {
+            menu.classList.toggle('show');
+            link.setAttribute('aria-expanded', menu.classList.contains('show'));
+          }
+        }
+        return;
+      }
+
+      // If it's a dropdown item, allow the click to go through
+      if (link.closest('.dropdown-menu')) {
+        // Don't close the menu yet, let the link navigate
+        return;
+      }
+
+      // For regular nav links, close the menu
       close();
     });
 
