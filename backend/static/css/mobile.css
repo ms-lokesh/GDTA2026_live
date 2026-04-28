@@ -1,0 +1,230 @@
+/*
+  Mobile responsiveness layer for GDTA 2026
+  - Strictly mobile-only overrides via media queries
+  - Desktop styles remain untouched
+  Breakpoints allowed:
+    @media (max-width: 768px)
+    @media (max-width: 480px)
+*/
+
+@media (max-width: 768px) {
+  /* Prevent horizontal scrolling from fixed-width elements */
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  img, video, svg, canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Improve tap targets */
+  button, .btn, a.btn, .navbar-register-btn, input, select, textarea {
+    min-height: 44px;
+  }
+
+  /* ===== Navbar (mobile-only) =====
+     We keep the existing markup, but override layout for <768.
+     JS toggles .is-open on the collapse container.
+  */
+  .navbar {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .navbar-brand img {
+    height: 56px !important;
+  }
+
+  .navbar-toggler {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border: 0 !important;
+    padding: 10px !important;
+  }
+
+  /* Some pages use .collapse.navbar-collapse, others use .navbar-collapse with inline display */
+  .navbar-collapse {
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    top: var(--gdta-mobile-nav-top, 86px);
+    max-height: calc(100vh - var(--gdta-mobile-nav-top, 86px));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    display: none !important;
+    flex-direction: column;
+
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    padding: 12px 16px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    z-index: 1200;
+  }
+
+  .navbar-collapse.is-open {
+    display: flex !important;
+  }
+
+  .navbar-nav {
+    width: 100%;
+    gap: 4px;
+  }
+
+  .navbar .navbar-nav .nav-link {
+    width: 100%;
+    padding: 12px 10px !important;
+    border-radius: 10px;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  .navbar .dropdown-menu {
+    position: static !important;
+    float: none !important;
+    box-shadow: none !important;
+    border-radius: 12px;
+    margin-top: 6px;
+  }
+
+  .navbar-register-btn {
+    width: 100% !important;
+    display: inline-flex !important;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0 0 0 !important;
+  }
+
+  /* Backdrop controlled by JS */
+  .mobile-nav-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+  }
+
+  .mobile-nav-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ===== Page spacing helpers ===== */
+  .container,
+  .container-fluid {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* Avoid huge desktop paddings on mobile */
+  .py-5 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .p-5 {
+    padding: 1.25rem !important;
+  }
+
+  /* ===== Hero performance: prefer image fallback on small screens (home) ===== */
+  #heroVideo {
+    display: none !important;
+  }
+
+  #heroBg {
+    opacity: 1 !important;
+  }
+
+  /* ===== Featured sessions carousel (home + sessions page) ===== */
+  .featured-article {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .featured-article .carousel-prev {
+    left: 8px !important;
+  }
+
+  .featured-article .carousel-next {
+    right: 8px !important;
+  }
+
+  .featured-article .carousel-nav-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .featured-article .gradient-border-inner .row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .featured-article .gradient-border-inner .col-lg-5 {
+    width: 100% !important;
+  }
+
+  .featured-article .gradient-border-inner .col-lg-7 {
+    width: 100% !important;
+  }
+
+  .featured-article #featured-img {
+    width: 100% !important;
+    height: 220px !important;
+    object-fit: cover;
+    min-height: 0 !important;
+  }
+
+  /* Keep text readable and prevent overflow */
+  #featured-title {
+    font-size: clamp(1.25rem, 4.5vw, 1.65rem) !important;
+  }
+
+  #featured-description {
+    font-size: 0.95rem !important;
+    word-wrap: break-word;
+  }
+
+  /* ===== Generic card safety ===== */
+  .content-card {
+    min-height: unset;
+  }
+
+  .content-card,
+  .shadow-lift,
+  .gradient-border,
+  .gradient-border-inner {
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand img {
+    height: 52px !important;
+  }
+
+  .navbar .navbar-nav .nav-link {
+    padding: 12px 8px !important;
+  }
+
+  /* Slightly tighter spacing */
+  .container,
+  .container-fluid {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .featured-article #featured-img {
+    height: 200px !important;
+  }
+}
