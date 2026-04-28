@@ -81,7 +81,7 @@ p, span, div, a {
 
 .navbar .nav-link {
     color: #000000 !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
     transition: all 0.3s ease;
 }
@@ -105,7 +105,7 @@ p, span, div, a {
 
 .navbar .dropdown-item {
     color: #000000 !important;
-    font-weight: 500 !important;
+    font-weight: 600 !important;
 }
 
 .navbar .dropdown-item:hover {
@@ -172,6 +172,82 @@ p, span, div, a {
 
 .carousel-nav-btn:active {
     transform: translateY(-50%) scale(0.95);
+}
+
+/* Featured Sessions Carousel — keep same card size for every slide (home + sessions page)
+   The slides swap content dynamically; we clamp text and enforce a consistent card height on lg+.
+*/
+.featured-article {
+    --gdta-featured-card-height: 430px;
+}
+
+@media (min-width: 992px) {
+    .featured-article .gradient-border-inner {
+        height: var(--gdta-featured-card-height);
+    }
+
+    .featured-article .gradient-border-inner .row {
+        height: 100%;
+    }
+
+    .featured-article .gradient-border-inner .row > .col-lg-5,
+    .featured-article .gradient-border-inner .row > .col-lg-7 {
+        height: 100%;
+    }
+
+    .featured-article #featured-img {
+        height: 100% !important;
+        width: 100% !important;
+        object-fit: cover;
+        min-height: 0 !important;
+    }
+
+    .featured-article .glass-effect {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .featured-article #featured-img {
+        width: 100% !important;
+        height: auto !important;
+        object-fit: cover;
+        min-height: 280px !important;
+    }
+}
+
+.featured-article #featured-title {
+    min-height: 64px;
+    max-height: 64px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+}
+
+.featured-article #featured-subtitle {
+    min-height: 24px;
+    max-height: calc(1.4em * 2);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+}
+
+.featured-article #featured-description {
+    line-height: 1.8;
+    min-height: calc(1.8em * 5);
+    max-height: calc(1.8em * 5);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
 }
 
 .btn-light {

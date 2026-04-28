@@ -34,12 +34,28 @@
 
     <!-- Custom Color Overrides -->
     <link href="/static/css/custom-overrides.css" rel="stylesheet">
+    <link href="/static/css/mobile.css" rel="stylesheet">
 
     <!-- Advanced UI Enhancements -->
     <style>
         /* Smooth scroll behavior */
         html {
             scroll-behavior: smooth;
+        }
+
+        /* Hero: keep fallback image/video from cropping oddly on different screens */
+        .hero-section {
+            /* Match hero image aspect ratio (4098x2304) */
+            height: min(100vh, calc(100vw * 2304 / 4098));
+            min-height: 520px;
+            padding: 0 !important;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                height: 100vh;
+                min-height: 100vh;
+            }
         }
 
         /* Advanced Card Hover Effects */
@@ -409,28 +425,9 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-    <!-- Mobile Back Button Start -->
-    <button id="mobileBackBtn" onclick="window.history.back()" class="btn btn-outline-secondary d-lg-none position-fixed" style="top: 16px; left: 16px; z-index: 1200; display: none;">
-        <i class="fas fa-arrow-left"></i> Back
-    </button>
-    <!-- Mobile Back Button End -->
-    <script>
-        // Show mobile back button only on mobile screens
-        function toggleMobileBackBtn() {
-            const btn = document.getElementById('mobileBackBtn');
-            if (!btn) return;
-            if (window.innerWidth < 992) {
-                btn.style.display = 'block';
-            } else {
-                btn.style.display = 'none';
-            }
-        }
-        window.addEventListener('resize', toggleMobileBackBtn);
-        window.addEventListener('DOMContentLoaded', toggleMobileBackBtn);
-    </script>
 
             <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto" style="font-size: 1.18rem; font-weight: 600;">
+                <div class="navbar-nav ms-auto" style="font-size: 1.18rem; font-weight: 700;">
                     <a href="/index.html" class="nav-item nav-link active" style="color: #000000 !important;">Home</a>
 
                     <div class="nav-item dropdown">
@@ -473,16 +470,16 @@
 
     <!-- Hero Section Start -->
     <div class="hero-section"
-        style="width: 100%; min-height: 100vh; display: flex; align-items: flex-end; justify-content: flex-start; background-color: #1a1a1a; padding-top: 86px; padding-bottom: 80px; padding-left: 50px; position: relative; overflow: hidden;">
+        style="width: 100%; display: flex; align-items: stretch; justify-content: flex-start; background-color: #1a1a1a; position: relative; overflow: hidden;">
         
         <!-- Background Image (hidden initially, shown after video ends) -->
-        <div id="heroBg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('/static/img/Background/landing_page_final.png') center center/cover no-repeat; opacity: 0; z-index: 0;"></div>
+        <div id="heroBg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('/static/img/Background/landing%20page%20GDTA%20%288%29.png') center center / cover no-repeat; opacity: 0; z-index: 0;"></div>
         
         <!-- Video Background -->
-        <video id="heroVideo" muted playsinline preload="auto"
+
+        <video id="heroVideo" autoplay muted playsinline webkit-playsinline preload="auto"
             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 1;">
-                        <source src="/static/img/Background/0001-0110.mkv" type="video/mp4">
-            Your browser does not support the video tag.
+            <!-- Source will be set by JS for mobile/desktop -->
         </video>
         
     </div>
@@ -491,68 +488,56 @@
         // Handle video playback and transition - play only once per visit
         const heroVideo = document.getElementById('heroVideo');
         const heroBg = document.getElementById('heroBg');
-        
         // Check if video has been played in this session
         const hasPlayedVideo = sessionStorage.getItem('gdta_hero_video_played');
-        
+
+        // Helper: set video source based on screen size
+        function setHeroVideoSource() {
+            let src = '';
+            if (window.innerWidth <= 768) {
+                src = '/static/img/Background/WhatsApp Video 2026-04-16 at 3.37.58 PM.mp4';
+            } else {
+                src = '/static/img/Background/0001-0110.mkv';
+            }
+            // Only set if not already set
+            if (!heroVideo.querySelector('source') || heroVideo.querySelector('source').src.indexOf(src) === -1) {
+                // Create source element and encode URL to avoid issues with spaces on mobile
+                const srcEl = document.createElement('source');
+                srcEl.src = encodeURI(src);
+                srcEl.type = 'video/mp4';
+                heroVideo.innerHTML = '';
+                heroVideo.appendChild(srcEl);
+            }
+        }
+
         if (heroVideo) {
+            setHeroVideoSource();
+            window.addEventListener('resize', setHeroVideoSource);
+
             if (hasPlayedVideo === 'true') {
                 // Video was already played in this session, skip it
-                console.log('Video already played in this session, showing background');
                 heroVideo.style.display = 'none';
                 heroBg.style.opacity = '1';
                 document.querySelector('.navbar-container').classList.add('show');
             } else {
                 // First visit - play the video
-                console.log('First page visit, attempting to play video...');
-                
-                // Force play on user interaction if autoplay fails
                 const forcePlay = () => {
                     heroVideo.play().then(() => {
-                        console.log('Video playing successfully');
-                    }).catch(error => {
-                        console.log('Autoplay prevented:', error);
-                        console.log('Click anywhere to start video');
-                    });
+                        // Success
+                    }).catch(() => {});
                 };
-                
-                // Try to play on page load
-                setTimeout(() => {
-                    forcePlay();
-                }, 100);
-                
-                // Allow click to start video
+                setTimeout(() => { forcePlay(); }, 100);
                 document.addEventListener('click', () => {
-                    if (heroVideo.paused) {
-                        forcePlay();
-                    }
+                    if (heroVideo.paused) forcePlay();
                 }, { once: true });
-                
-                heroVideo.addEventListener('loadeddata', function() {
-                    console.log('Video data loaded');
-                    forcePlay();
-                });
-                
-                heroVideo.addEventListener('canplay', function() {
-                    console.log('Video can play');
-                    forcePlay();
-                });
-                
-                heroVideo.addEventListener('playing', function() {
-                    console.log('Video is now playing');
-                });
-                
+                heroVideo.addEventListener('loadeddata', forcePlay);
+                heroVideo.addEventListener('canplay', forcePlay);
                 heroVideo.addEventListener('ended', function() {
-                    console.log('Video ended, showing background...');
-                    // Mark video as played for this session
                     sessionStorage.setItem('gdta_hero_video_played', 'true');
-                    // Show background image
                     heroBg.style.opacity = '1';
                     heroBg.style.transition = 'opacity 1s ease-out';
-                    // Fade out video
                     heroVideo.style.opacity = '0';
                     heroVideo.style.transition = 'opacity 1s ease-out';
-                    // Show navbar
                     setTimeout(() => {
                         document.querySelector('.navbar-container').classList.add('show');
                     }, 500);
@@ -560,10 +545,7 @@
                         heroVideo.style.display = 'none';
                     }, 1000);
                 });
-                
-                // Error handling
-                heroVideo.addEventListener('error', function(e) {
-                    console.error('Video error:', e, heroVideo.error);
+                heroVideo.addEventListener('error', function() {
                     sessionStorage.setItem('gdta_hero_video_played', 'true');
                     heroVideo.style.display = 'none';
                     heroBg.style.opacity = '1';
@@ -788,6 +770,7 @@
 
     <!-- Template Javascript -->
     <script src="/static/js/main.js"></script>
+    <script src="/static/js/mobile-nav.js"></script>
 
     <script>
         // Featured Sessions Data
@@ -811,7 +794,7 @@
                 date: "29 Sep 2026 • 4 min"
             },
             {
-                title: "Education Policy",
+                title: "Education Transformation",
                 description: "With the backdrop of India's National Education Policy (NEP) 2020, this track explores how education must evolve to prepare students for a multidisciplinary, AI-driven world.",
                 image: "/static/img/Sessions/EducationPolicy.jpg",
                 date: "30 Sep 2026 • 4 min"
@@ -1019,8 +1002,6 @@
         `;
         document.head.appendChild(style);
     </script>
-
-    <script src="/static/js/chatbot-widget.js"></script>
 </body>
 
 </html>
