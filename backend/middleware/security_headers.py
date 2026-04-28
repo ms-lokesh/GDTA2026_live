@@ -39,13 +39,8 @@ class SecurityHeadersMiddleware:
                 "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "
                 "img-src 'self' data: blob: https:; "
                 "connect-src 'self' https:; "
-<<<<<<< HEAD
-                "frame-src 'self' "
-                "https://www.google.com https://maps.google.com; "
-                "frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
-=======
+                "frame-src 'self' https://www.google.com https://maps.google.com; "
                 "frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://securegw.paytm.in https://securegw-stage.paytm.in"
->>>>>>> 5386bc7 (payment gateway intergration)
             )
         else:
             csp_policy = (
@@ -54,13 +49,8 @@ class SecurityHeadersMiddleware:
                 "style-src 'self'; "
                 "img-src 'self' data:; "
                 "font-src 'self'; "
-<<<<<<< HEAD
-                "frame-src 'self' "
-                "https://www.google.com https://maps.google.com; "
-                "frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
-=======
+                "frame-src 'self' https://www.google.com https://maps.google.com; "
                 "frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://securegw.paytm.in https://securegw-stage.paytm.in"
->>>>>>> 5386bc7 (payment gateway intergration)
             )
 
         response["Content-Security-Policy"] = csp_policy

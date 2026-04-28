@@ -927,6 +927,7 @@
                             <p class="mb-1"><strong>Registrant:</strong> <span id="paymentNameText">-</span></p>
                             <p class="mb-1"><strong>Email:</strong> <span id="paymentEmailText">-</span></p>
                             <p class="mb-0"><strong>Amount Payable:</strong> <span id="paymentAmountText">-</span></p>
+                            <small id="paymentConversionText" class="text-muted d-block mt-1" style="display: none;"></small>
                         </div>
 
                         <div class="p-3 mb-3 rounded-3" style="background: #ffffff; border: 1px solid #dee2e6;">
@@ -1048,6 +1049,7 @@
             const paymentNameText = document.getElementById('paymentNameText');
             const paymentEmailText = document.getElementById('paymentEmailText');
             const paymentAmountText = document.getElementById('paymentAmountText');
+            const paymentConversionText = document.getElementById('paymentConversionText');
             const paymentStatus = document.getElementById('paymentStatus');
             const paymentFlowPanel = document.getElementById('paymentFlowPanel');
             const paymentResultCard = document.getElementById('paymentResultCard');
@@ -1086,13 +1088,8 @@
             const feeData = {
                 'Student': { base: 500, food: 500, safari: 500, currency: 'Rs.' },
                 'Academician': { base: 2000, food: 500, safari: 500, currency: 'Rs.' },
-<<<<<<< HEAD
                 'Corporate Delegate': { base: 7500, food: 0, safari: 0, currency: 'Rs.' },
-                'Foreign Student': { base: 15, food: 0, safari: 0, currency: '$' },
-=======
-                'Industry People': { base: 7500, food: 0, safari: 0, currency: 'Rs.' },
                 'Foreign Student': { base: 1, food: 0, safari: 0, currency: '$' },
->>>>>>> 5386bc7 (payment gateway intergration)
                 'Foreign Academician': { base: 100, food: 0, safari: 0, currency: '$' },
                 'Foreign Corporate Delegate': { base: 100, food: 0, safari: 0, currency: '$' },
                 'Foreign Delegate': { base: 100, food: 0, safari: 0, currency: '$' }
@@ -1124,6 +1121,14 @@
                 if (addonFood) total += fees.food;
                 if (addonSafari) total += fees.safari;
                 return `${fees.currency}${total}`;
+            }
+
+            function isForeignCategory(category) {
+                return String(category || '').toLowerCase().includes('foreign');
+            }
+
+            function getConversionRate() {
+                return 83;
             }
 
             function getNumericAmount(category, addonFood, addonSafari) {
@@ -1533,6 +1538,23 @@
                         latestRegistration.addon_food,
                         latestRegistration.addon_safari
                     );
+
+                    if (paymentConversionText) {
+                        if (isForeignCategory(latestRegistration.registration_category)) {
+                            const usdAmount = getNumericAmount(
+                                latestRegistration.registration_category,
+                                latestRegistration.addon_food,
+                                latestRegistration.addon_safari
+                            );
+                            const rate = getConversionRate();
+                            const inrAmount = (usdAmount * rate).toFixed(2);
+                            paymentConversionText.textContent = `Paytm will charge INR ${inrAmount} (USD ${usdAmount} x rate ${rate}).`;
+                            paymentConversionText.style.display = 'block';
+                        } else {
+                            paymentConversionText.textContent = '';
+                            paymentConversionText.style.display = 'none';
+                        }
+                    }
 
                     paymentStatus.innerHTML = '<div class="alert alert-success">Registration submitted successfully. Continue to payment.</div>';
                     checkPaymentStatusBtn.style.display = 'none';
