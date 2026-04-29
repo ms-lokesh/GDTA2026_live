@@ -56,12 +56,14 @@
     function open() {
       collapse.classList.add('is-open');
       backdrop.classList.add('is-open');
+      document.body.classList.add('mobile-nav-open');
       toggler.setAttribute('aria-expanded', 'true');
     }
 
     function close() {
       collapse.classList.remove('is-open');
       backdrop.classList.remove('is-open');
+      document.body.classList.remove('mobile-nav-open');
       toggler.setAttribute('aria-expanded', 'false');
     }
 
