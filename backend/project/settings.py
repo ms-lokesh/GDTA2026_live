@@ -15,11 +15,16 @@ def _split_csv(value: str):
 
 SECRET_KEY = os.getenv("SECRET_KEY", "replace-in-production")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-ALLOWED_HOSTS = _split_csv(os.getenv("ALLOWED_HOSTS", "*"))
-if "*" not in ALLOWED_HOSTS:
-    for local_host in ("localhost", "127.0.0.1", "0.0.0.0", "[::1]"):
-        if local_host not in ALLOWED_HOSTS:
-            ALLOWED_HOSTS.append(local_host)
+
+# FIXED ALLOWED_HOSTS (IMPORTANT FOR AWS + ALB)
+ALLOWED_HOSTS = [
+    "gdta2026.com",
+    "www.gdta2026.com",
+    "localhost",
+    "127.0.0.1",
+    "0.0.0.0",
+    "*"
+]
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
@@ -62,8 +67,6 @@ TEMPLATES = [
 WSGI_APPLICATION = "project.wsgi.application"
 ASGI_APPLICATION = "project.asgi.application"
 
-# NOTE: Django ORM is not used. Firestore is the primary database.
-# SQLite config remains only for Django framework bootstrap requirements.
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -87,6 +90,7 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 MEDIA_ROOT = BASE_DIR / "generated_ids"
 MEDIA_URL = "/generated_ids/"
 
@@ -102,15 +106,17 @@ SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 X_FRAME_OPTIONS = "SAMEORIGIN"
+
 _coop_value = os.getenv("SECURE_CROSS_ORIGIN_OPENER_POLICY", "")
 SECURE_CROSS_ORIGIN_OPENER_POLICY = _coop_value if _coop_value else None
+
 SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "True").lower() == "true"
 CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "True").lower() == "true"
 
-# CORS allowlist
+# CORS
 CORS_ALLOWED_ORIGINS = set(_split_csv(os.getenv("CORS_ALLOWED_ORIGINS", "")))
 
-# Middleware auth bypass paths
+# Public paths
 PUBLIC_PATH_PREFIXES = set(
     _split_csv(
         os.getenv(
@@ -128,11 +134,11 @@ EMAIL_USERNAME = os.getenv("EMAIL_USERNAME", "")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "")
 EMAIL_FROM_NAME = os.getenv("EMAIL_FROM_NAME", "GDTA 2026 Team")
 
-# LLM / NLU (Chatbot)
+# Gemini
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
-# Zoho Payments
+# Zoho
 ZOHO_CLIENT_ID = os.getenv("ZOHO_CLIENT_ID", "")
 ZOHO_CLIENT_SECRET = os.getenv("ZOHO_CLIENT_SECRET", "")
 ZOHO_REFRESH_TOKEN = os.getenv("ZOHO_REFRESH_TOKEN", "")
@@ -141,7 +147,7 @@ ZOHO_ACCOUNTS_BASE_URL = os.getenv("ZOHO_ACCOUNTS_BASE_URL", "https://accounts.z
 ZOHO_BOOKS_API_BASE_URL = os.getenv("ZOHO_BOOKS_API_BASE_URL", "https://www.zohoapis.com/books/v3")
 ZOHO_REDIRECT_URI = os.getenv("ZOHO_REDIRECT_URI", "")
 
-# Paytm Payments
+# Paytm
 PAYTM_MERCHANT_ID = os.getenv("PAYTM_MERCHANT_ID", "")
 PAYTM_MERCHANT_KEY = os.getenv("PAYTM_MERCHANT_KEY", "")
 PAYTM_WEBSITE = os.getenv("PAYTM_WEBSITE", "DEFAULT")
@@ -149,7 +155,6 @@ PAYTM_INDUSTRY_TYPE = os.getenv("PAYTM_INDUSTRY_TYPE", "Retail")
 PAYTM_CALLBACK_URL = os.getenv("PAYTM_CALLBACK_URL", "")
 PAYTM_ENV = os.getenv("PAYTM_ENV", "staging")
 
-# Payment conversion
 PAYMENT_USD_TO_INR_RATE = float(os.getenv("PAYMENT_USD_TO_INR_RATE", "83.0"))
 
 ADMIN_DASHBOARD_DEMO_MODE = os.getenv("ADMIN_DASHBOARD_DEMO_MODE", "False").lower() == "true"
