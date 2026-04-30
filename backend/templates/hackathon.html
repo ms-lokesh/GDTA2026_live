@@ -120,6 +120,14 @@
             margin-bottom: 12px;
             display: flex;
             align-items: center;
+            justify-content: flex-start;
+        }
+
+        .track-logo-slot.stack {
+            height: auto;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
         }
 
         .track-logo-img {
@@ -135,19 +143,11 @@
             max-height: none;
         }
 
-        .track-logo-slot.is-placeholder {
-            border: 1px dashed #CED4DA;
-            border-radius: 8px;
-            padding: 0 10px;
-            background: #F8F9FA;
-        }
 
-        .track-logo-placeholder-text {
-            font-size: 0.76rem;
-            font-weight: 700;
-            letter-spacing: 0.9px;
-            text-transform: uppercase;
-            color: #6C757D !important;
+        .track-logo-slot.is-placeholder {
+            border: none;
+            padding: 0;
+            background: transparent;
         }
 
         .timeline-card {
@@ -474,8 +474,8 @@
                         <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1200&auto=format&fit=crop" alt="Education Transformation" class="track-img">
                         <div class="p-4">
                             <div class="track-logo-slot">
-                                <img src="/static/img/Logo/202006_Logo_SieSti_Partner_BLACK.png" alt="Siemens logo" class="track-logo-img track-logo-img--siemens"
-                                    onerror="this.onerror=null;this.src='../static/img/Logo/202006_Logo_SieSti_Partner_BLACK.png';">
+                                <img src="/static/img/Logo/202006_Logo_SieSti_Partner_RGB.png" alt="Siemens logo" class="track-logo-img track-logo-img--siemens"
+                                    onerror="this.onerror=null;this.src='../static/img/Logo/202006_Logo_SieSti_Partner_RGB.png';">
                             </div>
                             <h4 style="color: #000000 !important; font-weight: 700;">Education Transformation</h4>
                             <p class="mb-0" style="color: #495057 !important;">Design inclusive systems and experiences that improve learning outcomes and student access. <strong>Supported by Siemens Foundation.</strong></p>
@@ -487,6 +487,7 @@
                     <div class="track-card">
                         <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=1200&auto=format&fit=crop" alt="Smart City" class="track-img">
                         <div class="p-4">
+                            <div class="track-logo-slot is-placeholder"></div>
                             <h4 style="color: #000000 !important; font-weight: 700;">Smart City & Infrastructure</h4>
                             <p class="mb-0" style="color: #495057 !important;">Build practical solutions for mobility, sustainability, accessibility, and better urban experiences.</p>
                         </div>
@@ -497,6 +498,7 @@
                     <div class="track-card">
                         <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1200&auto=format&fit=crop" alt="Healthcare" class="track-img">
                         <div class="p-4">
+                            <div class="track-logo-slot is-placeholder"></div>
                             <h4 style="color: #000000 !important; font-weight: 700;">Healthcare</h4>
                             <p class="mb-0" style="color: #495057 !important;">Create patient-first digital services that improve care journeys and access to quality healthcare.</p>
                         </div>
@@ -524,7 +526,6 @@
                         <span class="timeline-date">May 1 to May 30 2026</span>
                         <h5 style="color: #000000 !important; font-weight: 700;">Registration Phase</h5>
                         <ul class="mb-0" style="color: #495057 !important;">
-                            <li>Participants register through Unstop portal</li>
                             <li>Track selection is completed</li>
                         </ul>
                     </div>
@@ -581,7 +582,7 @@
                 <div class="timeline-item right" data-delay="600">
                     <span class="timeline-dot" aria-hidden="true"></span>
                     <div class="timeline-content text-start">
-                        <span class="timeline-date">August 20 2026</span>
+                        <span class="timeline-date">August 30 2026</span>
                         <h5 style="color: #000000 !important; font-weight: 700;">Final Submission</h5>
                         <ul class="mb-0" style="color: #495057 !important;">
                             <li>Teams submit final solution</li>
@@ -674,7 +675,7 @@
             </a>
             <p
                 style="color: #495057 !important; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                GDTA Indian Chapter – D Conference 2026<br>Chaos &amp; Clarity: Driving Progress with Design Thinking
+                GDTA India Chapter – D Conference 2026<br>Chaos &amp; Clarity: Driving Progress with Design Thinking
             </p>
             <div class="d-flex justify-content-center mb-3">
                 <a class="btn btn-sm btn-outline-primary border-2 mx-1"
@@ -682,7 +683,7 @@
                     style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i
                         class="fab fa-instagram"></i></a>
                 <a class="btn btn-sm btn-outline-primary border-2 mx-1"
-                    href="https://www.linkedin.com/school/snsinstitutions/posts/?feedView=all" target="_blank"
+                    href="https://www.linkedin.com/school/snsinstitutions" target="_blank"
                     style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i
                         class="fab fa-linkedin-in"></i></a>
                 <a class="btn btn-sm btn-outline-primary border-2 mx-1" href="https://x.com/snsinstitutions?lang=en"
@@ -692,8 +693,8 @@
             </div>
             <p style="font-size: 0.9rem; margin: 0; color: #6C757D !important;">September 29-30, 2026 | SNS
                 Institutions, India</p>
-            <p style="font-size: 0.9rem; margin-top: 10px; color: #6C757D !important;">&copy; <span
-                    style="color: #000000 !important;">GDTA Indian Chapter</span>, All Rights Reserved.</p>
+                <p style="font-size: 0.9rem; margin-top: 10px; color: #6C757D !important;">&copy; <span
+                    style="color: #000000 !important;">GDTA India Chapter</span>, All Rights Reserved.</p>
         </div>
     </div>
     <!-- Footer End -->

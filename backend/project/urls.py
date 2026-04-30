@@ -10,7 +10,7 @@ from registrations.views import PaytmCallbackView, UnifiedPaymentCreateView, Uni
 
 
 def health(_request):
-    return JsonResponse({"success": True, "data": {"status": "ok"}, "error": None})
+    return JsonResponse({"status": "ok"})
 
 
 def home(request):

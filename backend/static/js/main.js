@@ -68,6 +68,22 @@
         });
     }
 
+    // Floating register tag (sitewide)
+    $(function () {
+        if (document.getElementById('gdta-register-tag')) return;
+
+        var styleEl = document.createElement('style');
+        styleEl.textContent = "\n#gdta-register-tag{position:fixed;right:-2px;top:50%;transform:translateY(-50%);z-index:1200;background:#000;color:#fff;text-decoration:none;padding:12px 10px;font-weight:700;letter-spacing:.4px;border-radius:12px 0 0 12px;box-shadow:0 10px 24px rgba(0,0,0,.2);transition:transform .2s ease,box-shadow .2s ease,background .2s ease;}\n#gdta-register-tag span{writing-mode:vertical-rl;transform:rotate(180deg);display:block;}\n#gdta-register-tag:hover{transform:translateY(-50%) translateX(-6px);box-shadow:0 12px 28px rgba(0,0,0,.28);background:#1f1f1f;}\n@media (max-width:768px){#gdta-register-tag{display:none;}}\n";
+        document.head.appendChild(styleEl);
+
+        var tag = document.createElement('a');
+        tag.id = 'gdta-register-tag';
+        tag.href = '/registration-coming-soon.html';
+        tag.setAttribute('aria-label', 'Register Now');
+        tag.innerHTML = '<span>Register Now</span>';
+        document.body.appendChild(tag);
+    });
+
     
 })(jQuery);
 
