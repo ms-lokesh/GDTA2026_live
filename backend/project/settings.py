@@ -2,36 +2,43 @@ import json
 import os
 from pathlib import Path
 
+import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env", override=False)
+load_dotenv(BASE_DIR.parent / ".env", override=True)
 
 
 def _split_csv(value: str):
     return [v.strip() for v in value.split(",") if v.strip()]
 
 
-SECRET_KEY = os.getenv("SECRET_KEY", "replace-in-production")
+CRITICAL_ENV_VARS = ["SECRET_KEY", "DATABASE_URL", "ALLOWED_HOSTS", "PAYMENT_GATEWAY_KEY"]
+missing_env = [key for key in CRITICAL_ENV_VARS if not os.getenv(key)]
+if missing_env:
+    raise ImproperlyConfigured(f"Missing required environment variables: {', '.join(missing_env)}")
+
+SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# FIXED ALLOWED_HOSTS (IMPORTANT FOR AWS + ALB)
-ALLOWED_HOSTS = [
-    "gdta2026.com",
-    "www.gdta2026.com",
-    "localhost",
-    "127.0.0.1",
-    "0.0.0.0",
-    "*"
-]
+ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "").split(",") if host.strip()]
+if not ALLOWED_HOSTS:
+    raise ImproperlyConfigured("ALLOWED_HOSTS must contain at least one host")
 
 INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
     "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "axes",
     "chatbot",
     "accounts",
+    "datastore",
     "events",
     "registrations",
     "operations",
@@ -41,10 +48,17 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "axes.middleware.AxesMiddleware",
+    "middleware.admin_session_timeout.AdminSessionTimeoutMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
     "middleware.logging_middleware.RequestLoggingMiddleware",
-    "middleware.firebase_auth.FirebaseAuthMiddleware",
+    "middleware.session_auth.SessionAuthMiddleware",
     "middleware.role_middleware.RoleEnforcementMiddleware",
     "middleware.security_headers.SecurityHeadersMiddleware",
 ]
@@ -59,6 +73,8 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     }
@@ -68,18 +84,67 @@ WSGI_APPLICATION = "project.wsgi.application"
 ASGI_APPLICATION = "project.asgi.application"
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "_unused.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=os.environ["DATABASE_URL"],
+        conn_max_age=int(os.getenv("DATABASE_CONN_MAX_AGE", "600")),
+        ssl_require=os.getenv("DATABASE_SSL_REQUIRE", "True").lower() == "true",
+    )
 }
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
-    "DEFAULT_AUTHENTICATION_CLASSES": [],
-    "UNAUTHENTICATED_USER": None,
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "20/minute",
+        "user": "100/minute",
+        "login": "5/minute",
+        "registration_submit": "3/minute",
+        "payment_create": "10/minute",
+        "chatbot": "30/minute",
+        "admin_user": "100/minute",
+    },
     "EXCEPTION_HANDLER": "core.exceptions.drf_exception_handler",
 }
+
+AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1
+AXES_LOCKOUT_PARAMETERS = ["ip_address", "username"]
+AXES_RESET_ON_SUCCESS = True
+AXES_LOCKOUT_TEMPLATE = None
+AXES_ENABLE_ADMIN = True
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv("REDIS_URL", "redis://127.0.0.1:6379/1"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
+    "axes": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv("AXES_REDIS_URL", os.getenv("REDIS_URL", "redis://127.0.0.1:6379/2")),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
+}
+AXES_CACHE = "axes"
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
@@ -94,24 +159,56 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_ROOT = BASE_DIR / "generated_ids"
 MEDIA_URL = "/generated_ids/"
 
-# Firebase
-FIREBASE_CREDENTIALS = os.getenv("FIREBASE_CREDENTIALS", "")
-FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH", "")
-
 # Security
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
-SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "True").lower() == "true"
+SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS") or "31536000")
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-X_FRAME_OPTIONS = "SAMEORIGIN"
+X_FRAME_OPTIONS = "DENY"
 
 _coop_value = os.getenv("SECURE_CROSS_ORIGIN_OPENER_POLICY", "")
 SECURE_CROSS_ORIGIN_OPENER_POLICY = _coop_value if _coop_value else None
 
-SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "True").lower() == "true"
-CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "True").lower() == "true"
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = "Strict"
+SESSION_COOKIE_AGE = int(os.getenv("SESSION_COOKIE_AGE", "3600"))
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+USER_SESSION_IDLE_TIMEOUT = int(os.getenv("USER_SESSION_IDLE_TIMEOUT", "7200"))
+ADMIN_SESSION_IDLE_TIMEOUT = int(os.getenv("ADMIN_SESSION_IDLE_TIMEOUT", "1800"))
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = "Strict"
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 12},
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
+]
+PASSWORD_RESET_TIMEOUT = 3600
 
 # CORS
 CORS_ALLOWED_ORIGINS = set(_split_csv(os.getenv("CORS_ALLOWED_ORIGINS", "")))
@@ -121,7 +218,7 @@ PUBLIC_PATH_PREFIXES = set(
     _split_csv(
         os.getenv(
             "PUBLIC_PATH_PREFIXES",
-            "/api/health,/api/registrations/start,/api/registrations/answer,/api/registrations/status,/api/registrations/cancel,/api/registrations/submit,/api/registrations/payment/create-link,/api/registrations/payment/status,/api/registrations/payment/create,/api/registrations/payment/status/,/api/registrations/payment/paytm/callback,/api/payment/create,/api/payment/paytm/callback,/api/payment/status/,/api/chatbot/start,/api/chatbot/message,/api/chatbot/session,/api/chatbot/reset",
+            "/api/health,/api/registrations/start,/api/registrations/answer,/api/registrations/status,/api/registrations/cancel,/api/registrations/submit,/api/registrations/payment/create-link,/api/registrations/payment/status,/api/registrations/payment/create,/api/registrations/payment/status/,/api/registrations/payment/paytm/callback,/api/payment/create,/api/payment/paytm/callback,/api/payment/status/,/api/chatbot/start,/api/chatbot/message,/api/chatbot/session,/api/chatbot/reset,/api/admin-panel/login",
         )
     )
 )
@@ -158,6 +255,19 @@ PAYTM_ENV = os.getenv("PAYTM_ENV", "staging")
 PAYMENT_USD_TO_INR_RATE = float(os.getenv("PAYMENT_USD_TO_INR_RATE", "83.0"))
 
 ADMIN_DASHBOARD_DEMO_MODE = os.getenv("ADMIN_DASHBOARD_DEMO_MODE", "False").lower() == "true"
+SUPER_ADMIN_SETUP_ENABLED = os.getenv("SUPER_ADMIN_SETUP_ENABLED", "False").lower() == "true"
+SUPER_ADMIN_SETUP_ALLOWED_IPS = set(_split_csv(os.getenv("SUPER_ADMIN_SETUP_ALLOWED_IPS", "")))
+if SUPER_ADMIN_SETUP_ENABLED:
+    PUBLIC_PATH_PREFIXES.add("/api/super-admin-setup")
+PUBLIC_PATH_PREFIXES.add("/api/registrations/payment/paytm/initiate")
+DJANGO_ADMIN_URL = os.getenv("DJANGO_ADMIN_URL", "")
+if DJANGO_ADMIN_URL and not DJANGO_ADMIN_URL.endswith("/"):
+    DJANGO_ADMIN_URL += "/"
+CONSENT_VERSION = os.getenv("CONSENT_VERSION", "2026-05-02")
+CONSENT_TEXT = os.getenv(
+    "CONSENT_TEXT",
+    "I consent to GDTA 2026 processing my registration details for event participation and payment administration.",
+)
 
 LOGGING = {
     "version": 1,

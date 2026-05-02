@@ -14,6 +14,7 @@ from core.constants import COLLECTIONS, ERROR_CODES
 from core.exceptions import AppError
 from services.firebase.firestore import create_document, query_documents, update_document
 from services.payments.receipt import build_receipt_pdf
+from utils.payment_logging import log_payment_gateway_error
 
 logger = logging.getLogger(__name__)
 
@@ -110,7 +111,7 @@ class PaytmPaymentGateway:
         )
 
         if response.status_code >= 400:
-            logger.error("Paytm initiate API failed for order %s: %s", order_id, response.text)
+            log_payment_gateway_error(logger, "paytm_initiate", response, safe_fields=["body", "head"])
             raise AppError("Paytm payment initiation failed", ERROR_CODES["PAYMENT_ERROR"], 502)
 
         data = response.json() or {}
@@ -137,7 +138,7 @@ class PaytmPaymentGateway:
 
         response = requests.post(self.status_url, json=payload, timeout=25)
         if response.status_code >= 400:
-            logger.error("Paytm status API failed for order %s: %s", order_id, response.text)
+            log_payment_gateway_error(logger, "paytm_status", response, safe_fields=["body", "head"])
             raise AppError("Paytm payment status check failed", ERROR_CODES["PAYMENT_ERROR"], 502)
         return response.json() or {}
 

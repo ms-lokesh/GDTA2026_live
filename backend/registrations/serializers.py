@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from registrations.security import is_sanctioned_country
+
 
 class StartRegistrationSerializer(serializers.Serializer):
     session_id = serializers.CharField(required=False)
@@ -33,6 +35,11 @@ class SubmitRegistrationSerializer(serializers.Serializer):
     email = serializers.EmailField()
     event_id = serializers.CharField()
 
+    def validate_country(self, value):
+        if is_sanctioned_country(value):
+            raise serializers.ValidationError("Registration not available in your region")
+        return value
+
 
 class PaymentCreateLinkSerializer(serializers.Serializer):
     registration_id = serializers.CharField()
@@ -56,7 +63,7 @@ class UnifiedPaymentCreateSerializer(serializers.Serializer):
     email = serializers.EmailField()
     category = serializers.CharField()
     amount = serializers.DecimalField(max_digits=10, decimal_places=2)
-    payment_method = serializers.ChoiceField(choices=["paytm"])
+    payment_method = serializers.ChoiceField(choices=["paytm", "razorpay"])
     addon_food = serializers.BooleanField(default=False)
     addon_safari = serializers.BooleanField(default=False)
 

@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from core.constants import ERROR_CODES, ROLE_ADMIN, ROLE_VOLUNTEER
 from core.exceptions import AppError
 from core.response import error_response, success_response
-from utils.permissions import require_roles
+from utils.permissions import IsAdminRole
 
 from .serializers import (
     BulkStatusSerializer,
@@ -18,6 +18,7 @@ from .services import (
     create_user_with_role,
     delete_user_with_role,
     export_access_logs,
+    export_consent_records,
     export_registrations,
     export_venues,
     generate_id_card,
@@ -46,7 +47,7 @@ def _actor(request):
             "uid": "local-admin-demo",
             "username": "admin",
             "name": "Local Admin",
-            "role": "SUPER_ADMIN",
+            "role": "ADMIN",
             "assigned_events": [],
         }
 
@@ -54,14 +55,16 @@ def _actor(request):
 
 
 class RegistrationListView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def get(self, request):
         data = list_registrations(_actor(request), request.query_params)
         return success_response(data)
 
 
 class RegistrationBulkStatusView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def post(self, request):
         serializer = BulkStatusSerializer(data=request.data)
         if not serializer.is_valid():
@@ -79,13 +82,15 @@ class RegistrationBulkStatusView(APIView):
 
 
 class StatsView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def get(self, request):
         return success_response(get_stats(_actor(request)))
 
 
 class ExportRegistrationsView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def get(self, request):
         payload = export_registrations(_actor(request), request.query_params)
         response = HttpResponse(payload, content_type="text/csv")
@@ -94,7 +99,8 @@ class ExportRegistrationsView(APIView):
 
 
 class ExportVenuesView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def get(self, request):
         payload = export_venues(_actor(request), request.query_params)
         response = HttpResponse(payload, content_type="text/csv")
@@ -103,7 +109,8 @@ class ExportVenuesView(APIView):
 
 
 class ExportAccessLogsView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def get(self, request):
         payload = export_access_logs(_actor(request), request.query_params)
         response = HttpResponse(payload, content_type="text/csv")
@@ -111,8 +118,22 @@ class ExportAccessLogsView(APIView):
         return response
 
 
+class ExportConsentRecordsView(APIView):
+    permission_classes = [IsAdminRole]
+
+    def get(self, request, registration_id):
+        try:
+            payload = export_consent_records(_actor(request), registration_id)
+        except AppError as exc:
+            return error_response(exc.message, exc.code, exc.status_code)
+        response = HttpResponse(payload, content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="consent_{registration_id}.csv"'
+        return response
+
+
 class IdCardGenerateView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def post(self, request, registration_id):
         serializer = IdCardGenerateSerializer(data=request.data)
         if not serializer.is_valid():
@@ -129,7 +150,8 @@ class IdCardGenerateView(APIView):
 
 
 class IdCardStatusView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def get(self, request, registration_id):
         try:
             out = get_id_card_status(registration_id, _actor(request))
@@ -139,11 +161,11 @@ class IdCardStatusView(APIView):
 
 
 class VolunteerListCreateView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def get(self, request):
         return success_response(list_users_by_role(ROLE_VOLUNTEER, _actor(request)))
 
-    @require_roles("SUPER_ADMIN")
     def post(self, request):
         serializer = UserManagementSerializer(data=request.data)
         if not serializer.is_valid():
@@ -156,7 +178,8 @@ class VolunteerListCreateView(APIView):
 
 
 class VolunteerDetailView(APIView):
-    @require_roles("SUPER_ADMIN")
+    permission_classes = [IsAdminRole]
+
     def put(self, request, user_id):
         serializer = UserManagementUpdateSerializer(data=request.data)
         if not serializer.is_valid():
@@ -167,7 +190,6 @@ class VolunteerDetailView(APIView):
         except AppError as exc:
             return error_response(exc.message, exc.code, exc.status_code)
 
-    @require_roles("SUPER_ADMIN")
     def delete(self, request, user_id):
         try:
             delete_user_with_role(ROLE_VOLUNTEER, user_id, _actor(request))
@@ -177,11 +199,11 @@ class VolunteerDetailView(APIView):
 
 
 class AdminListCreateView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def get(self, request):
         return success_response(list_users_by_role(ROLE_ADMIN, _actor(request)))
 
-    @require_roles("SUPER_ADMIN")
     def post(self, request):
         serializer = UserManagementSerializer(data=request.data)
         if not serializer.is_valid():
@@ -194,7 +216,8 @@ class AdminListCreateView(APIView):
 
 
 class AdminDetailView(APIView):
-    @require_roles("SUPER_ADMIN")
+    permission_classes = [IsAdminRole]
+
     def put(self, request, user_id):
         serializer = UserManagementUpdateSerializer(data=request.data)
         if not serializer.is_valid():
@@ -205,7 +228,6 @@ class AdminDetailView(APIView):
         except AppError as exc:
             return error_response(exc.message, exc.code, exc.status_code)
 
-    @require_roles("SUPER_ADMIN")
     def delete(self, request, user_id):
         try:
             delete_user_with_role(ROLE_ADMIN, user_id, _actor(request))

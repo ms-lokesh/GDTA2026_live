@@ -6,18 +6,23 @@ from datetime import datetime
 
 import qrcode
 from PIL import Image, ImageDraw, ImageFont
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 
+from accounts.signals import invalidate_other_user_sessions
 from core.audit import write_audit_log
 from core.constants import COLLECTIONS, ERROR_CODES
 from core.exceptions import AppError
-from services.firebase.firestore import create_document, get_collection, get_document, query_documents, update_document
+from services.firebase.firestore import create_document, delete_document, get_document, query_documents, update_document
 from utils.permissions import assert_event_scope
+from accounts.models import UserProfile
+from registrations.models import ConsentRecord
 
 
 def _scope_rows(user, rows):
-    if user.get("role") == "SUPER_ADMIN":
-        return rows
     allowed = set(user.get("event_ids", []))
+    if not allowed:
+        return rows
     return [r for r in rows if r.get("event_id") in allowed]
 
 
@@ -135,12 +140,31 @@ def export_access_logs(user, filters):
     return _rows_to_csv(rows, ordered)
 
 
+def export_consent_records(user, registration_id):
+    registration = get_document(COLLECTIONS["registrations"], registration_id)
+    if not registration:
+        raise AppError("Registration not found", ERROR_CODES["NOT_FOUND"], 404)
+    assert_event_scope(user, registration.get("event_id"))
+    records = ConsentRecord.objects.filter(registration__collection=COLLECTIONS["registrations"], registration__doc_id=registration_id)
+    rows = [
+        {
+            "registration_id": registration_id,
+            "consent_given": record.consent_given,
+            "consent_timestamp": record.consent_timestamp.isoformat(),
+            "consent_version": record.consent_version,
+            "ip_address": record.ip_address,
+            "consent_text": record.consent_text,
+        }
+        for record in records
+    ]
+    return _rows_to_csv(rows, ["registration_id", "consent_given", "consent_timestamp", "consent_version", "ip_address", "consent_text"])
+
+
 def _user_rows_by_role(role, actor_user):
-    rows = query_documents(COLLECTIONS["users"])
-    rows = [r for r in rows if r.get("role") == role]
-    if actor_user.get("role") == "SUPER_ADMIN":
-        return rows
+    rows = [profile.as_payload() for profile in UserProfile.objects.select_related("user").filter(role=role)]
     allowed = set(actor_user.get("event_ids", []))
+    if not allowed:
+        return rows
     return [r for r in rows if bool(allowed.intersection(set(r.get("event_ids", []))))]
 
 
@@ -149,39 +173,87 @@ def list_users_by_role(role, actor_user):
 
 
 def create_user_with_role(role, payload, actor_user):
-    if actor_user.get("role") != "SUPER_ADMIN":
-        raise AppError("Only super admin can create admins/volunteers", ERROR_CODES["FORBIDDEN"], 403)
-    now = datetime.utcnow().isoformat()
-    doc = {
-        **payload,
-        "role": role,
-        "created_at": now,
-        "updated_at": now,
-        "created_by": actor_user.get("uid"),
-    }
-    create_document(COLLECTIONS["users"], doc, doc_id=payload["uid"])
-    write_audit_log("user_role_created", actor_user.get("uid"), target={"uid": payload["uid"]}, details={"role": role})
-    return get_document(COLLECTIONS["users"], payload["uid"])
+    if actor_user.get("role") != "ADMIN":
+        raise AppError("Only admins can create admins/volunteers", ERROR_CODES["FORBIDDEN"], 403)
+    User = get_user_model()
+    username = payload["uid"]
+    if User.objects.filter(username=username).exists():
+        raise AppError("User already exists", ERROR_CODES["CONFLICT"], 409)
+
+    user = User.objects.create(
+        username=username,
+        email=payload.get("email", ""),
+        is_active=payload.get("is_active", True),
+    )
+    password = payload.get("password")
+    if password:
+        validate_password(password, user=user)
+        user.set_password(password)
+    else:
+        user.set_unusable_password()
+    user.save()
+
+    profile = UserProfile.objects.create(
+        user=user,
+        role=role,
+        name=payload.get("name", ""),
+        phone=payload.get("phone", ""),
+        event_ids=payload.get("event_ids", []),
+        assigned_venues=payload.get("assigned_venues", []),
+        is_active=payload.get("is_active", True),
+    )
+    write_audit_log("user_role_created", actor_user.get("uid"), target={"uid": username}, details={"role": role})
+    return profile.as_payload()
 
 
 def update_user_with_role(role, user_id, patch, actor_user):
-    existing = get_document(COLLECTIONS["users"], user_id)
-    if not existing or existing.get("role") != role:
+    try:
+        profile = UserProfile.objects.select_related("user").get(user__username=user_id, role=role)
+    except UserProfile.DoesNotExist:
         raise AppError("User not found", ERROR_CODES["NOT_FOUND"], 404)
-    if actor_user.get("role") != "SUPER_ADMIN":
-        raise AppError("Only super admin can update admins/volunteers", ERROR_CODES["FORBIDDEN"], 403)
-    update_document(COLLECTIONS["users"], user_id, {**patch, "updated_at": datetime.utcnow().isoformat()})
-    write_audit_log("user_role_updated", actor_user.get("uid"), target={"uid": user_id}, details={"role": role, "patch": patch})
-    return get_document(COLLECTIONS["users"], user_id)
+    if actor_user.get("role") != "ADMIN":
+        raise AppError("Only admins can update admins/volunteers", ERROR_CODES["FORBIDDEN"], 403)
+    user = profile.user
+
+    if "email" in patch:
+        user.email = patch.get("email") or ""
+    if "is_active" in patch:
+        user.is_active = bool(patch.get("is_active"))
+    if "password" in patch and patch.get("password"):
+        validate_password(patch["password"], user=user)
+        user.set_password(patch["password"])
+        invalidate_other_user_sessions(user)
+    user.save()
+
+    if "name" in patch:
+        profile.name = patch.get("name") or ""
+    if "phone" in patch:
+        profile.phone = patch.get("phone") or ""
+    if "event_ids" in patch:
+        profile.event_ids = patch.get("event_ids") or []
+    if "assigned_venues" in patch:
+        profile.assigned_venues = patch.get("assigned_venues") or []
+    if "is_active" in patch:
+        profile.is_active = bool(patch.get("is_active"))
+    profile.save()
+
+    safe_patch = {k: v for k, v in patch.items() if k != "password"}
+    write_audit_log("user_role_updated", actor_user.get("uid"), target={"uid": user_id}, details={"role": role, "patch": safe_patch})
+    return profile.as_payload()
 
 
 def delete_user_with_role(role, user_id, actor_user):
-    existing = get_document(COLLECTIONS["users"], user_id)
-    if not existing or existing.get("role") != role:
+    try:
+        profile = UserProfile.objects.select_related("user").get(user__username=user_id, role=role)
+    except UserProfile.DoesNotExist:
         raise AppError("User not found", ERROR_CODES["NOT_FOUND"], 404)
-    if actor_user.get("role") != "SUPER_ADMIN":
-        raise AppError("Only super admin can delete admins/volunteers", ERROR_CODES["FORBIDDEN"], 403)
-    update_document(COLLECTIONS["users"], user_id, {"is_active": False, "deleted_at": datetime.utcnow().isoformat()})
+    if actor_user.get("role") != "ADMIN":
+        raise AppError("Only admins can delete admins/volunteers", ERROR_CODES["FORBIDDEN"], 403)
+    user = profile.user
+    user.is_active = False
+    user.save(update_fields=["is_active"])
+    profile.is_active = False
+    profile.save(update_fields=["is_active"])
     write_audit_log("user_role_deleted", actor_user.get("uid"), target={"uid": user_id}, details={"role": role})
     return True
 
@@ -269,5 +341,4 @@ def get_id_card_status(registration_id, actor_user):
 
 
 def delete_firestore_document(collection, doc_id):
-    get_collection(collection).document(doc_id).delete()
-    return True
+    return delete_document(collection, doc_id)

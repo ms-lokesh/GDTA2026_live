@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from core.constants import ERROR_CODES
 from core.exceptions import AppError
 from core.response import error_response, success_response
-from utils.permissions import require_roles
+from utils.permissions import IsAdminRole
 
 from .serializers import (
     EmailSendSerializer,
@@ -21,7 +21,8 @@ from .services import (
 
 
 class EmailSendView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def post(self, request):
         serializer = EmailSendSerializer(data=request.data)
         if not serializer.is_valid():
@@ -55,11 +56,11 @@ class EmailSendView(APIView):
 
 
 class EmailTemplateListCreateView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def get(self, _request):
         return success_response(list_templates())
 
-    @require_roles("SUPER_ADMIN", "ADMIN")
     def post(self, request):
         serializer = EmailTemplateSerializer(data=request.data)
         if not serializer.is_valid():
@@ -69,7 +70,8 @@ class EmailTemplateListCreateView(APIView):
 
 
 class EmailTemplateDetailView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def put(self, request, template_id):
         serializer = EmailTemplateUpdateSerializer(data=request.data)
         if not serializer.is_valid():
@@ -80,7 +82,6 @@ class EmailTemplateDetailView(APIView):
         except AppError as exc:
             return error_response(exc.message, exc.code, exc.status_code)
 
-    @require_roles("SUPER_ADMIN", "ADMIN")
     def delete(self, _request, template_id):
         try:
             delete_template(template_id)

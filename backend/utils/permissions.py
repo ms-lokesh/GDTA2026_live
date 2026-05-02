@@ -2,6 +2,7 @@ from functools import wraps
 
 from django.conf import settings
 from rest_framework import status
+from rest_framework.permissions import BasePermission
 
 from core.constants import ERROR_CODES
 from core.exceptions import AppError
@@ -27,9 +28,9 @@ def require_roles(*allowed_roles):
                 not user
                 and getattr(settings, "ADMIN_DASHBOARD_DEMO_MODE", False)
                 and is_local_host
-                and (path.startswith("/api/admin-panel/") or path.startswith("/api/hackathon/"))
+                and path.startswith("/api/admin-panel/")
             ):
-                user = {"role": "SUPER_ADMIN"}
+                user = {"role": "ADMIN"}
 
             if user.get("role") not in set(allowed_roles):
                 return error_response("Forbidden", ERROR_CODES["FORBIDDEN"], status=403)
@@ -42,14 +43,14 @@ def require_roles(*allowed_roles):
 
 def ensure_event_scope(request, event_id):
     user = getattr(request, "user", None) or {}
-    if user.get("role") == "SUPER_ADMIN":
+    if user.get("role") == "ADMIN":
         return True
     allowed = set(user.get("event_ids", []))
     return event_id in allowed
 
 
 def assert_event_scope(user, event_id):
-    if user.get("role") == "SUPER_ADMIN":
+    if user.get("role") == "ADMIN":
         return True
     allowed = set(user.get("event_ids", []))
     if event_id not in allowed:
@@ -58,4 +59,30 @@ def assert_event_scope(user, event_id):
 
 
 def is_admin_role(user):
-    return (user or {}).get("role") in {"SUPER_ADMIN", "ADMIN"}
+    return (user or {}).get("role") in {"ADMIN"}
+
+
+class IsAdminRole(BasePermission):
+    message = "Admin access required"
+
+    def has_permission(self, request, view):
+        user = getattr(request, "user", None)
+        if getattr(user, "is_staff", False):
+            return True
+        if isinstance(user, dict):
+            return user.get("role") == "ADMIN"
+        profile = getattr(user, "profile", None)
+        return getattr(profile, "role", None) == "ADMIN"
+
+
+class IsVolunteerOrAdmin(BasePermission):
+    message = "Volunteer/Admin access required"
+
+    def has_permission(self, request, view):
+        user = getattr(request, "user", None)
+        if getattr(user, "is_staff", False):
+            return True
+        if isinstance(user, dict):
+            return user.get("role") in {"ADMIN", "VOLUNTEER"}
+        profile = getattr(user, "profile", None)
+        return getattr(profile, "role", None) in {"ADMIN", "VOLUNTEER"}

@@ -1,15 +1,18 @@
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
 from chatbot.serializers import ChatbotMessageSerializer, ChatbotSessionSerializer, ChatbotStartSerializer
 from chatbot.services import get_chat_session, process_chat_message, reset_chat_session, start_chat_session
 from core.constants import ERROR_CODES
 from core.exceptions import AppError
 from core.response import error_response, success_response
+from utils.throttles import ChatbotRateThrottle
 
 
 class ChatbotStartView(APIView):
     authentication_classes = []
-    permission_classes = []
+    permission_classes = [AllowAny]
+    throttle_classes = [ChatbotRateThrottle]
 
     def post(self, request):
         serializer = ChatbotStartSerializer(data=request.data)
@@ -21,7 +24,8 @@ class ChatbotStartView(APIView):
 
 class ChatbotMessageView(APIView):
     authentication_classes = []
-    permission_classes = []
+    permission_classes = [AllowAny]
+    throttle_classes = [ChatbotRateThrottle]
 
     def post(self, request):
         serializer = ChatbotMessageSerializer(data=request.data)
@@ -39,7 +43,8 @@ class ChatbotMessageView(APIView):
 
 class ChatbotSessionView(APIView):
     authentication_classes = []
-    permission_classes = []
+    permission_classes = [AllowAny]
+    throttle_classes = [ChatbotRateThrottle]
 
     def get(self, request):
         serializer = ChatbotSessionSerializer(data=request.query_params)
@@ -54,7 +59,8 @@ class ChatbotSessionView(APIView):
 
 class ChatbotResetView(APIView):
     authentication_classes = []
-    permission_classes = []
+    permission_classes = [AllowAny]
+    throttle_classes = [ChatbotRateThrottle]
 
     def post(self, request):
         serializer = ChatbotSessionSerializer(data=request.data)

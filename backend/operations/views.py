@@ -5,15 +5,15 @@ from core.exceptions import AppError
 from core.response import error_response, success_response
 from operations.serializers import QRValidateSerializer, VenueSerializer
 from operations.services import create_venue, delete_venue, list_venues, update_venue, validate_qr
-from utils.permissions import require_roles
+from utils.permissions import IsAdminRole, IsVolunteerOrAdmin
 
 
 class VenueListCreateView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def get(self, request):
         return success_response(list_venues(request.user))
 
-    @require_roles("SUPER_ADMIN", "ADMIN")
     def post(self, request):
         serializer = VenueSerializer(data=request.data)
         if not serializer.is_valid():
@@ -23,7 +23,8 @@ class VenueListCreateView(APIView):
 
 
 class VenueDetailView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN")
+    permission_classes = [IsAdminRole]
+
     def put(self, request, venue_id):
         serializer = VenueSerializer(data=request.data, partial=True)
         if not serializer.is_valid():
@@ -31,14 +32,14 @@ class VenueDetailView(APIView):
         update_venue(venue_id, serializer.validated_data, request.user)
         return success_response({"venue_id": venue_id})
 
-    @require_roles("SUPER_ADMIN", "ADMIN")
     def delete(self, request, venue_id):
         delete_venue(venue_id, request.user)
         return success_response({"deleted": True})
 
 
 class QRValidateView(APIView):
-    @require_roles("SUPER_ADMIN", "ADMIN", "VOLUNTEER")
+    permission_classes = [IsVolunteerOrAdmin]
+
     def post(self, request):
         serializer = QRValidateSerializer(data=request.data)
         if not serializer.is_valid():
