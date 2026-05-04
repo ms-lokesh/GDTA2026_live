@@ -305,6 +305,15 @@ p, span, div, a {
     color: var(--gdta-text-primary) !important;
 }
 
+#heroPicture img,
+#heroVideo {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    background-color: transparent !important;
+}
+
 .hero-section h1,
 .hero-section h2,
 .hero-section h3,
@@ -313,6 +322,25 @@ p, span, div, a {
 .hero-section h6,
 .hero-section p {
     color: var(--gdta-text-primary) !important;
+}
+
+/* Hero media visibility (desktop vs mobile) */
+.hero-media-desktop {
+    display: block;
+}
+
+.hero-media-mobile {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .hero-media-desktop {
+        display: none;
+    }
+
+    .hero-media-mobile {
+        display: block;
+    }
 }
 
 /* Section Backgrounds */

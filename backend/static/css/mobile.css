@@ -220,13 +220,28 @@
     padding: 1.25rem !important;
   }
 
-  /* ===== Hero performance: prefer image fallback on small screens (home) ===== */
-  #heroVideo {
-    display: none !important;
+  /* ===== Hero (home) ===== */
+  .hero-section {
+    height: auto !important;
+    min-height: 0 !important;
+    padding: var(--gdta-mobile-nav-top, 72px) 0 0 0 !important;
   }
 
-  #heroBg {
-    opacity: 1 !important;
+  .hero-media {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .hero-media img {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    display: block !important;
+    background-color: transparent !important;
   }
 
   /* ===== Intro section typography ===== */

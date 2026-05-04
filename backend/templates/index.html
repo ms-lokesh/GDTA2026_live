@@ -471,7 +471,7 @@
     <!-- End Meta Pixel noscript -->
 
     <!-- Header Start -->
-    <div class="container-fluid p-0 navbar-container"
+    <div class="container-fluid p-0 navbar-container show"
         style="background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.18); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;">
         <nav class="navbar navbar-expand-lg navbar-dark px-4 py-1">
             <a href="/index.html" class="navbar-brand">
@@ -527,89 +527,18 @@
     <!-- Hero Section Start -->
     <div class="hero-section"
         style="width: 100%; display: flex; align-items: stretch; justify-content: flex-start; background-color: #1a1a1a; position: relative; overflow: hidden;">
-        
-        <!-- Background Image (hidden initially, shown after video ends) -->
-        <div id="heroBg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('/static/img/Background/landing%20page%20GDTA%20%288%29.png') center center / cover no-repeat; opacity: 0; z-index: 0;"></div>
-        
-        <!-- Video Background -->
 
-        <video id="heroVideo" autoplay muted playsinline webkit-playsinline preload="auto"
-            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 1;">
-            <!-- Source will be set by JS for mobile/desktop -->
-        </video>
-        
+        <div class="hero-media hero-media-desktop" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 1;">
+            <img src="/static/img/Background/landing_page_final.png" alt="GDTA 2026 Hero (Desktop)"
+                style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; background-color: #000000;">
+        </div>
+
+        <div class="hero-media hero-media-mobile" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 1;">
+            <img src="/static/img/Background/GDTA%20-%20Mobile%20View%2C%20April%2028%2C%202026_page-0001.jpg" alt="GDTA 2026 Hero (Mobile)"
+                style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; background-color: #000000;">
+        </div>
     </div>
     
-    <script>
-        // Handle video playback and transition - play only once per visit
-        const heroVideo = document.getElementById('heroVideo');
-        const heroBg = document.getElementById('heroBg');
-        // Check if video has been played in this session
-        const hasPlayedVideo = sessionStorage.getItem('gdta_hero_video_played');
-
-        // Helper: set video source based on screen size
-        function setHeroVideoSource() {
-            let src = '';
-            if (window.innerWidth <= 768) {
-                src = '/static/img/Background/WhatsApp Video 2026-04-16 at 3.37.58 PM.mp4';
-            } else {
-                src = '/static/img/Background/0001-0110.mkv';
-            }
-            // Only set if not already set
-            if (!heroVideo.querySelector('source') || heroVideo.querySelector('source').src.indexOf(src) === -1) {
-                // Create source element and encode URL to avoid issues with spaces on mobile
-                const srcEl = document.createElement('source');
-                srcEl.src = encodeURI(src);
-                srcEl.type = 'video/mp4';
-                heroVideo.innerHTML = '';
-                heroVideo.appendChild(srcEl);
-            }
-        }
-
-        if (heroVideo) {
-            setHeroVideoSource();
-            window.addEventListener('resize', setHeroVideoSource);
-
-            if (hasPlayedVideo === 'true') {
-                // Video was already played in this session, skip it
-                heroVideo.style.display = 'none';
-                heroBg.style.opacity = '1';
-                document.querySelector('.navbar-container').classList.add('show');
-            } else {
-                // First visit - play the video
-                const forcePlay = () => {
-                    heroVideo.play().then(() => {
-                        // Success
-                    }).catch(() => {});
-                };
-                setTimeout(() => { forcePlay(); }, 100);
-                document.addEventListener('click', () => {
-                    if (heroVideo.paused) forcePlay();
-                }, { once: true });
-                heroVideo.addEventListener('loadeddata', forcePlay);
-                heroVideo.addEventListener('canplay', forcePlay);
-                heroVideo.addEventListener('ended', function() {
-                    sessionStorage.setItem('gdta_hero_video_played', 'true');
-                    heroBg.style.opacity = '1';
-                    heroBg.style.transition = 'opacity 1s ease-out';
-                    heroVideo.style.opacity = '0';
-                    heroVideo.style.transition = 'opacity 1s ease-out';
-                    setTimeout(() => {
-                        document.querySelector('.navbar-container').classList.add('show');
-                    }, 500);
-                    setTimeout(() => {
-                        heroVideo.style.display = 'none';
-                    }, 1000);
-                });
-                heroVideo.addEventListener('error', function() {
-                    sessionStorage.setItem('gdta_hero_video_played', 'true');
-                    heroVideo.style.display = 'none';
-                    heroBg.style.opacity = '1';
-                    document.querySelector('.navbar-container').classList.add('show');
-                });
-            }
-        }
-    </script>
     <!-- Hero Section End -->
 
     <!-- Introduction Section Start -->

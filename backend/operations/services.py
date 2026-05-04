@@ -3,15 +3,15 @@ from datetime import datetime
 from core.audit import write_audit_log
 from core.constants import COLLECTIONS, ERROR_CODES
 from core.exceptions import AppError
-from services.firebase.firestore import create_document, get_collection, get_document, query_documents, update_document
+from services.firebase.firestore import create_document, delete_document, get_document, query_documents, update_document
 from utils.permissions import assert_event_scope
 
 
 def list_venues(user):
     all_rows = query_documents(COLLECTIONS["venues"])
-    if user.get("role") == "SUPER_ADMIN":
-        return all_rows
     allowed = set(user.get("event_ids", []))
+    if not allowed:
+        return all_rows
     return [v for v in all_rows if v.get("event_id") in allowed]
 
 
@@ -43,7 +43,7 @@ def delete_venue(venue_id, actor_user):
     if not existing:
         raise AppError("Venue not found", ERROR_CODES["NOT_FOUND"], 404)
     assert_event_scope(actor_user, existing.get("event_id"))
-    get_collection(COLLECTIONS["venues"]).document(venue_id).delete()
+    delete_document(COLLECTIONS["venues"], venue_id)
     write_audit_log("venue_deleted", actor_user.get("uid"), target={"venue_id": venue_id}, details={"event_id": existing.get("event_id")})
     return True
 

@@ -5,7 +5,7 @@ from django.test.client import RequestFactory
 from rest_framework.test import APIRequestFactory
 
 from admin_panel.views import RegistrationBulkStatusView
-from middleware.firebase_auth import FirebaseAuthMiddleware
+from middleware.session_auth import SessionAuthMiddleware
 from registrations.state_machine import compute_fee, initial_state, process
 from registrations.views import RegistrationPaymentCreateLinkView
 
@@ -102,18 +102,18 @@ class RBACAndPaymentsTests(SimpleTestCase):
         self.assertEqual(kwargs["idempotency_key"], "idem-123")
 
 
-class FirebaseAuthMiddlewareTests(SimpleTestCase):
+class SessionAuthMiddlewareTests(SimpleTestCase):
     def setUp(self):
         self.request_factory = RequestFactory()
 
     def test_public_path_bypasses_bearer_auth(self):
-        middleware = FirebaseAuthMiddleware(lambda _req: type("Resp", (), {"status_code": 200})())
+        middleware = SessionAuthMiddleware(lambda _req: type("Resp", (), {"status_code": 200})())
         request = self.request_factory.get("/api/health")
         response = middleware(request)
         self.assertEqual(getattr(response, "status_code", 500), 200)
 
-    def test_missing_bearer_token_returns_401(self):
-        middleware = FirebaseAuthMiddleware(lambda _req: type("Resp", (), {"status_code": 200})())
+    def test_missing_session_returns_401(self):
+        middleware = SessionAuthMiddleware(lambda _req: type("Resp", (), {"status_code": 200})())
         request = self.request_factory.get("/api/admin-panel/registrations")
         response = middleware(request)
         self.assertEqual(getattr(response, "status_code", 500), 401)

@@ -180,7 +180,7 @@ Error responses:
 
 - **Public Endpoints:** Registration flow endpoints (documented below)
 - **Protected Endpoints:** Require `Authorization: Bearer <api_token>` header
-- **Role Requirements:** SUPER_ADMIN, ADMIN, or VOLUNTEER
+- **Role Requirements:** ADMIN or VOLUNTEER
 - **Bypass Methods:** Admin demo mode on localhost
 
 ### System Health
@@ -206,7 +206,7 @@ Error responses:
 
 #### `GET /api/events/`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Query Params:**
   - `event_id` (optional) — Filter specific event
   - `status` (optional) — "active", "archived"
@@ -215,27 +215,27 @@ Error responses:
 
 #### `POST /api/events/`
 - **Auth:** Required
-- **Role:** SUPER_ADMIN only
+- **Role:** ADMIN
 - **Body:** Event creation payload (name, date_range, location, etc.)
 - **Purpose:** Create new event
 - **Response:** Created event object
 
 #### `GET /api/events/{event_id}`
 - **Auth:** Required
-- **Role:** ADMIN (scoped), SUPER_ADMIN
+- **Role:** ADMIN
 - **Purpose:** Get single event details
 - **Response:** Event object with computed statistics
 
 #### `PUT /api/events/{event_id}`
 - **Auth:** Required
-- **Role:** ADMIN (scoped), SUPER_ADMIN
+- **Role:** ADMIN
 - **Body:** Event update payload
 - **Purpose:** Update event configuration
 - **Response:** Updated event object
 
 #### `DELETE /api/events/{event_id}`
 - **Auth:** Required
-- **Role:** SUPER_ADMIN only
+- **Role:** ADMIN
 - **Purpose:** Soft-delete event (mark as inactive)
 - **Response:** Deletion confirmation
 
@@ -280,7 +280,7 @@ Error responses:
 
 #### `GET /api/operations/venues`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Query Params:**
   - `event_id` (optional)
   - `filter` (optional) — "active", "archived"
@@ -289,27 +289,27 @@ Error responses:
 
 #### `POST /api/operations/venues`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Body:** Venue creation (name, location, access_limit, etc.)
 - **Purpose:** Create new venue
 - **Response:** Created venue object
 
 #### `PUT /api/operations/venues/{venue_id}`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Body:** Venue update payload
 - **Purpose:** Update venue configuration
 - **Response:** Updated venue object
 
 #### `DELETE /api/operations/venues/{venue_id}`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Purpose:** Soft-delete venue
 - **Response:** Deletion confirmation
 
 #### `POST /api/operations/qr/validate`
 - **Auth:** Required
-- **Role:** ADMIN, VOLUNTEER, SUPER_ADMIN
+- **Role:** ADMIN, VOLUNTEER
 - **Body:** `{ "qr_code": "string", "venue_id": "uuid" }`
 - **Purpose:** Validate registration QR against venue rules
 - **Response:** Registration details with access granted/denied status
@@ -320,7 +320,7 @@ Error responses:
 
 #### `GET /api/admin-panel/registrations`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Query Params:**
   - `status` (optional) — "pending", "approved", "rejected", "completed"
   - `event_id` (optional)
@@ -332,14 +332,14 @@ Error responses:
 
 #### `POST /api/admin-panel/registrations/bulk-status`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Body:** `{ "registration_ids": ["uuid1", "uuid2"], "new_status": "approved" }`
 - **Purpose:** Update status for multiple registrations
 - **Response:** Array of updated registration objects with audit log
 
 #### `GET /api/admin-panel/stats`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Query Params:**
   - `event_id` (optional)
   - `date_range` (optional) — "today", "week", "month"
@@ -348,7 +348,7 @@ Error responses:
 
 #### `GET /api/admin-panel/registrations/export`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Query Params:**
   - `format` — "csv" or "json"
   - `status` (optional)
@@ -362,20 +362,20 @@ Error responses:
 
 #### `POST /api/communications/email/send`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Body:** Email sending request with template/recipients
 - **Purpose:** Send SMTP email and log results
 - **Response:** Sent email summary with status per recipient
 
 #### `GET /api/communications/templates`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Purpose:** List email templates
 - **Response:** Array of template objects
 
 #### `POST /api/communications/templates`
 - **Auth:** Required
-- **Role:** ADMIN, SUPER_ADMIN
+- **Role:** ADMIN
 - **Body:** Template creation (name, subject, body, variables)
 - **Purpose:** Create reusable email template
 - **Response:** Created template object
@@ -523,7 +523,7 @@ gunicorn project.wsgi:application --bind 0.0.0.0:8000 --workers 3 --threads 4 --
 
 ✅ **Authentication & Authorization**
 - API token verification middleware (Bearer tokens in Authorization header)
-- Role-based route protections (SUPER_ADMIN, ADMIN, VOLUNTEER)
+- Role-based route protections (ADMIN, VOLUNTEER)
 - Event-level scope enforcement for domain operations
 - Bypass for demo mode on localhost (admin-panel only)
 
@@ -587,7 +587,8 @@ gunicorn project.wsgi:application --bind 0.0.0.0:8000 --workers 3 --threads 4 --
 |-----------|--------|-------|
 | PostgreSQL ORM migration | ✅ | 14 models, all services refactored |
 | API token authentication | ✅ | Replaces Firebase auth |
-| Role-based access control | ✅ | SUPER_ADMIN, ADMIN, VOLUNTEER |
+| Role-based access control | ✅ | ADMIN, VOLUNTEER |
+| Role-based access control | ✅ | ADMIN, VOLUNTEER |
 | Events CRUD | ✅ | Full lifecycle management |
 | Registration conversational flow | ✅ | Multi-step state machine |
 | Fee calculation matrix | ✅ | Category + addon support |

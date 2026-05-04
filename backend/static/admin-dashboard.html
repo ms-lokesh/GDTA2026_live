@@ -566,7 +566,6 @@
         <ul class="sidebar-menu">
             <li><a href="#" class="active" data-page="dashboard"><i class="fas fa-home"></i><span class="nav-label">Dashboard</span></a></li>
             <li class="admin_only" style="display:none;"><a href="#" data-page="registrations"><i class="fas fa-users"></i><span class="nav-label">Registrations</span></a></li>
-            <li class="admin_only" style="display:none;"><a href="/static/hackathon-registrations.html"><i class="fas fa-rocket"></i><span class="nav-label">Hackathon Registrations</span></a></li>
             <li class="admin_only" style="display:none;"><a href="check-in-scanner.html"><i class="fas fa-qrcode"></i><span class="nav-label">Check-in Scanner</span></a></li>
             <li class="admin_only" style="display:none;"><a href="#" data-page="venues"><i class="fas fa-map-marker-alt"></i><span class="nav-label">Venue Management</span></a></li>
             <li class="admin_only" style="display:none;"><a href="#" data-page="volunteers"><i class="fas fa-user-friends"></i><span class="nav-label">Volunteers</span></a></li>
@@ -574,7 +573,7 @@
             <li class="admin_only" style="display:none;"><a href="#" data-page="email"><i class="fas fa-envelope"></i><span class="nav-label">Send Email</span></a></li>
             <li class="admin_only" style="display:none;"><a href="#" data-page="email-templates"><i class="fas fa-file-alt"></i><span class="nav-label">Email Templates</span></a></li>
             <li class="admin_only" style="display:none;"><a href="#" data-page="export"><i class="fas fa-download"></i><span class="nav-label">Export Data</span></a></li>
-            <li class="super_admin_only" style="display:none;"><a href="#" data-page="events"><i class="fas fa-calendar-alt"></i><span class="nav-label">Event Management</span></a></li>
+            <li class="admin_only" style="display:none;"><a href="#" data-page="events"><i class="fas fa-calendar-alt"></i><span class="nav-label">Event Management</span></a></li>
             <li class="admin_only" style="display:none;"><a href="#" data-page="admins"><i class="fas fa-user-shield"></i><span class="nav-label">Admin Management</span></a></li>
             <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span class="nav-label">Logout</span></a></li>
         </ul>
@@ -1273,7 +1272,7 @@
             </div>
         </div>
 
-        <!-- Event Management View (Super Admin Only) -->
+        <!-- Event Management View -->
         <div id="eventsView" class="page-view hidden">
             <div class="mb-3">
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eventModal" id="addEventBtn">
@@ -1300,7 +1299,7 @@
             </div>
         </div>
 
-        <!-- Admin Management View (Super Admin Only) -->
+        <!-- Admin Management View -->
         <div id="adminsView" class="page-view hidden">
             <div class="mb-3">
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#adminModal" id="addAdminBtn">
@@ -1474,7 +1473,7 @@
     </div>
 </div>
 
-<!-- Event Modal (Super Admin) -->
+<!-- Event Modal -->
 <div class="modal fade" id="eventModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -1535,7 +1534,7 @@
     </div>
 </div>
 
-<!-- Admin Modal (Super Admin) -->
+<!-- Admin Modal -->
 <div class="modal fade" id="adminModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1564,11 +1563,8 @@
                         </div>
                         
                         <div class="col-md-6">
-                            <label class="form-label">Role *</label>
-                            <select class="form-select" id="adminRole" required>
-                                <option value="admin">Regular Admin</option>
-                                <option value="super_admin">Super Admin</option>
-                            </select>
+                            <label class="form-label">Role</label>
+                            <input type="text" class="form-control" id="adminRole" value="Admin" readonly>
                         </div>
                         
                         <div class="col-md-12">
@@ -1577,11 +1573,11 @@
                         </div>
                         
                         <div class="col-md-12" id="assignedEventsContainer">
-                            <label class="form-label">Assigned Events <small class="text-muted">(for regular admins only)</small></label>
+                            <label class="form-label">Assigned Events</label>
                             <div id="eventCheckboxes" style="max-height: 200px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px;">
                                 <p class="text-muted">Loading events...</p>
                             </div>
-                            <small class="text-muted">Super admins have access to all events</small>
+                            <small class="text-muted">Assign one or more events for access</small>
                         </div>
                         
                         <div class="col-md-12">

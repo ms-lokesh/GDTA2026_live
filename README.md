@@ -85,7 +85,6 @@ Registrations are intentionally not open yet.
 These are served from `backend/static/` (not Django templates).
 
 - `admin-dashboard.html` (+ `admin-dashboard.js`)
-- `super-admin-dashboard.html` (+ `super-admin-dashboard.js`)
 - `super-admin-setup.html`
 - `volunteer-login.html`
 - `volunteer-dashboard.html`
@@ -215,7 +214,7 @@ Root `render.yaml` points to `backend/` and starts Django via Gunicorn.
 ## Security + architecture notes
 
 - Firebase Auth middleware enforced on protected routes
-- Role-based controls: SUPER_ADMIN / ADMIN / VOLUNTEER
+- Role-based controls: ADMIN / VOLUNTEER
 - Event-scope checks enforced in service layer
 - Standard API envelope across endpoints
 - Django ORM is not used for domain data; Firestore is primary store

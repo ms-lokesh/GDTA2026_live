@@ -19,10 +19,9 @@ def get_event_by_id(event_id: str):
 
 
 def get_events_by_admin(user: Dict[str, Any]):
-    if user.get("role") == "SUPER_ADMIN":
-        return query_documents(COLLECTIONS["events"])
-
     allowed = set(user.get("event_ids", []))
+    if not allowed:
+        return query_documents(COLLECTIONS["events"])
     all_events = query_documents(COLLECTIONS["events"])
     return [e for e in all_events if e.get("event_id") in allowed or e.get("id") in allowed]
 

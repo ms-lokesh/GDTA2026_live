@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 
-from core.constants import ERROR_CODES, ROLE_ADMIN, ROLE_SUPER_ADMIN, ROLE_VOLUNTEER
+from core.constants import ERROR_CODES, ROLE_ADMIN, ROLE_VOLUNTEER
 
 
 def _forbidden(message="Forbidden"):
@@ -28,16 +28,25 @@ class RoleEnforcementMiddleware:
         if user is None:
             return self.get_response(request)
 
-        role = user.get("role")
         path = request.path
 
-        if path.startswith("/api/superadmin/") and role != ROLE_SUPER_ADMIN:
-            return _forbidden("Super admin access required")
+        if not path.startswith("/api/"):
+            return self.get_response(request)
 
-        if path.startswith("/api/admin-panel/") and role not in {ROLE_SUPER_ADMIN, ROLE_ADMIN}:
+        if hasattr(user, "is_authenticated") and not user.is_authenticated:
+            return self.get_response(request)
+
+        role = None
+        if isinstance(user, dict):
+            role = user.get("role")
+        else:
+            profile = getattr(user, "profile", None)
+            role = getattr(profile, "role", None) if profile else None
+
+        if path.startswith("/api/admin-panel/") and role != ROLE_ADMIN:
             return _forbidden("Admin access required")
 
-        if path.startswith("/api/operations/qr") and role not in {ROLE_VOLUNTEER, ROLE_ADMIN, ROLE_SUPER_ADMIN}:
+        if path.startswith("/api/operations/qr") and role not in {ROLE_VOLUNTEER, ROLE_ADMIN}:
             return _forbidden("Volunteer/Admin access required")
 
         return self.get_response(request)

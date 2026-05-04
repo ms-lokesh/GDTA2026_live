@@ -21,6 +21,67 @@ function getErrorMessage(payload, fallback = 'Request failed') {
     return fallback;
 }
 
+function unwrapPayload(payload) {
+    if (!payload || typeof payload !== 'object') return payload;
+    if (Object.prototype.hasOwnProperty.call(payload, 'data')) {
+        return payload.data;
+    }
+    return payload;
+}
+
+function extractList(payload, key) {
+    const data = unwrapPayload(payload);
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data[key])) return data[key];
+    return [];
+}
+
+function normalizeRole(role) {
+    return String(role || '').trim().toUpperCase();
+}
+
+function toCountList(map, keyName) {
+    if (!map || typeof map !== 'object') return [];
+    return Object.entries(map).map(([key, count]) => ({ [keyName]: key, count }));
+}
+
+function normalizeStats(stats) {
+    if (!stats || typeof stats !== 'object') {
+        return {
+            total: 0,
+            by_status: { pending: 0, approved: 0 },
+            by_country: [],
+            by_role: [],
+            today: 0,
+            payment_summary: { paid: 0 }
+        };
+    }
+
+    if (stats.total && stats.by_status) return stats;
+
+    const total = stats.total_registrations ?? stats.total ?? 0;
+    const byStatus = stats.status_breakdown || stats.by_status || {};
+    const byCountry = stats.country_distribution
+        ? toCountList(stats.country_distribution, 'country')
+        : stats.by_country || [];
+    const byRole = stats.role_distribution
+        ? toCountList(stats.role_distribution, 'role')
+        : stats.by_role || [];
+
+    return {
+        total,
+        by_status: {
+            pending: byStatus.pending || 0,
+            approved: byStatus.approved || 0,
+            rejected: byStatus.rejected || 0
+        },
+        by_country: byCountry,
+        by_role: byRole,
+        today: stats.today || 0,
+        payment_summary: stats.payment_summary || { paid: 0 }
+    };
+}
+
 function applySidebarState(isCollapsed) {
     document.body.classList.toggle('sidebar-collapsed', Boolean(isCollapsed));
 }
@@ -100,42 +161,17 @@ function showDashboard() {
 function applyRoleBasedUI() {
     if (!currentUser) return;
 
-    if (currentUser.role === 'super_admin') {
-        $('.super_admin_only').show();
-        $('.admin_only').show();
-        $('#eventSelectorContainer').show();
-        $('.sidebar-brand h4').html('<i class="fas fa-crown me-2"></i><span class="brand-label">Super Admin</span>');
-    } else {
-        // Regular admin: show registration management features only
-        $('.super_admin_only').hide();
-        $('.admin_only').show();
-        $('#eventSelectorContainer').hide();
+    $('.admin_only').show();
+    $('#eventSelectorContainer').show();
 
-        // Set event to first assigned event for regular admins
-        if (currentUser.assigned_events && currentUser.assigned_events.length > 0) {
-            currentEventId = currentUser.assigned_events[0];
-        }
-
-        // Update sidebar branding for regular admin
-        $('.sidebar-brand h4').html('<i class="fas fa-chart-line me-2"></i><span class="brand-label">GDTA Admin</span>');
+    if (currentUser.assigned_events && currentUser.assigned_events.length > 0) {
+        currentEventId = currentUser.assigned_events[0];
     }
+
+    $('.sidebar-brand h4').html('<i class="fas fa-chart-line me-2"></i><span class="brand-label">GDTA Admin</span>');
 }
 
 async function login(username, password) {
-    // Local static admin fallback (for Django migration phase)
-    if (username === 'admin' && password === 'admin123') {
-        currentUser = {
-            uid: 'local-admin',
-            name: 'Administrator',
-            role: 'admin',
-            assigned_events: []
-        };
-        updateUserInfo();
-        applyRoleBasedUI();
-        showDashboard();
-        return { success: true };
-    }
-
     try {
         const response = await fetch(`${API_BASE}/login`, {
             method: 'POST',
@@ -144,27 +180,26 @@ async function login(username, password) {
             body: JSON.stringify({ username, password })
         });
         
-        const data = await response.json();
+        const payload = await response.json();
+        const data = unwrapPayload(payload);
+        const user = data?.user || payload?.user || data;
         
         if (response.ok) {
-            currentUser = data.user;
-            
-            // Redirect super admin to their dashboard
-            if (currentUser.role === 'super_admin') {
-                window.location.href = '/static/super-admin-dashboard.html';
-                return { success: true };
+            if (!user) {
+                return { success: false, error: 'Login succeeded but user data is missing.' };
             }
-            
+            currentUser = user;
+
             updateUserInfo();
             applyRoleBasedUI();
             showDashboard();
             return { success: true };
         } else {
-            return { success: false, error: getErrorMessage(data, 'Invalid username or password') };
+            return { success: false, error: getErrorMessage(payload, 'Invalid username or password') };
         }
     } catch (error) {
         console.error('Login error:', error);
-        return { success: false, error: 'Login failed. Use admin / admin123 for local dashboard access.' };
+        return { success: false, error: 'Login failed. Please try again.' };
     }
 }
 
@@ -183,7 +218,32 @@ async function logout() {
 }
 
 async function checkAuth() {
-    showLogin();
+    try {
+        const response = await fetch(`${API_BASE}/me`, {
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            showLogin();
+            return;
+        }
+
+        const payload = await response.json();
+        const data = unwrapPayload(payload);
+        const user = data?.user || payload?.user || data;
+        if (!user) {
+            showLogin();
+            return;
+        }
+
+        currentUser = user;
+        updateUserInfo();
+        applyRoleBasedUI();
+        showDashboard();
+    } catch (error) {
+        console.error('Auth check failed:', error);
+        showLogin();
+    }
 }
 
 function updateUserInfo() {
@@ -248,13 +308,6 @@ function switchPage(pageName) {
 
 async function loadDashboard() {
     try {
-        // Check if super admin - show different dashboard
-        if (currentUser && currentUser.role === 'super_admin') {
-            await loadSuperAdminDashboard();
-            return;
-        }
-        
-        // Regular admin dashboard
         $('#dashboardTitle').html('<i class="fas fa-chart-line me-2"></i>Registration Dashboard');
         $('#dashboardSubtitle').text('Monitor and manage event registrations');
         
@@ -266,8 +319,14 @@ async function loadDashboard() {
         const response = await fetch(url, {
             credentials: 'include'
         });
+
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
         
-        const stats = await response.json();
+        const payload = await response.json();
+        const stats = normalizeStats(unwrapPayload(payload));
         
         // Reset labels for regular admin
         $('#totalRegistrations').siblings('p').text('Total Registrations');
@@ -276,10 +335,10 @@ async function loadDashboard() {
         $('#todayRegistrations').siblings('p').text('Today');
         
         // Update stat cards
-        $('#totalRegistrations').text(stats.total);
-        $('#pendingRegistrations').text(stats.by_status.pending);
-        $('#approvedRegistrations').text(stats.by_status.approved);
-        $('#todayRegistrations').text((stats.payment_summary && typeof stats.payment_summary.paid !== 'undefined') ? stats.payment_summary.paid : stats.today);
+        $('#totalRegistrations').text(stats.total || 0);
+        $('#pendingRegistrations').text(stats.by_status?.pending || 0);
+        $('#approvedRegistrations').text(stats.by_status?.approved || 0);
+        $('#todayRegistrations').text((stats.payment_summary && typeof stats.payment_summary.paid !== 'undefined') ? stats.payment_summary.paid : (stats.today || 0));
         $('#todayRegistrations').siblings('p').text((stats.payment_summary && typeof stats.payment_summary.paid !== 'undefined') ? 'Payments Successful' : 'Today');
         
         // Update country stats
@@ -315,108 +374,6 @@ async function loadDashboard() {
         
     } catch (error) {
         console.error('Failed to load dashboard:', error);
-    }
-}
-
-// ========== SUPER ADMIN DASHBOARD ==========
-
-async function loadSuperAdminDashboard() {
-    try {
-        // Update dashboard title for super admin
-        $('#dashboardTitle').html('<i class="fas fa-crown me-2"></i>Super Admin Dashboard');
-        $('#dashboardSubtitle').text('Manage events and administrators across the platform');
-        
-        // Load all events
-        const eventsResponse = await fetch('/api/superadmin/events', {
-            credentials: 'include'
-        });
-        const eventsData = await eventsResponse.json();
-        const events = eventsData.events || [];
-        
-        // Load all admins
-        const adminsResponse = await fetch('/api/superadmin/admins', {
-            credentials: 'include'
-        });
-        const adminsData = await adminsResponse.json();
-        const admins = adminsData.admins || [];
-        
-        // Load overall stats (no event filter)
-        const statsResponse = await fetch(`${API_BASE}/stats`, {
-            credentials: 'include'
-        });
-        const stats = await statsResponse.json();
-        
-        // Update stat cards with overall numbers
-        $('#totalRegistrations').text(events.length);
-        $('#pendingRegistrations').text(admins.filter(a => a.role === 'admin').length);
-        $('#approvedRegistrations').text(events.filter(e => e.is_active).length);
-        $('#todayRegistrations').text(stats.total || 0);
-        
-        // Update labels for super admin context
-        $('#totalRegistrations').siblings('p').text('Total Events');
-        $('#pendingRegistrations').siblings('p').text('Regular Admins');
-        $('#approvedRegistrations').siblings('p').text('Active Events');
-        $('#todayRegistrations').siblings('p').text('Total Registrations');
-        
-        // Show event summaries in the country stats section
-        let eventsHtml = '<div class="list-group">';
-        if (events.length === 0) {
-            eventsHtml += '<div class="list-group-item text-muted">No events created yet</div>';
-        } else {
-            events.forEach(event => {
-                const statusBadge = event.is_active 
-                    ? '<span class="badge bg-success">Active</span>' 
-                    : '<span class="badge bg-secondary">Inactive</span>';
-                eventsHtml += `
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>${event.name}</strong> (${event.year})
-                            <br><small class="text-muted">${event.location || 'Location TBD'}</small>
-                        </div>
-                        ${statusBadge}
-                    </div>
-                `;
-            });
-        }
-        eventsHtml += '</div>';
-        $('#countryStats').html(eventsHtml);
-        $('#countryStats').siblings('h5').html('<i class="fas fa-calendar-alt me-2"></i>Events Overview');
-        
-        // Show admin summaries in the role stats section
-        let adminsHtml = '<div class="list-group">';
-        if (admins.length === 0) {
-            adminsHtml += '<div class="list-group-item text-muted">No admins created yet</div>';
-        } else {
-            const superAdmins = admins.filter(a => a.role === 'super_admin');
-            const regularAdmins = admins.filter(a => a.role === 'admin');
-            const activeAdmins = admins.filter(a => a.is_active);
-            
-            adminsHtml += `
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    Super Admins
-                    <span class="badge bg-danger rounded-pill">${superAdmins.length}</span>
-                </div>
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    Regular Admins
-                    <span class="badge bg-primary rounded-pill">${regularAdmins.length}</span>
-                </div>
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    Active Admins
-                    <span class="badge bg-success rounded-pill">${activeAdmins.length}</span>
-                </div>
-            `;
-        }
-        adminsHtml += '</div>';
-        $('#roleStats').html(adminsHtml);
-        $('#roleStats').siblings('h5').html('<i class="fas fa-user-shield me-2"></i>Admin Overview');
-        
-    } catch (error) {
-        console.error('Failed to load super admin dashboard:', error);
-        // Fallback to showing basic message
-        $('#totalRegistrations').text('-');
-        $('#pendingRegistrations').text('-');
-        $('#approvedRegistrations').text('-');
-        $('#todayRegistrations').text('-');
     }
 }
 
@@ -722,11 +679,18 @@ async function loadRegistrations() {
         if (paymentStatus) url += `payment_status=${encodeURIComponent(paymentStatus)}&`;
         
         const response = await fetch(url, { credentials: 'include' });
-        const data = await response.json();
+
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+
+        const payload = await response.json();
+        const registrations = extractList(payload, 'registrations');
         
-        displayRegistrations(data.registrations);
-        updateCountryFilter(data.registrations);
-        updateCountryMultiSelectFilter(data.registrations);
+        displayRegistrations(registrations);
+        updateCountryFilter(registrations);
+        updateCountryMultiSelectFilter(registrations);
         updateActiveFiltersCount();
         
     } catch (error) {
@@ -741,6 +705,10 @@ function displayRegistrations(registrations) {
     
     const tbody = $('#registrationsTable tbody');
     tbody.empty();
+
+    if (!Array.isArray(registrations)) {
+        registrations = [];
+    }
     
     registrations.forEach(reg => {
         const statusBadge = getRegistrationStatusPill(reg.status);
@@ -1159,10 +1127,11 @@ async function loadRecipientsList() {
             credentials: 'include'
         });
         
-        const data = await response.json();
+        const payload = await response.json();
+        const registrations = extractList(payload, 'registrations');
         
-        if (response.ok && data.registrations) {
-            const html = data.registrations.map(reg => `
+        if (response.ok && registrations.length) {
+            const html = registrations.map(reg => `
                 <div class="form-check mb-2">
                     <input class="form-check-input recipient-checkbox" type="checkbox" 
                            value="${reg.id}" id="recipient-${reg.id}">
@@ -1364,11 +1333,17 @@ async function loadVenues() {
             credentials: 'include'
         });
         
-        const data = await response.json();
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+
+        const payload = await response.json();
+        const venues = extractList(payload, 'venues');
         
-        if (response.ok && data.venues) {
-            displayVenues(data.venues);
-            updateVenueFilter(data.venues);
+        if (response.ok) {
+            displayVenues(venues);
+            updateVenueFilter(venues);
         }
     } catch (error) {
         console.error('Failed to load venues:', error);
@@ -1642,11 +1617,17 @@ async function loadAccessLogs() {
             credentials: 'include'
         });
         
-        const data = await response.json();
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+
+        const payload = await response.json();
+        const logs = extractList(payload, 'logs');
         
-        if (response.ok && data.logs) {
-            displayAccessLogs(data.logs);
-            updateAccessStats(data.logs);
+        if (response.ok) {
+            displayAccessLogs(logs);
+            updateAccessStats(logs);
         }
     } catch (error) {
         console.error('Failed to load access logs:', error);
@@ -1712,10 +1693,16 @@ async function loadVolunteers() {
             credentials: 'include'
         });
         
-        const data = await response.json();
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+
+        const payload = await response.json();
+        const volunteers = extractList(payload, 'volunteers');
         
-        if (response.ok && data.volunteers) {
-            displayVolunteers(data.volunteers);
+        if (response.ok) {
+            displayVolunteers(volunteers);
         }
     } catch (error) {
         console.error('Failed to load volunteers:', error);
@@ -1776,11 +1763,17 @@ async function loadVenuesForSelection() {
             credentials: 'include'
         });
         
-        const data = await response.json();
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+
+        const payload = await response.json();
+        const venues = extractList(payload, 'venues');
         
-        if (response.ok && data.venues) {
-            allVenuesForSelection = data.venues;
-            displayVenueCheckboxes(data.venues, []);
+        if (response.ok) {
+            allVenuesForSelection = venues;
+            displayVenueCheckboxes(venues, []);
         }
     } catch (error) {
         console.error('Failed to load venues for selection:', error);
@@ -2077,8 +2070,7 @@ $(document).ready(function() {
     $('#addAdminBtn').on('click', showCreateAdminModal);
     $('#saveAdminBtn').on('click', saveAdmin);
     
-    // Admin role change - show/hide event assignment
-    $('#adminRole').on('change', updateEventAssignmentVisibility);
+    // Admin role change - no-op (single role)
 });
 
 // ========== ID CARD GENERATION ==========
@@ -2138,7 +2130,12 @@ async function loadEmailTemplates() {
         if (currentEventId) url += `?event_id=${currentEventId}`;
         
         const response = await fetch(url, { credentials: 'include' });
-        const data = await response.json();
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+        const payload = await response.json();
+        const templates = extractList(payload, 'templates');
         
         if (templatesTable) {
             templatesTable.destroy();
@@ -2147,7 +2144,7 @@ async function loadEmailTemplates() {
         const tbody = $('#templatesTable tbody');
         tbody.empty();
         
-        data.templates.forEach(template => {
+        templates.forEach(template => {
             const statusBadge = template.is_active 
                 ? '<span class="badge bg-success">Active</span>' 
                 : '<span class="badge bg-secondary">Inactive</span>';
@@ -2216,8 +2213,13 @@ async function editTemplate(templateId) {
         const response = await fetch(`${API_BASE}/email-templates/${templateId}`, {
             credentials: 'include'
         });
-        const data = await response.json();
-        const template = data.template;
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+        const payload = await response.json();
+        const data = unwrapPayload(payload) || {};
+        const template = data.template || data;
         
         currentTemplateId = template.id;
         document.getElementById('templateModalTitle').innerHTML = '<i class="fas fa-file-alt me-2"></i>Edit Email Template';
@@ -2291,15 +2293,16 @@ async function saveTemplate() {
             });
         }
         
-        const data = await response.json();
+        const payload = await response.json();
+        const data = unwrapPayload(payload);
         
         if (response.ok) {
-            alert(data.message);
+            alert(data?.message || 'Template saved successfully');
             const modal = bootstrap.Modal.getInstance(document.getElementById('templateModal'));
             modal.hide();
             loadEmailTemplates();
         } else {
-            alert(data.error || 'Failed to save template');
+            alert(getErrorMessage(payload, 'Failed to save template'));
         }
         
     } catch (error) {
@@ -2318,13 +2321,14 @@ async function deleteTemplate(templateId, templateName) {
             credentials: 'include'
         });
         
-        const data = await response.json();
+        const payload = await response.json();
+        const data = unwrapPayload(payload);
         
         if (response.ok) {
-            alert(data.message);
+            alert(data?.message || 'Template deleted');
             loadEmailTemplates();
         } else {
-            alert(data.error || 'Failed to delete template');
+            alert(getErrorMessage(payload, 'Failed to delete template'));
         }
         
     } catch (error) {
@@ -2341,13 +2345,14 @@ async function previewTemplate(templateId) {
             body: JSON.stringify({})
         });
         
-        const data = await response.json();
+        const payload = await response.json();
+        const data = unwrapPayload(payload);
         
         if (response.ok) {
-            const preview = data.preview;
+            const preview = data.preview || data;
             alert(`Preview:\n\nSubject: ${preview.subject}\n\nBody:\n${preview.body}`);
         } else {
-            alert(data.error || 'Failed to preview template');
+            alert(getErrorMessage(payload, 'Failed to preview template'));
         }
         
     } catch (error) {
@@ -2383,12 +2388,17 @@ async function loadTemplatesForEmail() {
         const response = await fetch(`${API_BASE}/email-templates?is_active=true`, {
             credentials: 'include'
         });
-        const data = await response.json();
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+        const payload = await response.json();
+        const templates = extractList(payload, 'templates');
         
         const select = document.getElementById('templateSelect');
         select.innerHTML = '<option value="">-- Choose a template --</option>';
         
-        data.templates.forEach(template => {
+        templates.forEach(template => {
             const option = document.createElement('option');
             option.value = template.id;
             option.textContent = `${template.name} (${template.category})`;
@@ -2417,10 +2427,11 @@ async function updateTemplatePreview() {
             body: JSON.stringify({})
         });
         
-        const data = await response.json();
+        const payload = await response.json();
+        const data = unwrapPayload(payload);
         
         if (response.ok) {
-            const preview = data.preview;
+            const preview = data.preview || data;
             document.getElementById('previewSubject').textContent = preview.subject;
             document.getElementById('previewBody').textContent = preview.body;
             previewDiv.classList.remove('d-none');
@@ -2431,7 +2442,7 @@ async function updateTemplatePreview() {
     }
 }
 
-// ========== MULTI-EVENT MANAGEMENT (SUPER ADMIN) ==========
+// ========== MULTI-EVENT MANAGEMENT ==========
 
 async function loadEventSelector() {
     try {
@@ -2440,8 +2451,8 @@ async function loadEventSelector() {
         });
         
         if (response.ok) {
-            const data = await response.json();
-            allEvents = data.events || [];
+            const payload = await response.json();
+            allEvents = extractList(payload, 'events');
             
             console.log('Loaded events:', allEvents.length, allEvents);
             
@@ -2467,13 +2478,13 @@ async function loadEventSelector() {
 
 async function loadEvents() {
     try {
-        const response = await fetch('/api/superadmin/events', {
+        const response = await fetch('/api/events/', {
             credentials: 'include'
         });
         
         if (response.ok) {
-            const data = await response.json();
-            allEvents = data.events || [];
+            const payload = await response.json();
+            allEvents = extractList(payload, 'events');
             
             const tbody = $('#eventsTableBody');
             tbody.empty();
@@ -2571,8 +2582,8 @@ async function saveEvent() {
     
     try {
         const url = eventId 
-            ? `/api/superadmin/events/${eventId}` 
-            : '/api/superadmin/events';
+            ? `/api/events/${eventId}` 
+            : '/api/events/';
         
         const method = eventId ? 'PUT' : 'POST';
         
@@ -2583,7 +2594,8 @@ async function saveEvent() {
             body: JSON.stringify(eventData)
         });
         
-        const data = await response.json();
+        const payload = await response.json();
+        const data = unwrapPayload(payload);
         
         if (response.ok) {
             alert(eventId ? 'Event updated successfully!' : 'Event created successfully!');
@@ -2591,7 +2603,7 @@ async function saveEvent() {
             loadEvents();
             loadEventSelector(); // Update selector
         } else {
-            alert('Failed to save event: ' + (data.error || 'Unknown error'));
+            alert(getErrorMessage(payload, 'Failed to save event'));
         }
     } catch (error) {
         console.error('Failed to save event:', error);
@@ -2608,19 +2620,20 @@ async function deleteEvent(eventId) {
     }
     
     try {
-        const response = await fetch(`/api/superadmin/events/${eventId}`, {
+        const response = await fetch(`/api/events/${eventId}`, {
             method: 'DELETE',
             credentials: 'include'
         });
         
-        const data = await response.json();
+        const payload = await response.json();
+        const data = unwrapPayload(payload);
         
         if (response.ok) {
             alert('Event deleted successfully!');
             loadEvents();
             loadEventSelector();
         } else {
-            alert('Failed to delete event: ' + (data.error || 'Unknown error'));
+            alert(getErrorMessage(payload, 'Failed to delete event'));
         }
     } catch (error) {
         console.error('Failed to delete event:', error);
@@ -2639,8 +2652,8 @@ async function loadAdmins() {
         });
         
         if (response.ok) {
-            const data = await response.json();
-            allAdmins = data.admins || [];
+            const payload = await response.json();
+            allAdmins = extractList(payload, 'admins');
             
             const tbody = $('#adminsTableBody');
             tbody.empty();
@@ -2660,16 +2673,12 @@ async function loadAdmins() {
                 const statusBadge = admin.is_active 
                     ? '<span class="badge bg-success">Active</span>' 
                     : '<span class="badge bg-secondary">Inactive</span>';
-                
-                const roleBadge = admin.role === 'super_admin'
-                    ? '<span class="badge bg-danger">Super Admin</span>'
-                    : '<span class="badge bg-primary">Admin</span>';
-                
-                const eventsAssigned = admin.role === 'super_admin' 
-                    ? '<em>All Events</em>' 
-                    : (admin.assigned_events && admin.assigned_events.length > 0 
-                        ? `${admin.assigned_events.length} event(s)` 
-                        : '<span class="text-muted">None</span>');
+        
+                const roleBadge = '<span class="badge bg-primary">Admin</span>';
+        
+                const eventsAssigned = admin.assigned_events && admin.assigned_events.length > 0
+                    ? `${admin.assigned_events.length} event(s)`
+                    : '<span class="text-muted">None</span>';
                 
                 tbody.append(`
                     <tr>
@@ -2705,8 +2714,7 @@ async function showCreateAdminModal() {
     $('#adminPassword').prop('required', true);
     $('#adminPasswordHint').text('(min 8 characters) *');
     $('#adminActive').prop('checked', true);
-    $('#adminRole').val('admin');
-    constrainAdminRoleOptions();
+    $('#adminRole').val('admin').prop('disabled', true);
     
     // Load event checkboxes
     await loadEventCheckboxes([]);
@@ -2725,8 +2733,7 @@ async function editAdmin(username) {
     $('#adminUsername').prop('disabled', true); // Cannot change username
     $('#adminFullName').val(admin.name);
     $('#adminEmail').val(admin.email || '');
-    $('#adminRole').val(admin.role);
-    constrainAdminRoleOptions();
+    $('#adminRole').val('admin').prop('disabled', true);
     $('#adminPassword').val('');
     $('#adminPassword').prop('required', false);
     $('#adminPasswordHint').text('(leave blank to keep current)');
@@ -2770,27 +2777,11 @@ async function loadEventCheckboxes(selectedEventIds) {
 }
 
 function updateEventAssignmentVisibility() {
-    const role = $('#adminRole').val();
-    if (role === 'super_admin') {
-        $('#assignedEventsContainer').hide();
-    } else {
-        $('#assignedEventsContainer').show();
-    }
+    $('#assignedEventsContainer').show();
 }
 
 function constrainAdminRoleOptions() {
-    const roleSelect = $('#adminRole');
-    const isSuperAdmin = currentUser && currentUser.role === 'super_admin';
-
-    if (isSuperAdmin) {
-        roleSelect.find('option[value="super_admin"]').prop('disabled', false).show();
-    } else {
-        // Regular admins can only create/manage regular admin accounts
-        if (roleSelect.val() === 'super_admin') {
-            roleSelect.val('admin');
-        }
-        roleSelect.find('option[value="super_admin"]').prop('disabled', true).hide();
-    }
+    $('#adminRole').val('admin').prop('disabled', true);
 }
 
 async function saveAdmin() {
@@ -2801,7 +2792,7 @@ async function saveAdmin() {
         username: $('#adminUsername').val().trim(),
         name: $('#adminFullName').val().trim(),
         email: $('#adminEmail').val().trim() || null,
-        role: $('#adminRole').val(),
+        role: 'admin',
         is_active: $('#adminActive').is(':checked')
     };
     
@@ -2815,16 +2806,14 @@ async function saveAdmin() {
     }
     
     // Add assigned events for regular admins
-    if (adminData.role === 'admin') {
-        adminData.assigned_events = [];
-        $('.event-checkbox:checked').each(function() {
-            adminData.assigned_events.push($(this).val());
-        });
-        
-        if (adminData.assigned_events.length === 0) {
-            alert('Please assign at least one event to this admin');
-            return;
-        }
+    adminData.assigned_events = [];
+    $('.event-checkbox:checked').each(function() {
+        adminData.assigned_events.push($(this).val());
+    });
+    
+    if (adminData.assigned_events.length === 0) {
+        alert('Please assign at least one event to this admin');
+        return;
     }
     
     if (!adminData.username || !adminData.name) {
@@ -2846,14 +2835,15 @@ async function saveAdmin() {
             body: JSON.stringify(adminData)
         });
         
-        const data = await response.json();
+        const payload = await response.json();
+        const data = unwrapPayload(payload);
         
         if (response.ok) {
             alert(isEdit ? 'Admin updated successfully!' : 'Admin created successfully!');
             bootstrap.Modal.getInstance($('#adminModal')[0]).hide();
             loadAdmins();
         } else {
-            alert('Failed to save admin: ' + (data.error || 'Unknown error'));
+            alert(getErrorMessage(payload, 'Failed to save admin'));
         }
     } catch (error) {
         console.error('Failed to save admin:', error);
@@ -2865,11 +2855,6 @@ async function deleteAdmin(username) {
     const admin = allAdmins.find(a => a.username === username);
     if (!admin) return;
     
-    if (admin.role === 'super_admin' && allAdmins.filter(a => a.role === 'super_admin').length === 1) {
-        alert('Cannot delete the only super admin!');
-        return;
-    }
-    
     if (!confirm(`Are you sure you want to delete admin "${admin.name}" (${username})?`)) {
         return;
     }
@@ -2880,13 +2865,14 @@ async function deleteAdmin(username) {
             credentials: 'include'
         });
         
-        const data = await response.json();
+        const payload = await response.json();
+        const data = unwrapPayload(payload);
         
         if (response.ok) {
             alert('Admin deleted successfully!');
             loadAdmins();
         } else {
-            alert('Failed to delete admin: ' + (data.error || 'Unknown error'));
+            alert(getErrorMessage(payload, 'Failed to delete admin'));
         }
     } catch (error) {
         console.error('Failed to delete admin:', error);
