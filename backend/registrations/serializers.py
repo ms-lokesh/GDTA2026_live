@@ -63,7 +63,7 @@ class UnifiedPaymentCreateSerializer(serializers.Serializer):
     email = serializers.EmailField()
     category = serializers.CharField()
     amount = serializers.DecimalField(max_digits=10, decimal_places=2)
-    payment_method = serializers.ChoiceField(choices=["paytm", "razorpay"])
+    payment_method = serializers.ChoiceField(choices=["zoho_books", "zoho"])
     addon_food = serializers.BooleanField(default=False)
     addon_safari = serializers.BooleanField(default=False)
 

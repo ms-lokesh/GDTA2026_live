@@ -51,8 +51,8 @@ def send_payment_status_token_email(registration_id, email):
     message = (
         "Your GDTA 2026 registration payment-status access link is below. "
         "This link expires in 24 hours.\n\n"
-        f"{base_url}/api/payment/status/<ORDER_ID>?token={token}\n\n"
-        "Replace <ORDER_ID> with the order ID shown after payment initiation."
+        f"{base_url}/api/payment/status/<INVOICE_ID>?token={token}\n\n"
+        "Replace <INVOICE_ID> with the invoice ID shown after payment initiation."
     )
     try:
         _send_private_email(email, "Your GDTA 2026 payment status access link", message)
@@ -170,6 +170,18 @@ def submit_registration(payload, request_meta=None):
 
     duplicate = query_documents(COLLECTIONS["registrations"], filters=[("email", "==", email)], limit=1)
     if duplicate:
+        existing = duplicate[0]
+        existing_payment_status = str(existing.get("payment_status") or "").lower()
+        existing_id = existing.get("id")
+        if existing_id and existing_payment_status not in {"paid", "payment_success", "success"}:
+            send_payment_status_token_email(existing_id, email)
+            return {
+                "registration_id": existing_id,
+                "unique_id": existing.get("unique_id"),
+                "reused_registration": True,
+                "payment_status": existing_payment_status or "payment_pending",
+                "message": "Existing registration found. Continue to payment.",
+            }
         send_existing_registration_notice(email)
         return {"message": "Registration request received"}
 

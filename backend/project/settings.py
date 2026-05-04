@@ -15,7 +15,15 @@ def _split_csv(value: str):
     return [v.strip() for v in value.split(",") if v.strip()]
 
 
-CRITICAL_ENV_VARS = ["SECRET_KEY", "DATABASE_URL", "ALLOWED_HOSTS", "PAYMENT_GATEWAY_KEY"]
+CRITICAL_ENV_VARS = [
+    "SECRET_KEY",
+    "DATABASE_URL",
+    "ALLOWED_HOSTS",
+    "ZOHO_CLIENT_ID",
+    "ZOHO_CLIENT_SECRET",
+    "ZOHO_REFRESH_TOKEN",
+    "ZOHO_ORGANIZATION_ID",
+]
 missing_env = [key for key in CRITICAL_ENV_VARS if not os.getenv(key)]
 if missing_env:
     raise ImproperlyConfigured(f"Missing required environment variables: {', '.join(missing_env)}")

@@ -34,23 +34,24 @@ class SecurityHeadersMiddleware:
         if settings.DEBUG or is_local_host:
             csp_policy = (
                 "default-src 'self'; "
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.jquery.com https://cdn.jsdelivr.net https://cdn.datatables.net https://cdn.tailwindcss.com; "
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.jquery.com https://cdn.jsdelivr.net https://cdn.datatables.net https://cdn.tailwindcss.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net; "
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.datatables.net; "
                 "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "
                 "img-src 'self' data: blob: https:; "
-                "connect-src 'self' https:; "
-                "frame-src 'self' https://www.google.com https://maps.google.com; "
-                "frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://securegw.paytm.in https://securegw-stage.paytm.in"
+                "connect-src 'self' https: https://www.google-analytics.com https://stats.g.doubleclick.net https://connect.facebook.net; "
+                "frame-src 'self' https://www.google.com https://maps.google.com https://www.facebook.com; "
+                "frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://securegw.paytm.in https://securegw-stage.paytm.in https://www.facebook.com https://www.google-analytics.com https://www.googletagmanager.com"
             )
         else:
             csp_policy = (
                 "default-src 'self'; "
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.jquery.com https://cdn.jsdelivr.net https://cdn.datatables.net https://cdn.tailwindcss.com; "
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.jquery.com https://cdn.jsdelivr.net https://cdn.datatables.net https://cdn.tailwindcss.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net; "
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.datatables.net; "
                 "img-src 'self' data: blob: https:; "
                 "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "
-                "frame-src 'self' https://www.google.com https://maps.google.com; "
-                "frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://securegw.paytm.in https://securegw-stage.paytm.in"
+                "connect-src 'self' https: https://www.google-analytics.com https://stats.g.doubleclick.net https://connect.facebook.net; "
+                "frame-src 'self' https://www.google.com https://maps.google.com https://www.facebook.com; "
+                "frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://securegw.paytm.in https://securegw-stage.paytm.in https://www.facebook.com https://www.google-analytics.com https://www.googletagmanager.com"
             )
 
         response["Content-Security-Policy"] = csp_policy

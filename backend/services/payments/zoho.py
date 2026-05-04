@@ -149,9 +149,9 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
         raise AppError("Invalid registration category", ERROR_CODES["VALIDATION_ERROR"], 400)
     billing_amount, billing_currency = _billing_amount_and_currency(fee)
 
-    selected_method = (payment_method or "paytm").strip().lower()
-    if selected_method != "paytm":
-        raise AppError("Zoho payment flow is disabled. Use Paytm.", ERROR_CODES["VALIDATION_ERROR"], 400)
+    selected_method = (payment_method or "zoho_books").strip().lower()
+    if selected_method not in {"zoho_books", "zoho"}:
+        raise AppError("Only Zoho Books payments are enabled.", ERROR_CODES["VALIDATION_ERROR"], 400)
 
     existing = _idempotent_existing_link(registration_id, idempotency_key)
     if existing:
@@ -168,31 +168,6 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
                 "amount": existing.get("amount"),
                 "idempotent": True,
             }
-
-    from services.payments.paytm import (
-        PaytmPaymentGateway,
-        create_transaction_record,
-        generate_order_id,
-        mark_transaction_initiated,
-    )
-
-    gateway = PaytmPaymentGateway()
-    order_id = generate_order_id(registration_id)
-    transaction = create_transaction_record(
-        registration_id=registration_id,
-        user_name=name,
-        email=email,
-        amount=billing_amount,
-        order_id=order_id,
-        payment_method="paytm",
-        category=category,
-    )
-    paytm_result = gateway.initiate_payment(order_id=order_id, amount=billing_amount, customer_id=email)
-    mark_transaction_initiated(transaction)
-    return {
-        "provider": "paytm",
-        "paytm": paytm_result,
-    }
 
     if not settings.ZOHO_ORGANIZATION_ID:
         raise AppError("Zoho organization is not configured", ERROR_CODES["VALIDATION_ERROR"], 400)

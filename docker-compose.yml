@@ -13,6 +13,12 @@ services:
     volumes:
       - gdta2026_postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7-alpine
+    container_name: gdta2026-redis
+    ports:
+      - "6379:6379"
+
   web:
     build: .
     container_name: gdta2026-web
@@ -25,6 +31,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - redis
 
 volumes:
   gdta2026_postgres_data:
