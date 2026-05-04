@@ -261,6 +261,11 @@ PAYTM_CALLBACK_URL = os.getenv("PAYTM_CALLBACK_URL", "")
 PAYTM_ENV = os.getenv("PAYTM_ENV", "staging")
 
 PAYMENT_USD_TO_INR_RATE = float(os.getenv("PAYMENT_USD_TO_INR_RATE", "83.0"))
+PAYMENT_EXCHANGE_RATE_URL = os.getenv(
+    "PAYMENT_EXCHANGE_RATE_URL",
+    "https://open.er-api.com/v6/latest/USD",
+)
+PAYMENT_EXCHANGE_RATE_CACHE_SECONDS = int(os.getenv("PAYMENT_EXCHANGE_RATE_CACHE_SECONDS", "3600"))
 
 ADMIN_DASHBOARD_DEMO_MODE = os.getenv("ADMIN_DASHBOARD_DEMO_MODE", "False").lower() == "true"
 SUPER_ADMIN_SETUP_ENABLED = os.getenv("SUPER_ADMIN_SETUP_ENABLED", "False").lower() == "true"

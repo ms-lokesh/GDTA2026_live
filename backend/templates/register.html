@@ -667,12 +667,12 @@
 
                         <div class="pricing-card">
                             <h5 style="font-weight: 800; color: #000;">Foreign Delegate</h5>
-                            <div class="price-main" id="foreignPriceDisplay">$1</div>
+                            <div class="price-main" id="foreignPriceDisplay">$15</div>
                             <p class="price-note">Select your participant type</p>
                             <div class="card-addon-choice">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="foreign_delegate_tier" id="foreign_student_choice" value="student" checked>
-                                    <label class="form-check-label" for="foreign_student_choice">Student ($1)</label>
+                                    <label class="form-check-label" for="foreign_student_choice">Student ($15)</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="foreign_delegate_tier" id="foreign_academician_choice" value="academician">
@@ -733,7 +733,7 @@
                             </div>
                             <div class="fee-pill" id="foreign-fee-pill">
                                 <h6>Foreign Delegates</h6>
-                                <p>Student: <strong>$1</strong></p>
+                                <p>Student: <strong>$15</strong></p>
                                 <p>Academician: <strong>$100</strong></p>
                                 <p>Corporate Delegate: <strong>$100</strong></p>
                             </div>
@@ -1386,7 +1386,7 @@
                 'Student': { base: 500, food: 500, safari: 500, currency: 'Rs.' },
                 'Academician': { base: 2000, food: 500, safari: 500, currency: 'Rs.' },
                 'Corporate Delegate': { base: 7500, food: 0, safari: 0, currency: 'Rs.' },
-                'Foreign Student': { base: 1, food: 0, safari: 0, currency: '$' },
+                'Foreign Student': { base: 15, food: 0, safari: 0, currency: '$' },
                 'Foreign Academician': { base: 100, food: 0, safari: 0, currency: '$' },
                 'Foreign Corporate Delegate': { base: 100, food: 0, safari: 0, currency: '$' },
                 'Foreign Delegate': { base: 100, food: 0, safari: 0, currency: '$' }
@@ -1404,7 +1404,7 @@
 
                 const selected = document.querySelector('input[name="foreign_delegate_tier"]:checked');
                 const tier = selected ? selected.value : 'student';
-                display.textContent = tier === 'student' ? '$1' : '$100';
+                display.textContent = tier === 'student' ? '$15' : '$100';
             }
 
             function getSelectedCategory() {
@@ -1424,9 +1424,6 @@
                 return String(category || '').toLowerCase().includes('foreign');
             }
 
-            function getConversionRate() {
-                return 83;
-            }
 
             function getNumericAmount(category, addonFood, addonSafari) {
                 const fees = feeData[category];
@@ -1972,14 +1969,7 @@
 
                     if (paymentConversionText) {
                         if (isForeignCategory(latestRegistration.registration_category)) {
-                            const usdAmount = getNumericAmount(
-                                latestRegistration.registration_category,
-                                latestRegistration.addon_food,
-                                latestRegistration.addon_safari
-                            );
-                            const rate = getConversionRate();
-                            const inrAmount = (usdAmount * rate).toFixed(2);
-                            paymentConversionText.textContent = `Zoho Books will charge INR ${inrAmount} (USD ${usdAmount} x rate ${rate}).`;
+                            paymentConversionText.textContent = 'Zoho Books will show the INR amount on the payment page.';
                             paymentConversionText.style.display = 'block';
                         } else {
                             paymentConversionText.textContent = '';

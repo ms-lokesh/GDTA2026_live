@@ -1,5 +1,7 @@
+import logging
 import threading
 import time
+import uuid
 from datetime import datetime
 from typing import Dict, Optional
 
@@ -13,9 +15,11 @@ from registrations.state_machine import compute_fee
 from services.firebase.firestore import create_document, get_document, query_documents, update_document
 
 _token_cache = {"token": None, "expires_at": 0}
+_rate_cache = {"rate": None, "expires_at": 0}
 _token_lock = threading.Lock()
 _rate_limit_store = {}
 _rate_limit_lock = threading.Lock()
+_logger = logging.getLogger(__name__)
 
 
 def _zoho_auth_hint(reason: str) -> str:
@@ -45,9 +49,46 @@ def _billing_amount_and_currency(fee: Dict) -> tuple[float, str]:
     amount = float(fee.get("total_fee") or 0)
     currency = str(fee.get("fee_currency") or "").upper() or "INR"
     if currency == "USD":
-        amount = round(amount * float(getattr(settings, "PAYMENT_USD_TO_INR_RATE", 83.0)), 2)
+        amount = round(amount * _get_usd_to_inr_rate(), 2)
         currency = "INR"
     return amount, currency
+
+
+def _get_usd_to_inr_rate() -> float:
+    now = int(time.time())
+    cached_rate = _rate_cache.get("rate")
+    if cached_rate and now < int(_rate_cache.get("expires_at", 0)):
+        return float(cached_rate)
+
+    fallback_rate = float(getattr(settings, "PAYMENT_USD_TO_INR_RATE", 83.0))
+    url = getattr(settings, "PAYMENT_EXCHANGE_RATE_URL", "").strip()
+    if not url:
+        return fallback_rate
+
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        payload = response.json() or {}
+        rates = payload.get("rates") or {}
+        rate_value = rates.get("INR")
+        if rate_value is None:
+            _logger.warning("Exchange rate response missing INR; using fallback. body=%s", payload)
+            return fallback_rate
+        rate = float(rate_value)
+    except Exception as exc:
+        _logger.warning("Exchange rate fetch failed; using fallback rate. error=%s", exc)
+        return fallback_rate
+
+    cache_seconds = int(getattr(settings, "PAYMENT_EXCHANGE_RATE_CACHE_SECONDS", 3600))
+    _rate_cache["rate"] = rate
+    _rate_cache["expires_at"] = now + max(60, cache_seconds)
+    return rate
+
+
+def _build_invoice_number(registration_id: str) -> str:
+    # Zoho Books can require manual invoice numbering; keep it short and unique-ish.
+    unique = uuid.uuid4().hex.upper()
+    return f"G{unique[:15]}"
 
 
 def _refresh_access_token(force=False):
@@ -113,6 +154,12 @@ def _zoho_request(method: str, path: str, payload: Optional[Dict] = None, retry=
         _refresh_access_token(force=True)
         return _zoho_request(method, path, payload, retry=False)
     if response.status_code >= 400:
+        _logger.error(
+            "Zoho Books API error status=%s url=%s body=%s",
+            response.status_code,
+            response.url,
+            response.text,
+        )
         raise AppError("Zoho Books API request failed", ERROR_CODES["PAYMENT_ERROR"], 502)
     return response.json() or {}
 
@@ -193,6 +240,7 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
         "/invoices",
         payload={
             "customer_id": contact_id,
+            "invoice_number": _build_invoice_number(registration_id),
             "currency_code": billing_currency,
             "reference_number": registration_id,
             "line_items": [
