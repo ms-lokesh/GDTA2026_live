@@ -127,10 +127,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-    "DEFAULT_THROTTLE_CLASSES": [
-        "rest_framework.throttling.AnonRateThrottle",
-        "rest_framework.throttling.UserRateThrottle",
-    ],
+    "DEFAULT_THROTTLE_CLASSES": [],
     "DEFAULT_THROTTLE_RATES": {
         "anon": "20/minute",
         "user": "100/minute",
@@ -157,21 +154,9 @@ AXES_ENABLE_ADMIN = True
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv("REDIS_URL", "redis://127.0.0.1:6379/1"),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-    },
-    "axes": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv("AXES_REDIS_URL", os.getenv("REDIS_URL", "redis://127.0.0.1:6379/2")),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-    },
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
 }
-AXES_CACHE = "axes"
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
