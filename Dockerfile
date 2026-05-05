@@ -15,13 +15,11 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY backend/ ./
 
-# ✅ ADD THIS (IMPORTANT)
-RUN python manage.py collectstatic --noinput
-
 RUN chown -R appuser:appgroup /app
 
 USER appuser
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "gunicorn project.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers ${GUNICORN_WORKERS:-3} --threads ${GUNICORN_THREADS:-4} --timeout ${GUNICORN_TIMEOUT:-120} --access-logfile - --error-logfile -"]
+# ✅ RUN collectstatic at runtime (IMPORTANT FIX)
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && gunicorn project.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers ${GUNICORN_WORKERS:-3} --threads ${GUNICORN_THREADS:-4} --timeout ${GUNICORN_TIMEOUT:-120} --access-logfile - --error-logfile -"]
