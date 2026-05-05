@@ -138,21 +138,23 @@ def _refresh_access_token(force=False):
         return token
 
 
-def _zoho_request(method: str, path: str, payload: Optional[Dict] = None, retry=True):
+def _zoho_request(method: str, path: str, payload: Optional[Dict] = None, retry=True, params: Optional[Dict] = None):
     token = _refresh_access_token()
     url = f"{settings.ZOHO_BOOKS_API_BASE_URL}{path}"
-    params = {"organization_id": settings.ZOHO_ORGANIZATION_ID}
+    request_params = {"organization_id": settings.ZOHO_ORGANIZATION_ID}
+    if params:
+        request_params.update(params)
     response = requests.request(
         method=method,
         url=url,
         json=payload,
-        params=params,
+        params=request_params,
         headers={"Authorization": f"Zoho-oauthtoken {token}"},
         timeout=25,
     )
     if response.status_code == 401 and retry:
         _refresh_access_token(force=True)
-        return _zoho_request(method, path, payload, retry=False)
+        return _zoho_request(method, path, payload, retry=False, params=params)
     if response.status_code >= 400:
         _logger.error(
             "Zoho Books API error status=%s url=%s body=%s",
@@ -162,6 +164,35 @@ def _zoho_request(method: str, path: str, payload: Optional[Dict] = None, retry=
         )
         raise AppError("Zoho Books API request failed", ERROR_CODES["PAYMENT_ERROR"], 502)
     return response.json() or {}
+
+
+def _extract_invoice_link(invoice: Dict) -> str:
+    candidates = [
+        invoice.get("payment_link"),
+        invoice.get("customer_view_url"),
+        invoice.get("invoice_url"),
+        invoice.get("public_url"),
+        invoice.get("url"),
+        invoice.get("share_url"),
+    ]
+    for link in candidates:
+        if isinstance(link, str):
+            cleaned = link.strip()
+            if cleaned.startswith("http://") or cleaned.startswith("https://"):
+                return cleaned
+    return ""
+
+
+def _is_invalid_payment_link(payment_link: str) -> bool:
+    if not payment_link:
+        return True
+    normalized = payment_link.strip().lower()
+    if not (normalized.startswith("http://") or normalized.startswith("https://")):
+        return True
+    if "zoho.com/in/books" in normalized or "zoho.com/books" in normalized:
+        return True
+    return False
+
 
 
 def _find_registration(registration_id=None, email=None):
@@ -207,14 +238,22 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
         requested_amount = float(billing_amount)
         requested_currency = str(billing_currency or "").upper()
         if existing_amount == requested_amount and existing_currency == requested_currency:
-            return {
-                "provider": "zoho_books",
-                "invoice_id": existing.get("invoice_id"),
-                "payment_link": existing.get("payment_link"),
-                "currency": existing.get("currency"),
-                "amount": existing.get("amount"),
-                "idempotent": True,
-            }
+            cached_link = (existing.get("payment_link") or "").strip()
+            if _is_invalid_payment_link(cached_link):
+                _logger.warning(
+                    "Ignoring cached Zoho payment_link. invoice_id=%s link=%s",
+                    existing.get("invoice_id"),
+                    cached_link,
+                )
+            else:
+                return {
+                    "provider": "zoho_books",
+                    "invoice_id": existing.get("invoice_id"),
+                    "payment_link": cached_link,
+                    "currency": existing.get("currency"),
+                    "amount": existing.get("amount"),
+                    "idempotent": True,
+                }
 
     if not settings.ZOHO_ORGANIZATION_ID:
         raise AppError("Zoho organization is not configured", ERROR_CODES["VALIDATION_ERROR"], 400)
@@ -274,14 +313,34 @@ def create_payment_link(*, actor_uid: str, registration_id: str, name: str, emai
     if str(invoice_get_resp.get("code")) == "0":
         invoice = invoice_get_resp.get("invoice") or invoice
 
-    payment_link = (
-        invoice.get("payment_link")
-        or invoice.get("payment_url")
-        or invoice.get("invoice_url")
-        or invoice.get("customer_view_url")
+    _logger.info(
+        "Zoho invoice response after marking sent. invoice_id=%s invoice_keys=%s full_response=%s",
+        invoice_id,
+        list(invoice.keys()),
+        invoice,
     )
-    if not payment_link:
-        raise AppError("No payment URL returned by Zoho", ERROR_CODES["PAYMENT_ERROR"], 502)
+
+    link_fields = {
+        "payment_link": bool(invoice.get("payment_link")),
+        "customer_view_url": bool(invoice.get("customer_view_url")),
+        "invoice_url": bool(invoice.get("invoice_url")),
+        "public_url": bool(invoice.get("public_url")),
+        "url": bool(invoice.get("url")),
+        "share_url": bool(invoice.get("share_url")),
+    }
+    _logger.info("Zoho invoice link fields. invoice_id=%s fields=%s", invoice_id, link_fields)
+
+    # Extract the hosted checkout or customer view URL.
+    payment_link = _extract_invoice_link(invoice)
+    if _is_invalid_payment_link(payment_link):
+        _logger.error(
+            "Zoho Books invoice missing hosted link fields. invoice_id=%s", invoice_id
+        )
+        raise AppError(
+            "Zoho Books did not return a valid payment URL. Enable customer portal/payment gateways or grant ZohoBooks.settings.ALL scope.",
+            ERROR_CODES["PAYMENT_ERROR"],
+            502,
+        )
 
     registration = _find_registration(registration_id=registration_id, email=email)
     if not registration:

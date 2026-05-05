@@ -30,6 +30,8 @@ from utils.permissions import IsAdminRole
 from utils.throttles import ChatbotRateThrottle, PaymentCreateRateThrottle, RegistrationSubmitRateThrottle
 
 # Payment gateways
+from services.payments.razorpay import create_payment_order as create_razorpay_payment_order
+from services.payments.razorpay import confirm_payment as confirm_razorpay_payment
 from services.payments.zoho import create_payment_link, get_payment_status
 from services.payments.paytm import (
     PaytmPaymentGateway,
@@ -117,6 +119,22 @@ class PaytmCallbackView(APIView):
                     },
                 )
 
+            return success_response(payload)
+        except AppError as exc:
+            return error_response(exc.message, exc.code, exc.status_code)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class RazorpayCallbackView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        data = request.data or request.POST.dict() or {}
+        try:
+            user_obj = getattr(request, "user", None)
+            actor_uid = user_obj.get("uid") if isinstance(user_obj, dict) else "public"
+            payload = confirm_razorpay_payment(actor_uid=actor_uid, payload=data)
             return success_response(payload)
         except AppError as exc:
             return error_response(exc.message, exc.code, exc.status_code)
@@ -299,21 +317,32 @@ class UnifiedPaymentCreateView(APIView):
                 expected_amount = round(expected_amount * float(getattr(settings, "PAYMENT_USD_TO_INR_RATE", 83.0)), 2)
 
             payment_method = str(payload["payment_method"]).lower()
-            if payment_method not in {"zoho_books", "zoho"}:
-                return error_response("Only Zoho Books payments are enabled", ERROR_CODES["VALIDATION_ERROR"], 400)
 
             idempotency_key = request.headers.get("X-Idempotency-Key", "").strip()
-            data = create_payment_link(
-                actor_uid=actor_uid,
-                registration_id=registration_id,
-                name=payload["user_name"],
-                email=payload["email"],
-                category=payload["category"],
-                addon_food=payload.get("addon_food", False),
-                addon_safari=payload.get("addon_safari", False),
-                idempotency_key=idempotency_key,
-                payment_method=payment_method,
-            )
+            if payment_method in {"zoho_books", "zoho"}:
+                data = create_payment_link(
+                    actor_uid=actor_uid,
+                    registration_id=registration_id,
+                    name=payload["user_name"],
+                    email=payload["email"],
+                    category=payload["category"],
+                    addon_food=payload.get("addon_food", False),
+                    addon_safari=payload.get("addon_safari", False),
+                    idempotency_key=idempotency_key,
+                    payment_method=payment_method,
+                )
+            elif payment_method == "razorpay":
+                data = create_razorpay_payment_order(
+                    actor_uid=actor_uid,
+                    registration_id=registration_id,
+                    name=payload["user_name"],
+                    email=payload["email"],
+                    category=payload["category"],
+                    addon_food=payload.get("addon_food", False),
+                    addon_safari=payload.get("addon_safari", False),
+                )
+            else:
+                return error_response("Unsupported payment method", ERROR_CODES["VALIDATION_ERROR"], 400)
 
             return success_response(data)
         except AppError as exc:

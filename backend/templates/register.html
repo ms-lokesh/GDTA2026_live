@@ -1226,7 +1226,7 @@
 
                         <div class="p-3 mb-3 rounded-3" style="background: #ffffff; border: 1px solid #dee2e6;">
                             <p class="mb-1"><strong>Payment Method:</strong> Zoho Books</p>
-                            <small class="text-muted">Secure checkout via Zoho Books.</small>
+                            <small class="text-muted">Secure checkout via Zoho Books. Foreign fees are converted to INR before checkout.</small>
                         </div>
 
                         <div id="paymentStatus" class="mb-3"></div>
@@ -1250,7 +1250,7 @@
                         <button class="btn btn-success w-100 magic-pulse" id="payNowBtn">
                             <i class="fas fa-lock me-2"></i>Proceed to Pay
                         </button>
-                        <small class="d-block text-muted mt-2">You will be redirected to the payment page.</small>
+                        <small class="d-block text-muted mt-2">You will be redirected to the Zoho Books payment page.</small>
                     </div>
 
                     <div id="paymentSuccessCard" class="payment-success-card" role="status" aria-live="polite">
@@ -1511,7 +1511,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Idempotency-Key': `gdta-${selectedMethod}-${latestRegistration.registration_id}`
+                        'X-Idempotency-Key': `gdta-${selectedMethod}-${latestRegistration.registration_id}-${Date.now()}`
                     },
                     body: JSON.stringify({
                         registration_id: latestRegistration.registration_id,
@@ -1545,8 +1545,13 @@
                         throw new Error('Payment link not returned by server.');
                     }
 
-                    paymentStatus.innerHTML = '<div class="alert alert-info">Zoho Books checkout initialized. Complete payment in the opened tab, then check status here.</div>';
-                    checkPaymentStatusBtn.style.display = 'block';
+                    paymentStatus.innerHTML = `
+                        <div class="alert alert-info">
+                            Zoho Books checkout initialized. Complete payment in the opened tab, then check status here.
+                            <div class="mt-2">Payment URL: <a href="${paymentLink}" target="_blank" rel="noopener">${paymentLink}</a></div>
+                        </div>
+                    `;
+                    if (checkPaymentStatusBtn) checkPaymentStatusBtn.style.display = 'block';
 
                     const popup = window.open(paymentLink, '_blank', 'noopener');
                     if (!popup) {
@@ -1961,15 +1966,19 @@
                     paymentCategoryText.textContent = latestRegistration.registration_category || '-';
                     paymentNameText.textContent = latestRegistration.name || '-';
                     paymentEmailText.textContent = latestRegistration.email || '-';
-                    paymentAmountText.textContent = formatAmount(
-                        latestRegistration.registration_category,
-                        latestRegistration.addon_food,
-                        latestRegistration.addon_safari
-                    );
+                    if (isForeignCategory(latestRegistration.registration_category)) {
+                        paymentAmountText.textContent = 'Final amount will be shown in Razorpay checkout';
+                    } else {
+                        paymentAmountText.textContent = `INR ${getNumericAmount(
+                            latestRegistration.registration_category,
+                            latestRegistration.addon_food,
+                            latestRegistration.addon_safari
+                        ).toFixed(2)}`;
+                    }
 
                     if (paymentConversionText) {
                         if (isForeignCategory(latestRegistration.registration_category)) {
-                            paymentConversionText.textContent = 'Zoho Books will show the INR amount on the payment page.';
+                            paymentConversionText.textContent = 'Foreign registration fees are converted to INR for Razorpay checkout.';
                             paymentConversionText.style.display = 'block';
                         } else {
                             paymentConversionText.textContent = '';
@@ -1978,9 +1987,9 @@
                     }
 
                     paymentStatus.innerHTML = '<div class="alert alert-success">Registration submitted successfully. Continue to payment.</div>';
-                    checkPaymentStatusBtn.style.display = 'none';
+                    if (checkPaymentStatusBtn) checkPaymentStatusBtn.style.display = 'none';
                     latestInvoiceId = null;
-                    latestPaymentMethod = 'zoho_books';
+                    latestPaymentMethod = 'razorpay';
                     resetPaymentSuccessCard();
 
                     const registrationModalEl = document.getElementById('registrationModal');

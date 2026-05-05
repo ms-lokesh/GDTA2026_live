@@ -17,7 +17,6 @@ def _split_csv(value: str):
 
 CRITICAL_ENV_VARS = [
     "SECRET_KEY",
-    "DATABASE_URL",
     "ALLOWED_HOSTS",
     "ZOHO_CLIENT_ID",
     "ZOHO_CLIENT_SECRET",
@@ -27,6 +26,13 @@ CRITICAL_ENV_VARS = [
 missing_env = [key for key in CRITICAL_ENV_VARS if not os.getenv(key)]
 if missing_env:
     raise ImproperlyConfigured(f"Missing required environment variables: {', '.join(missing_env)}")
+
+_db_url = os.getenv("DATABASE_URL", "").strip()
+_db_host = os.getenv("DB_HOST", "").strip()
+if not _db_url and not _db_host:
+    raise ImproperlyConfigured(
+        "Missing database configuration. Provide DATABASE_URL or DB_HOST/DB_NAME/DB_USER/DB_PASSWORD."
+    )
 
 SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
@@ -91,13 +97,26 @@ TEMPLATES = [
 WSGI_APPLICATION = "project.wsgi.application"
 ASGI_APPLICATION = "project.asgi.application"
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ["DATABASE_URL"],
-        conn_max_age=int(os.getenv("DATABASE_CONN_MAX_AGE", "600")),
-        ssl_require=os.getenv("DATABASE_SSL_REQUIRE", "True").lower() == "true",
-    )
-}
+if _db_host:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME", "postgres"),
+            "USER": os.getenv("DB_USER", "postgres"),
+            "PASSWORD": os.getenv("DB_PASSWORD", ""),
+            "HOST": _db_host,
+            "PORT": os.getenv("DB_PORT", "5432"),
+            "CONN_MAX_AGE": int(os.getenv("DATABASE_CONN_MAX_AGE", "600")),
+        }
+    }
+else:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=_db_url,
+            conn_max_age=int(os.getenv("DATABASE_CONN_MAX_AGE", "600")),
+            ssl_require=os.getenv("DATABASE_SSL_REQUIRE", "True").lower() == "true",
+        )
+    }
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
