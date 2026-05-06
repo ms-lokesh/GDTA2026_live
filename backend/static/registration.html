@@ -310,11 +310,28 @@
         let sessionId = null;
         let currentStep = null;
         const totalSteps = 10; // Approximate total steps
+        const REGISTRATION_LOCKED = true;
 
         const stepOrder = ['consent', 'name', 'institution', 'role', 'gdta_member', 'gdta_affiliation', 
                           'country', 'state', 'email', 'review', 'confirmation', 'completed'];
 
+        function showLockedMessage() {
+            const container = document.getElementById('questionContainer');
+            container.innerHTML = `
+                <div class="summary-box">
+                    <h3>Registration Closed</h3>
+                    <p>Please check back later or contact the organizers for updates.</p>
+                </div>
+                <button class="submit-btn" disabled aria-disabled="true">Registration Closed</button>
+            `;
+            updateProgress(0);
+        }
+
         async function startRegistration() {
+            if (REGISTRATION_LOCKED) {
+                showLockedMessage();
+                return;
+            }
             showLoading(true);
             try {
                 const response = await fetch(`${API_BASE}/api/register/start`, {
@@ -337,6 +354,10 @@
         }
 
         async function submitAnswer(answer) {
+            if (REGISTRATION_LOCKED) {
+                showError('Registration is currently closed.');
+                return;
+            }
             showLoading(true);
             hideMessages();
 
@@ -497,6 +518,10 @@
         }
 
         function submitTextAnswer() {
+            if (REGISTRATION_LOCKED) {
+                showError('Registration is currently closed.');
+                return;
+            }
             const input = document.getElementById('answerInput');
             if (input && input.value.trim()) {
                 submitAnswer(input.value.trim());
@@ -542,6 +567,10 @@
 
         // Initialize on page load
         window.onload = () => {
+            if (REGISTRATION_LOCKED) {
+                showLockedMessage();
+                return;
+            }
             startRegistration();
         };
     </script>

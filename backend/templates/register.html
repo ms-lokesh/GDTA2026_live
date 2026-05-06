@@ -69,6 +69,12 @@
     <link href="/static/css/mobile.css" rel="stylesheet">
 
     <style>
+        .registration-locked #submitBtn {
+            pointer-events: none;
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
         .fee-structure-compact {
             background: #ffffff;
             border: 1px solid #e9ecef;
@@ -322,12 +328,76 @@
             box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.18);
         }
 
+        .card-addon-choice .form-check-input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #9ca3af;
+            background: #fff;
+            display: inline-block;
+            position: relative;
+        }
+
+        .card-addon-choice .form-check-input[type="radio"]:checked {
+            border-color: #000000;
+            box-shadow: inset 0 0 0 4px #000000;
+        }
+
         .card-addon-choice .form-check {
             margin-bottom: 4px;
         }
 
         .card-addon-choice .form-check:last-child {
             margin-bottom: 0;
+        }
+
+        @media (max-width: 576px) {
+            .card-addon-choice {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .card-addon-choice .form-check,
+            .plan-check-item,
+            .locked-check-item {
+                display: grid;
+                grid-template-columns: 18px 1fr;
+                align-items: start;
+                column-gap: 10px;
+            }
+
+            .card-addon-choice .form-check,
+            .plan-check-item,
+            .locked-check-item {
+                margin-left: 0;
+            }
+
+            .card-addon-choice .form-check-input,
+            .plan-check-item input[type="checkbox"],
+            .locked-check-item input[type="checkbox"] {
+                margin-top: 0;
+                flex: 0 0 auto;
+            }
+
+            .card-addon-choice .form-check-input[type="radio"] {
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                aspect-ratio: 1 / 1;
+            }
+
+            .card-addon-choice .form-check-label {
+                line-height: 1.2;
+            }
+
+            .card-addon-choice .form-check-label,
+            .plan-check-item,
+            .locked-check-item {
+                word-break: break-word;
+            }
         }
 
         .reg-flow-shell {
@@ -1192,9 +1262,10 @@
 
                             <!-- Submit Button -->
                             <div class="d-grid gap-2 mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled aria-disabled="true" tabindex="-1" style="pointer-events: none; cursor: not-allowed; opacity: 0.75;">
                                     <i class="fas fa-paper-plane me-2"></i>Submit Registration
                                 </button>
+                                <p class="text-muted mt-2 mb-0" id="registrationLockedNote" style="display: none;">Registration is currently closed.</p>
                             </div>
 
                             <!-- Success/Error Messages -->
@@ -1363,6 +1434,7 @@
             const checkPaymentStatusBtn = document.getElementById('checkPaymentStatusBtn');
             const EVENT_ID = 'gdta-2026';
             const FORM_STORAGE_KEY = 'gdta_registration_form_v1';
+            const REGISTRATION_LOCKED = true;
 
             let latestRegistration = null;
             let latestInvoiceId = null;
@@ -1395,6 +1467,25 @@
                 'Foreign Corporate Delegate': { base: 100, food: 0, safari: 0, currency: '$' },
                 'Foreign Delegate': { base: 100, food: 0, safari: 0, currency: '$' }
             };
+
+            if (REGISTRATION_LOCKED) {
+                document.body.classList.add('registration-locked');
+            }
+
+            if (REGISTRATION_LOCKED && submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.setAttribute('aria-disabled', 'true');
+                submitBtn.classList.add('disabled');
+                submitBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Registration Closed';
+                submitBtn.title = 'Registration is currently closed.';
+                const lockedNote = document.getElementById('registrationLockedNote');
+                if (lockedNote) lockedNote.style.display = 'block';
+                submitBtn.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    showFormAlert('warning', 'Registration is currently closed.');
+                });
+            }
 
             const foreignTierToCategory = {
                 student: 'Foreign Student',
@@ -1463,6 +1554,10 @@
 
             function setSubmitting(isSubmitting) {
                 if (!submitBtn) return;
+                if (REGISTRATION_LOCKED) {
+                    submitBtn.disabled = true;
+                    return;
+                }
                 submitBtn.disabled = isSubmitting;
                 submitBtn.innerHTML = isSubmitting
                     ? '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...'
@@ -1879,6 +1974,10 @@
 
             registrationForm.addEventListener('submit', function (event) {
                 event.preventDefault();
+                if (REGISTRATION_LOCKED) {
+                    showFormAlert('warning', 'Registration is currently closed.');
+                    return;
+                }
                 foodAddonInput.value = addonFoodCheckbox.checked;
                 safariAddonInput.value = addonSafariCheckbox.checked;
                 alertContainer.innerHTML = '';

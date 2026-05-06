@@ -461,12 +461,13 @@
                             </div>
 
                             <div class="d-grid gap-2 mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled aria-disabled="true">
                                     <span class="spinner-border spinner-border-sm d-none" role="status"
                                         aria-hidden="true"></span>
                                     <i class="fas fa-paper-plane me-2"></i>
                                     Register Now
                                 </button>
+                                <p class="text-muted mt-2 mb-0" id="registrationLockedNote" style="display: none;">Registration is currently closed.</p>
                             </div>
                         </form>
                     </div>
@@ -520,6 +521,8 @@
                             const digits = phone.replace(/\D/g, '');
                             return digits.length >= 10 && digits.length <= 15;
                         }
+            const REGISTRATION_LOCKED = true;
+
             function showFormError(message) {
                 const errorText = document.getElementById('errorText');
                 const errorMessage = document.getElementById('errorMessage');
@@ -529,12 +532,32 @@
                 successMessage.classList.add('d-none');
             }
 
+            const submitBtnInit = document.getElementById('submitBtn');
+            if (REGISTRATION_LOCKED && submitBtnInit) {
+                submitBtnInit.disabled = true;
+                submitBtnInit.setAttribute('aria-disabled', 'true');
+                submitBtnInit.classList.add('disabled');
+                submitBtnInit.title = 'Registration is currently closed.';
+                const lockedNote = document.getElementById('registrationLockedNote');
+                if (lockedNote) lockedNote.style.display = 'block';
+                submitBtnInit.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    showFormError('Registration is currently closed.');
+                });
+            }
+
             document.getElementById('phone').addEventListener('input', (e) => {
                 e.target.value = e.target.value.replace(/[^0-9+\-\s()]/g, '');
             });
 
             document.getElementById('hackathonRegForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
+
+                if (REGISTRATION_LOCKED) {
+                    showFormError('Registration is currently closed.');
+                    return;
+                }
 
                 const submitBtn = document.getElementById('submitBtn');
                 const spinner = submitBtn.querySelector('.spinner-border');

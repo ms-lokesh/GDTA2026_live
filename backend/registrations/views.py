@@ -51,6 +51,12 @@ def _runtime_error_response(exc):
     message = str(exc)
     return error_response(message, ERROR_CODES["VALIDATION_ERROR"], 400)
 
+
+def _registration_locked_response():
+    if getattr(settings, "REGISTRATION_LOCKED", False):
+        return error_response("Registration is currently closed", ERROR_CODES["FORBIDDEN"], 403)
+    return None
+
 # --- Paytm Payment Views ---
 class PaytmInitiatePaymentView(APIView):
     authentication_classes = []
@@ -214,6 +220,9 @@ class RegistrationSubmitView(APIView):
     throttle_classes = [RegistrationSubmitRateThrottle]
 
     def post(self, request):
+        locked_response = _registration_locked_response()
+        if locked_response:
+            return locked_response
         serializer = SubmitRegistrationSerializer(data=request.data)
         if not serializer.is_valid():
             return error_response(str(serializer.errors), ERROR_CODES["VALIDATION_ERROR"], 400)
@@ -233,6 +242,9 @@ class RegistrationPaymentCreateLinkView(APIView):
     throttle_classes = [PaymentCreateRateThrottle]
 
     def post(self, request):
+        locked_response = _registration_locked_response()
+        if locked_response:
+            return locked_response
         serializer = PaymentCreateLinkSerializer(data=request.data)
         if not serializer.is_valid():
             return error_response(str(serializer.errors), ERROR_CODES["VALIDATION_ERROR"], 400)
@@ -288,6 +300,9 @@ class UnifiedPaymentCreateView(APIView):
     throttle_classes = [PaymentCreateRateThrottle]
 
     def post(self, request):
+        locked_response = _registration_locked_response()
+        if locked_response:
+            return locked_response
         serializer = UnifiedPaymentCreateSerializer(data=request.data)
         if not serializer.is_valid():
             return error_response(str(serializer.errors), ERROR_CODES["VALIDATION_ERROR"], 400)
