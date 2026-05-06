@@ -62,6 +62,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "middleware.admin_basic_auth.AdminBasicAuthMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -180,6 +181,11 @@ SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS") or "31536000")
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 X_FRAME_OPTIONS = "DENY"
+
+# Admin host basic auth
+ADMIN_PANEL_HOST = os.getenv("ADMIN_PANEL_HOST", "").strip().lower()
+ADMIN_BASIC_AUTH_USER = os.getenv("ADMIN_BASIC_AUTH_USER", "").strip()
+ADMIN_BASIC_AUTH_PASS = os.getenv("ADMIN_BASIC_AUTH_PASS", "").strip()
 
 _coop_value = os.getenv("SECURE_CROSS_ORIGIN_OPENER_POLICY", "")
 SECURE_CROSS_ORIGIN_OPENER_POLICY = _coop_value if _coop_value else None

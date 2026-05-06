@@ -1263,9 +1263,9 @@
                             <!-- Submit Button -->
                             <div class="d-grid gap-2 mt-4">
                                 <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled aria-disabled="true" tabindex="-1" style="pointer-events: none; cursor: not-allowed; opacity: 0.75;">
-                                    <i class="fas fa-paper-plane me-2"></i>Submit Registration
+                                    <i class="fas fa-lock me-2"></i>Submit Registration
                                 </button>
-                                <p class="text-muted mt-2 mb-0" id="registrationLockedNote" style="display: none;">Registration is currently closed.</p>
+                                <p class="text-muted mt-2 mb-0" id="registrationLockedNote" style="display: none;"></p>
                             </div>
 
                             <!-- Success/Error Messages -->
@@ -1476,10 +1476,10 @@
                 submitBtn.disabled = true;
                 submitBtn.setAttribute('aria-disabled', 'true');
                 submitBtn.classList.add('disabled');
-                submitBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Registration Closed';
+                submitBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Submit Registration';
                 submitBtn.title = 'Registration is currently closed.';
                 const lockedNote = document.getElementById('registrationLockedNote');
-                if (lockedNote) lockedNote.style.display = 'block';
+                if (lockedNote) lockedNote.style.display = 'none';
                 submitBtn.addEventListener('click', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
