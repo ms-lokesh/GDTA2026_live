@@ -52,6 +52,8 @@ PAGE_MAP = {
     "sponsors": "sponsors.html",
     "travel-stay": "travel-stay.html",
     "code": "code.html",
+    "privacy-policy": "privacy-policy.html",
+    "terms-and-conditions": "terms-and-conditions.html",
 }
 
 DISABLED_SLUGS = {"chatbot"}
@@ -96,6 +98,8 @@ urlpatterns = [
     path("sponsors", clean_page, {"page": "sponsors"}),
     path("travel-stay", clean_page, {"page": "travel-stay"}),
     path("code", clean_page, {"page": "code"}),
+    path("privacy-policy", clean_page, {"page": "privacy-policy"}),
+    path("terms-and-conditions", clean_page, {"page": "terms-and-conditions"}),
     re_path(r"^(?P<page>[\w\-]+\.html)$", html_page),
     path("api/health", health),
     path("api/admin-panel/login", AdminLoginView.as_view()),

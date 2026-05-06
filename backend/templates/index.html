@@ -97,6 +97,60 @@
             padding: 0 !important;
         }
 
+        .hero-media .hero-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        body.hero-video-finished .hero-media video {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        body.hero-video-finished .hero-section {
+            height: 100vh !important;
+            min-height: 520px !important;
+            padding: 0 !important;
+        }
+
+        body.hero-video-finished .hero-media {
+            position: absolute !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        body.hero-video-finished .hero-media .hero-image {
+            height: 100% !important;
+        }
+
+        @media (max-width: 768px) {
+            body.hero-video-finished .hero-section {
+                height: 100vh !important;
+                min-height: 100vh !important;
+                padding: 0 !important;
+            }
+        }
+
+        body.hero-video-finished .hero-media .hero-image {
+            opacity: 1;
+        }
+
+        body.hero-video-playing .navbar-container {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
         @media (max-width: 768px) {
             .hero-section {
                 height: 100vh;
@@ -529,13 +583,23 @@
         style="width: 100%; display: flex; align-items: stretch; justify-content: flex-start; background-color: #1a1a1a; position: relative; overflow: hidden;">
 
         <div class="hero-media hero-media-desktop" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 1;">
-            <img src="/static/img/Background/landing_page_final.png" alt="GDTA 2026 Hero (Desktop)"
+            <video id="heroVideo" autoplay muted playsinline webkit-playsinline preload="auto"
+                poster="/static/img/Background/landing_page_final.png"
                 style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; background-color: #000000;">
+                <source src="/static/img/Background/bg_vdo.web.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <img class="hero-image" src="/static/img/Background/landing_page_final.png" alt="GDTA 2026 Hero (Desktop)">
         </div>
 
         <div class="hero-media hero-media-mobile" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 1;">
-            <img src="/static/img/Background/GDTA%20-%20Mobile%20View%2C%20April%2028%2C%202026_page-0001.jpg" alt="GDTA 2026 Hero (Mobile)"
+            <video id="heroVideoMobile" autoplay muted playsinline webkit-playsinline preload="auto"
+                poster="/static/img/Background/GDTA%20-%20Mobile%20View%2C%20April%2028%2C%202026_page-0001.jpg"
                 style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; background-color: #000000;">
+                <source src="/static/img/Background/hero_mobile.web.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <img class="hero-image" src="/static/img/Background/mobile-hero.png" alt="GDTA 2026 Hero (Mobile)">
         </div>
     </div>
     
@@ -724,6 +788,10 @@
             <p
                 style="color: #495057 !important; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
                 GDTA India Chapter – D Conference 2026<br>Chaos & Clarity: Driving Progress with Design Thinking</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap mb-3">
+                <a class="btn btn-sm btn-outline-primary border-2 px-3" href="/terms-and-conditions.html">Terms and Conditions</a>
+                <a class="btn btn-sm btn-outline-primary border-2 px-3" href="/privacy-policy.html">Privacy Policy</a>
+            </div>
             <div class="d-flex justify-content-center mb-3">
                 <a class="btn btn-sm btn-outline-primary border-2 mx-1"
                     href="https://www.instagram.com/snsinstitutions/?hl=en" target="_blank"
@@ -880,6 +948,90 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function () {
+            const heroPlaybackKey = 'gdtaHeroPlayed';
+            const heroAlreadyPlayed = sessionStorage.getItem(heroPlaybackKey) === '1';
+
+            document.body.classList.remove('hero-video-finished');
+
+            const heroVideos = [
+                document.getElementById('heroVideo'),
+                document.getElementById('heroVideoMobile')
+            ].filter(Boolean);
+
+            const tryPlayHeroVideos = () => {
+                heroVideos.forEach((video) => {
+                    video.muted = true;
+                    video.defaultMuted = true;
+                    video.setAttribute('playsinline', '');
+                    video.setAttribute('webkit-playsinline', '');
+                    video.currentTime = 0;
+                    const playPromise = video.play();
+                    if (playPromise && typeof playPromise.catch === 'function') {
+                        playPromise.catch(() => {});
+                    }
+                });
+            };
+
+            let heroSwapDone = false;
+
+            const showNavbar = () => {
+                document.body.classList.remove('hero-video-playing');
+            };
+
+            const hideNavbar = () => {
+                document.body.classList.add('hero-video-playing');
+            };
+
+            const showHeroImage = () => {
+                if (heroSwapDone) {
+                    return;
+                }
+
+                heroSwapDone = true;
+                sessionStorage.setItem(heroPlaybackKey, '1');
+                document.body.classList.add('hero-video-finished');
+                heroVideos.forEach((video) => {
+                    video.pause();
+                    video.currentTime = 0;
+                });
+                showNavbar();
+            };
+
+            if (heroAlreadyPlayed) {
+                showHeroImage();
+            } else {
+                hideNavbar();
+                tryPlayHeroVideos();
+            }
+
+            if (!heroAlreadyPlayed) {
+                heroVideos.forEach((video) => {
+                    video.addEventListener('ended', showHeroImage, { once: true });
+                    video.addEventListener('error', showHeroImage, { once: true });
+                });
+            }
+
+            document.addEventListener('touchstart', () => {
+                if (heroAlreadyPlayed) {
+                    return;
+                }
+
+                tryPlayHeroVideos();
+                heroVideos.forEach((video) => video.addEventListener('ended', showHeroImage, { once: true }));
+            }, { once: true });
+
+            document.addEventListener('click', () => {
+                if (heroAlreadyPlayed) {
+                    return;
+                }
+
+                tryPlayHeroVideos();
+                heroVideos.forEach((video) => video.addEventListener('ended', showHeroImage, { once: true }));
+            }, { once: true });
+
+            if (!heroAlreadyPlayed) {
+                setTimeout(showHeroImage, 6000);
+            }
             // Progress bar scroll effect
             const progressBar = document.createElement('div');
             progressBar.className = 'progress-bar';

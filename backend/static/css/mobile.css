@@ -235,7 +235,8 @@
     max-height: none !important;
   }
 
-  .hero-media img {
+  .hero-media img,
+  .hero-media video {
     width: 100% !important;
     height: auto !important;
     object-fit: contain !important;
