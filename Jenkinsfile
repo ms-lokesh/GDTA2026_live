@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_REGION = 'ap-south-1'
         ECR_REPO = '864981730114.dkr.ecr.ap-south-1.amazonaws.com/gdta'
-        ECS_CLUSTER = 'student-workbench-cluster'
+        ECS_CLUSTER = 'snsihub-cluster-dev'
         ECS_SERVICE = 'gdta-td-service'
         TASK_FAMILY = 'gdta-td'
         CONTAINER_NAME = 'gdta'
