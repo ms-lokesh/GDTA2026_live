@@ -85,6 +85,24 @@
         document.body.appendChild(tag);
     });
 
+    // Floating call for speakers tag (sitewide)
+    $(function () {
+        if (document.getElementById('gdta-speakers-tag')) return;
+
+        var speakersStyle = document.createElement('style');
+        speakersStyle.textContent = "\n#gdta-speakers-tag{position:fixed;right:-2px;top:calc(50% + 180px);transform:translateY(-50%);z-index:1200;background:#000;color:#fff;text-decoration:none;padding:12px 10px;font-weight:700;letter-spacing:.4px;border-radius:12px 0 0 12px;box-shadow:0 10px 24px rgba(0,0,0,.2);transition:transform .2s ease,box-shadow .2s ease,background .2s ease;}\n#gdta-speakers-tag span{writing-mode:vertical-rl;transform:rotate(180deg);display:block;color:#ffffff !important;text-shadow:0 0 6px rgba(255,255,255,.95),0 0 14px rgba(255,255,255,.8),0 0 24px rgba(255,255,255,.6);}\n#gdta-speakers-tag:hover{transform:translateY(-50%) translateX(-6px);box-shadow:0 12px 28px rgba(0,0,0,.28);background:#1f1f1f;}\n@media (max-width:768px){#gdta-speakers-tag{display:none;}}\n";
+        document.head.appendChild(speakersStyle);
+
+        var speakersTag = document.createElement('a');
+        speakersTag.id = 'gdta-speakers-tag';
+        speakersTag.href = 'https://docs.google.com/forms/d/e/1FAIpQLScQwknFSsZ3SbRWaoaAJ6Ts96dBf_xNCYmWdt5TrCfRz9Lknw/viewform';
+        speakersTag.setAttribute('target', '_blank');
+        speakersTag.setAttribute('rel', 'noopener noreferrer');
+        speakersTag.setAttribute('aria-label', 'Call for Speakers');
+        speakersTag.innerHTML = '<span>Call for Speakers</span>';
+        document.body.appendChild(speakersTag);
+    });
+
     
 })(jQuery);
 
