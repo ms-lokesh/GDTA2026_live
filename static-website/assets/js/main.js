@@ -78,8 +78,10 @@
 
         var tag = document.createElement('a');
         tag.id = 'gdta-register-tag';
-        var navbarRegister = document.querySelector('.navbar-register-btn');
-        tag.href = navbarRegister ? navbarRegister.getAttribute('href') : '/register.html';
+        // Always point the floating register tag to the external registration URL
+        tag.href = 'https://register.gdta2026.com';
+        tag.setAttribute('target', '_blank');
+        tag.setAttribute('rel', 'noopener noreferrer');
         tag.setAttribute('aria-label', 'Register Now');
         tag.innerHTML = '<span>Register Now</span>';
         document.body.appendChild(tag);
