@@ -1,85 +1,47 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs "NodeJS_18"  // Make sure this is the exact name in Jenkins global tool config
+    environment {
+        AWS_REGION = 'ap-south-1'
+        S3_BUCKET = 'gdta2026.com'
+        CLOUDFRONT_DISTRIBUTION_ID = "E3KTT34UUI0OL6"
     }
-
-   environment {
-        /* ===============================
-           AWS + CloudFront
-        =============================== */
-       AWS_REGION = "ap-south-1"
-       S3_BUCKET  = "gdta2026.com"
-       CLOUDFRONT_DISTRIBUTION_ID = "E3KTT34UUI0OL6"
-    }
-
-
 
     stages {
-        stage('Check Node.js & npm Versions') {
+
+        stage('Checkout') {
             steps {
-                sh 'node -v'
-                sh 'npm -v'
+                checkout scm
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Verify Files') {
             steps {
-                sh 'npm install'
+                sh '''
+                ls -la
+                ls -la static-website
+                '''
             }
         }
 
-        stage('Check Node.js Compatibility') {
+        stage('Deploy to S3') {
             steps {
-                script {
-                    def nodeVersion = sh(script: "node -v", returnStdout: true).trim().replace("v", "")
-                    def majorVersion = nodeVersion.tokenize('.')[0].toInteger()
-                    if (majorVersion < 20) {
-                        echo ":warning: Warning: React Router 7.5.0 recommends Node.js >= 20. You're using v${nodeVersion}."
-                    }
-                }
-            }
-        }
-
-        stage('Build React App') {
-            steps {
-                sh 'CI=false npm run build'
-            }
-        }
-
-        stage('Upload Build to S3') {
-            steps {
-                script {
-                    sh """
-                    aws s3 sync dist/assets s3://$S3_BUCKET/assets \
-                    --region $AWS_REGION \
-                    --cache-control "public,max-age=31536000,immutable"
-                    aws s3 cp dist/index.html s3://$S3_BUCKET/index.html \
-                    --region $AWS_REGION \
-                    --cache-control "no-cache,no-store,must-revalidate"
-                    """
-                }
-            }
-        }
-
-        stage('Invalidate CloudFront Cache') {
-            steps {
-                script {
-                    sh """
-                    aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
-                    """
-                }
+                sh '''
+                aws s3 sync static-website/ s3://$S3_BUCKET \
+                --delete \
+                --region $AWS_REGION
+                '''
             }
         }
     }
 
     post {
         success {
-            echo ':white_check_mark: Deployment Successful! :tada:'
+            echo 'Deployment Successful!'
         }
+
         failure {
-            echo ':x: Deployment Failed!'
+            echo 'Deployment Failed!'
         }
     }
 }
