@@ -1,66 +1,63 @@
 pipeline {
-agent any
+    agent any
 
-```
-environment {
-    AWS_REGION = 'ap-south-1'
-    S3_BUCKET = 'gdta2026.com'
-    CLOUDFRONT_DISTRIBUTION_ID = 'E3KTT34UUI0OL6'
-}
+    environment {
+        AWS_REGION = 'ap-south-1'
+        S3_BUCKET = 'gdta2026.com'
+        CLOUDFRONT_DISTRIBUTION_ID = 'E3KTT34UUI0OL6'
+    }
 
-stages {
+    stages {
 
-    stage('Checkout') {
-        steps {
-            checkout scm
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Verify Files') {
+            steps {
+                sh '''
+                echo "Current Directory:"
+                pwd
+
+                echo "Repository Files:"
+                ls -la
+
+                echo "Website Files:"
+                ls -la static-website
+                '''
+            }
+        }
+
+        stage('Deploy to S3') {
+            steps {
+                sh '''
+                aws s3 sync static-website/ s3://$S3_BUCKET \
+                --delete \
+                --region $AWS_REGION
+                '''
+            }
+        }
+
+        stage('Invalidate CloudFront') {
+            steps {
+                sh '''
+                aws cloudfront create-invalidation \
+                --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+                --paths "/*"
+                '''
+            }
         }
     }
 
-    stage('Verify Files') {
-        steps {
-            sh '''
-            echo "Current Directory:"
-            pwd
+    post {
+        success {
+            echo 'Deployment Successful!'
+        }
 
-            echo "Repository Files:"
-            ls -la
-
-            echo "Website Files:"
-            ls -la static-website
-            '''
+        failure {
+            echo 'Deployment Failed!'
         }
     }
-
-    stage('Deploy to S3') {
-        steps {
-            sh '''
-            aws s3 sync static-website/ s3://$S3_BUCKET \
-            --delete \
-            --region $AWS_REGION
-            '''
-        }
-    }
-
-    stage('Invalidate CloudFront') {
-        steps {
-            sh '''
-            aws cloudfront create-invalidation \
-            --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
-            --paths "/*"
-            '''
-        }
-    }
-}
-
-post {
-    success {
-        echo 'Deployment Successful!'
-    }
-
-    failure {
-        echo 'Deployment Failed!'
-    }
-}
-```
-
 }
