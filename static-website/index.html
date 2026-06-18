@@ -91,7 +91,7 @@
 
     <!-- Custom Color Overrides -->
     <link href="./assets/css/custom-overrides.css" rel="stylesheet">
-    <link href="./assets/css/mobile.css" rel="stylesheet">
+    <link href="./assets/css/mobile.css?v=1.2" rel="stylesheet">
 
     <!-- Advanced UI Enhancements -->
     <style>
@@ -124,6 +124,7 @@
         body.hero-video-finished .hero-media video {
             opacity: 0;
             visibility: hidden;
+            display: none !important;
         }
 
         body.hero-video-finished .hero-section {
@@ -145,9 +146,19 @@
 
         @media (max-width: 768px) {
             body.hero-video-finished .hero-section {
-                height: 100vh !important;
-                min-height: 100vh !important;
-                padding: 0 !important;
+                height: auto !important;
+                min-height: 0 !important;
+                padding: var(--gdta-mobile-nav-top, 72px) 0 0 0 !important;
+            }
+            body.hero-video-finished .hero-media {
+                position: relative !important;
+                inset: auto !important;
+                width: 100% !important;
+                height: auto !important;
+            }
+            body.hero-video-finished .hero-media .hero-image {
+                position: relative !important;
+                height: auto !important;
             }
         }
 
@@ -164,8 +175,8 @@
 
         @media (max-width: 768px) {
             .hero-section {
-                height: 100vh;
-                min-height: 100vh;
+                height: auto;
+                min-height: 0;
             }
         }
 
@@ -544,6 +555,8 @@
                 <img src="./assets/img/Logo/GIC-cropped.png" alt="GDTA Logo" style="height: 80px; width: auto;">
             </a>
 
+            <a class="navbar-register-btn-mobile" href="https://register.gdta2026.com">Register</a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -834,7 +847,7 @@
     <script src="./assets/lib/waypoints/waypoints.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/main.js?v=1.2"></script>
     <script src="./assets/js/mobile-nav.js"></script>
 
     <script>
