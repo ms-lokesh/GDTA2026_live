@@ -79,7 +79,7 @@
         var tag = document.createElement('a');
         tag.id = 'gdta-register-tag';
         // Always point the floating register tag to the external registration URL
-        tag.href = 'https://register.gdta2026.com';
+        tag.href = 'https://register.gdta2026.com/#/tickets';
         tag.setAttribute('target', '_blank');
         tag.setAttribute('rel', 'noopener noreferrer');
         tag.setAttribute('aria-label', 'Register Now');
