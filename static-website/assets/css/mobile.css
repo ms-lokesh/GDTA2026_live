@@ -417,14 +417,12 @@
 
 /* Floating hanging tags overrides for mobile view */
 @media (max-width: 768px) {
-  #gdta-register-tag,
-  #gdta-speakers-tag {
+  #gdta-register-tag {
     display: block !important;
     padding: 8px 5px !important;
     right: -1px !important;
   }
-  #gdta-register-tag span,
-  #gdta-speakers-tag span {
+  #gdta-register-tag span {
     font-size: 11px !important;
   }
 }
