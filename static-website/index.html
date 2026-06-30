@@ -839,6 +839,19 @@
     </div>
     <!-- Footer End -->
 
+    <!-- Guest Highlights Modal -->
+    <div id="guestModal" class="guest-modal-overlay">
+        <div class="guest-modal-box">
+            <button class="guest-modal-close-btn" id="closeGuestModalBtn" aria-label="Close modal">&times;</button>
+            <h3 class="guest-modal-title">Featured Guests</h3>
+            <p class="guest-modal-subtitle">GDTA 2026 Conference Highlights & Key Speakers</p>
+            <div class="guest-modal-img-container">
+                <img src="./assets/img/guests.jpg" alt="Featured Guests" class="guest-modal-img">
+            </div>
+            <a href="https://register.gdta2026.com/#/tickets" target="_blank" class="guest-modal-action-btn">Register Now</a>
+        </div>
+    </div>
+
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1020,6 +1033,11 @@
                     video.currentTime = 0;
                 });
                 showNavbar();
+                
+                // Show guest modal a short time after the hero video finishes
+                if (typeof openGuestModal === 'function') {
+                    setTimeout(openGuestModal, 500);
+                }
             };
 
             if (heroAlreadyPlayed) {
@@ -1150,6 +1168,44 @@
 
             // Start auto-rotation
             startAutoRotate();
+
+            // Guest Modal Logic
+            const guestModal = document.getElementById('guestModal');
+            const closeGuestModalBtn = document.getElementById('closeGuestModalBtn');
+
+            function openGuestModal() {
+                document.body.classList.add('modal-open');
+                guestModal.classList.add('show');
+            }
+
+            function closeGuestModal() {
+                document.body.classList.remove('modal-open');
+                guestModal.classList.remove('show');
+            }
+
+            if (guestModal && closeGuestModalBtn) {
+                closeGuestModalBtn.addEventListener('click', closeGuestModal);
+                
+                // Also close modal when clicking on the overlay backdrop
+                guestModal.addEventListener('click', (e) => {
+                    if (e.target === guestModal) {
+                        closeGuestModal();
+                    }
+                });
+
+                // Also close on escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && guestModal.classList.contains('show')) {
+                        closeGuestModal();
+                    }
+                });
+
+                // Close on click of CTA button
+                const actionBtn = guestModal.querySelector('.guest-modal-action-btn');
+                if (actionBtn) {
+                    actionBtn.addEventListener('click', closeGuestModal);
+                }
+            }
         });
 
         // Add ripple animation keyframe
