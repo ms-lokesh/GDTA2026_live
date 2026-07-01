@@ -694,9 +694,10 @@ body.modal-open {
 }
 
 .os-windows .guest-modal-img-container {
+    display: block !important; /* Override base display: flex to ensure max-height on the image is respected */
     width: fit-content;
     max-width: 100%;
-    margin: 0; /* Remove margin entirely */
+    margin: 0 auto; /* Center horizontally */
     border-radius: 16px;
     overflow: hidden;
     border: none; /* Remove border frame */
@@ -730,7 +731,7 @@ body.modal-open {
     }
     
     .os-windows .guest-modal-img-container {
-        margin: 0;
+        margin: 0 auto;
         border-radius: 12px;
     }
     
@@ -753,7 +754,7 @@ body.modal-open {
     }
     
     .os-windows .guest-modal-img-container {
-        margin: 0;
+        margin: 0 auto;
         border-radius: 12px;
     }
     
