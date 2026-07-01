@@ -1,13 +1,21 @@
 /* GDTA Conference 2026 Brand Colors - Professional White Theme */
 :root {
-  --gdta-bg-primary: #FFFFFF;      /* Primary Background - White */
-  --gdta-bg-card: #F8F9FA;         /* Card / Surface - Light Grey */
-  --gdta-accent: #000000;          /* Primary Accent - Black */
-  --gdta-text-primary: #212529;    /* Primary Text - Dark Grey/Black */
-  --gdta-text-secondary: #495057;  /* Secondary Text - Medium Grey */
-  --gdta-text-muted: #6C757D;      /* Muted Text - Grey */
-  --gdta-border: #DEE2E6;          /* Border Color - Light Grey */
-  --gdta-hover: #E9ECEF;           /* Hover Background - Very Light Grey */
+    --gdta-bg-primary: #FFFFFF;
+    /* Primary Background - White */
+    --gdta-bg-card: #F8F9FA;
+    /* Card / Surface - Light Grey */
+    --gdta-accent: #000000;
+    /* Primary Accent - Black */
+    --gdta-text-primary: #212529;
+    /* Primary Text - Dark Grey/Black */
+    --gdta-text-secondary: #495057;
+    /* Secondary Text - Medium Grey */
+    --gdta-text-muted: #6C757D;
+    /* Muted Text - Grey */
+    --gdta-border: #DEE2E6;
+    /* Border Color - Light Grey */
+    --gdta-hover: #E9ECEF;
+    /* Hover Background - Very Light Grey */
 }
 
 /* Global Resets */
@@ -24,13 +32,18 @@ body {
     padding: 0 !important;
 }
 
-.container-fluid > .container {
+.container-fluid>.container {
     padding-left: 15px;
     padding-right: 15px;
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: 'Montserrat', sans-serif !important;
     font-weight: 700 !important;
     color: var(--gdta-text-primary) !important;
@@ -40,11 +53,15 @@ h1 {
     font-weight: 800 !important;
 }
 
-p, span, div, a {
+p,
+span,
+div,
+a {
     color: var(--gdta-text-secondary) !important;
 }
 
-.text-white, .text-light {
+.text-white,
+.text-light {
     color: var(--gdta-text-primary) !important;
 }
 
@@ -55,7 +72,7 @@ p, span, div, a {
     flex-direction: column;
 }
 
-.content-card > div:first-child {
+.content-card>div:first-child {
     flex-shrink: 0;
 }
 
@@ -67,7 +84,8 @@ p, span, div, a {
     flex: 1;
 }
 
-.bg-dark, .bg-secondary {
+.bg-dark,
+.bg-secondary {
     background-color: var(--gdta-bg-primary) !important;
 }
 
@@ -155,9 +173,12 @@ p, span, div, a {
 }
 
 @keyframes pop-bounce {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.08);
     }
@@ -190,8 +211,8 @@ p, span, div, a {
         height: 100%;
     }
 
-    .featured-article .gradient-border-inner .row > .col-lg-5,
-    .featured-article .gradient-border-inner .row > .col-lg-7 {
+    .featured-article .gradient-border-inner .row>.col-lg-5,
+    .featured-article .gradient-border-inner .row>.col-lg-7 {
         height: 100%;
     }
 
@@ -453,13 +474,15 @@ html {
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     display: flex;
-    align-items: flex-start; /* Align to top when content overflows, works in tandem with margin: auto */
+    align-items: flex-start;
+    /* Align to top when content overflows, works in tandem with margin: auto */
     justify-content: center;
     z-index: 10000;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.4s ease, visibility 0.4s ease;
-    overflow-y: auto; /* Enable scrolling when content is taller than viewport */
+    overflow-y: auto;
+    /* Enable scrolling when content is taller than viewport */
     padding: 40px 20px; /* Spacing for top/bottom during scroll, and sides on mobile */
 }
 
@@ -505,7 +528,7 @@ html {
     line-height: 1;
     transition: background-color 0.2s ease, transform 0.2s ease;
     z-index: 10;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .guest-modal-close-btn:hover {
@@ -536,7 +559,8 @@ html {
 }
 
 .guest-modal-action-btn {
-    background-color: #F59E0B !important; /* Gold accent color, matching image_1.png */
+    background-color: #F59E0B !important;
+    /* Gold accent color, matching image_1.png */
     border-color: #F59E0B !important;
     color: #ffffff !important;
     font-weight: 700 !important;
@@ -560,9 +584,11 @@ html {
     color: #ffffff !important;
 }
 
-/* Prevent body scrolling when modal is open */
+/* Prevent body and HTML scrolling when modal is open */
+html.modal-open,
 body.modal-open {
-    overflow: hidden;
+    overflow: hidden !important;
+    height: 100vh !important;
 }
 
 /* Responsive overrides for smaller heights (e.g. laptops, mobile landscape) */
@@ -570,15 +596,21 @@ body.modal-open {
     .guest-modal-overlay {
         padding: 15px 10px;
     }
+
     .guest-modal-box {
         padding: 16px;
+        width: fit-content;
+        max-width: 90%;
     }
+
     .guest-modal-img-container {
         margin-bottom: 12px;
     }
+
     .guest-modal-img {
         max-height: 68vh; /* Maximize vertical height on shorter screens */
     }
+
     .guest-modal-action-btn {
         padding: 10px 28px !important;
         font-size: 14px !important;
@@ -588,22 +620,151 @@ body.modal-open {
 /* Responsive overrides for smaller widths (e.g. mobile phones) */
 @media (max-width: 480px) {
     .guest-modal-overlay {
-        padding: 15px 10px;
+        padding: 10px 10px;
     }
+
     .guest-modal-box {
         padding: 16px 12px;
         border-radius: 12px;
+        width: fit-content;
+        max-width: 92%;
     }
+
     .guest-modal-img-container {
         margin-bottom: 12px;
     }
+
     .guest-modal-action-btn {
         padding: 10px 24px !important;
         font-size: 14px !important;
     }
+
     .guest-modal-close-btn {
         top: 8px;
         right: 8px;
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+    }
+}
+
+/* ==========================================================================
+   WINDOWS OS OVERRIDES - EXCLUSIVE STYLING TO INCREASE IMAGE & READABLE TEXT
+   ========================================================================== */
+.os-windows .guest-modal-overlay {
+    padding: 10px; /* Shifted flyer all the way to the top edge of the screen */
+    overflow-y: hidden; /* Disable vertical scrollbar */
+}
+
+.os-windows .guest-modal-box {
+    padding: 0; /* Remove padding entirely so the image covers the card fully */
+    width: fit-content;
+    max-width: 88%; /* Slightly adjusted max-width to leave side space for close button */
+    margin: 5px auto; /* Centered with a minimal 5px vertical margin */
+    border-radius: 16px;
+    overflow: visible; /* Allow close button to float outside */
+    background-color: transparent; /* Transparent background */
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5); /* Stronger premium drop shadow */
+}
+
+.os-windows .guest-modal-close-btn {
+    position: absolute;
+    top: 0; 
+    right: -45px; /* Floats clean on the right side of the flyer (clear of image content) */
+    background: rgba(0, 0, 0, 0.65); /* Semi-transparent black background */
+    color: #ffffff !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.os-windows .guest-modal-close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.os-windows .guest-modal-img-container {
+    width: fit-content;
+    max-width: 100%;
+    margin: 0; /* Remove margin entirely */
+    border-radius: 16px;
+    overflow: hidden;
+    border: none; /* Remove border frame */
+    box-shadow: none; /* Remove container shadow */
+}
+
+.os-windows .guest-modal-img {
+    max-width: 100%;
+    max-height: 94vh; /* Flyer maximized to 94vh to increase size as much as possible */
+    width: auto;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    border-radius: 16px; /* Smooth rounded corners on all four sides of the flyer image */
+}
+
+.os-windows .guest-modal-action-btn {
+    display: none !important; /* Hide the Register button completely inside the popup modal */
+}
+
+@media (max-height: 720px) {
+    .os-windows .guest-modal-overlay {
+        padding: 10px;
+    }
+    
+    .os-windows .guest-modal-box {
+        padding: 0;
+        margin: 5px auto;
+        border-radius: 12px;
+        max-width: 85%;
+    }
+    
+    .os-windows .guest-modal-img-container {
+        margin: 0;
+        border-radius: 12px;
+    }
+    
+    .os-windows .guest-modal-img {
+        max-height: 92vh; /* Maximized to 92vh on laptop viewports to make flyer text fully readable */
+        border-radius: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .os-windows .guest-modal-overlay {
+        padding: 35px 10px 10px 10px; /* Overlay on top of image for narrow mobile viewports only */
+    }
+    
+    .os-windows .guest-modal-box {
+        padding: 0;
+        margin: 5px auto;
+        border-radius: 12px;
+        max-width: 100%;
+    }
+    
+    .os-windows .guest-modal-img-container {
+        margin: 0;
+        border-radius: 12px;
+    }
+    
+    .os-windows .guest-modal-img {
+        max-height: 84vh;
+        border-radius: 12px;
+    }
+    
+    .os-windows .guest-modal-close-btn {
+        top: -30px;
+        right: 0;
         width: 28px;
         height: 28px;
         font-size: 16px;

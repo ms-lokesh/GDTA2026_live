@@ -1172,11 +1172,13 @@
             const closeGuestModalBtn = document.getElementById('closeGuestModalBtn');
 
             function openGuestModal() {
+                document.documentElement.classList.add('modal-open');
                 document.body.classList.add('modal-open');
                 guestModal.classList.add('show');
             }
 
             function closeGuestModal() {
+                document.documentElement.classList.remove('modal-open');
                 document.body.classList.remove('modal-open');
                 guestModal.classList.remove('show');
             }

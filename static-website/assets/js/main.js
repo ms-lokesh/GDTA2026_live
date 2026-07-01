@@ -1,6 +1,11 @@
 (function ($) {
     "use strict";
 
+    // Detect Windows OS and add class to HTML tag
+    if (navigator.platform.indexOf('Win') !== -1 || navigator.userAgent.indexOf('Windows') !== -1) {
+        document.documentElement.classList.add('os-windows');
+    }
+
     // Spinner
     var spinner = function () {
         setTimeout(function () {
