@@ -22,6 +22,11 @@ const MIME_TYPES = {
 const server = http.createServer((req, res) => {
     // Prevent directory traversal
     let safeUrl = req.url.split('?')[0];
+    try {
+        safeUrl = decodeURIComponent(safeUrl);
+    } catch (e) {
+        // Fallback in case of malformed URL
+    }
     safeUrl = path.normalize(safeUrl).replace(/^(\.\.[\/\\])+/, '');
     if (safeUrl === '\\' || safeUrl === '/') {
         safeUrl = '/index.html';
