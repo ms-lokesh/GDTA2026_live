@@ -4,14 +4,17 @@
 <head>
     <meta charset="utf-8">
     <title>GDTA 2026 Conference | Design Thinking Event in Coimbatore, India</title>
-    <meta name="description" content="Join GDTA 2026, an international Design Thinking conference in Coimbatore, India. Explore innovation, workshops, speakers, student learning, and global networking. Register now.">
-    <meta name="keywords" content="design thinking conference 2026, international design conference 2026, innovation conference India 2026, global design thinking conference, design thinking event India, design conference India, conference in Coimbatore 2026, international conference Coimbatore, academic conferences India 2026, events in Coimbatore for students, conferences for students 2026, engineering conferences India 2026, student workshops design thinking, innovation workshops for students, faculty development program design thinking, design thinking conference registration, upcoming conferences 2026 India, workshops with certificate India, international conference registration India, affordable conferences for students India">
+    <meta name="description"
+        content="Join GDTA 2026, an international Design Thinking conference in Coimbatore, India. Explore innovation, workshops, speakers, student learning, and global networking. Register now.">
+    <meta name="keywords"
+        content="design thinking conference 2026, international design conference 2026, innovation conference India 2026, global design thinking conference, design thinking event India, design conference India, conference in Coimbatore 2026, international conference Coimbatore, academic conferences India 2026, events in Coimbatore for students, conferences for students 2026, engineering conferences India 2026, student workshops design thinking, innovation workshops for students, faculty development program design thinking, design thinking conference registration, upcoming conferences 2026 India, workshops with certificate India, international conference registration India, affordable conferences for students India">
     <meta name="robots" content="index, follow">
     <meta name="author" content="GDTA 2026">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://gdta2026.com/">
     <meta property="og:title" content="GDTA 2026 Conference | Design Thinking Event in India">
-    <meta property="og:description" content="Attend GDTA 2026 in Coimbatore, India. A global conference on Design Thinking, innovation, workshops, and student learning.">
+    <meta property="og:description"
+        content="Attend GDTA 2026 in Coimbatore, India. A global conference on Design Thinking, innovation, workshops, and student learning.">
     <meta property="og:url" content="https://gdta2026.com/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="GDTA 2026">
@@ -20,35 +23,41 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DYW8JNDBXS"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
         gtag('config', 'G-DYW8JNDBXS');
     </script>
 
     <!-- Google Tag Manager -->
     <script>
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-PMBH5FPH');
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-PMBH5FPH');
     </script>
     <!-- End Google Tag Manager -->
 
     <!-- Meta Pixel Code -->
     <script>
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;
-        n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];
-        t=b.createElement(e);t.async=!0;
-        t.src=v;
-        s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}
-        (window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e); t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }
+            (window, document, 'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
 
         fbq('init', '153788363108861');
         fbq('track', 'PageView');
@@ -67,7 +76,7 @@
     <link href="./assets/css/style.css" rel="stylesheet">
     <link href="./assets/css/custom-overrides.css" rel="stylesheet">
     <link href="./assets/css/mobile.css?v=1.2" rel="stylesheet">
-    
+
     <style>
         /* Featured Article Fade Animation */
         .featured-article img {
@@ -148,20 +157,112 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
+        /* Speaker Section Styles */
+        .speaker-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .speaker-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.12);
+        }
+
+        .speaker-img-container {
+            width: 100%;
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #FFFFFF;
+        }
+
+        .speaker-img {
+            height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+
+        .speaker-card:hover .speaker-img {
+            transform: scale(1.05);
+        }
+
+        .speaker-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #000000 !important;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .speaker-role {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #495057 !important;
+            margin-bottom: 4px;
+        }
+
+        .speaker-country {
+            font-size: 0.85rem;
+            color: #6C757D !important;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .speaker-logo-container {
+            height: 45px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .speaker-logo {
+            max-height: 100%;
+            max-width: 80%;
+            object-fit: contain;
+        }
+
+        .company-text-fallback {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #6C757D;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
     </style>
-<script src="./assets/js/modal.js"></script>
+    <script src="./assets/js/modal.js"></script>
 </head>
 
 <body>
 
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PMBH5FPH"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PMBH5FPH" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
     <!-- Meta Pixel noscript -->
     <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=153788363108861&ev=PageView&noscript=1"/></noscript>
+            src="https://www.facebook.com/tr?id=153788363108861&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel noscript -->
 
     <div class="container-fluid p-0"
@@ -228,46 +329,56 @@
                 <h5 class="text-uppercase mb-2"
                     style="color: #E91E63 !important; letter-spacing: 2px; font-weight: 600;">Explore Our Tracks</h5>
                 <h2 class="mb-4" style="font-weight: 800; color: #000000 !important;">Featured Conference Sessions</h2>
-                <p style="color: #495057; max-width: 800px; margin: 0 auto;">Discover our five thematic tracks that will shape the future of design thinking</p>
+                <p style="color: #495057; max-width: 800px; margin: 0 auto;">Discover our five thematic tracks that will
+                    shape the future of design thinking</p>
             </div>
 
             <!-- Featured Article (Carousel) -->
-            <div class="featured-article mb-4 wow fadeInUp shadow-lift" data-wow-delay="0.2s" style="position: relative;">
+            <div class="featured-article mb-4 wow fadeInUp shadow-lift" data-wow-delay="0.2s"
+                style="position: relative;">
                 <!-- Navigation Arrows -->
-                <button class="carousel-nav-btn carousel-prev" onclick="navigatePrev()" style="position: absolute; left: -20px; top: 50%; transform: translateY(-50%); background: #000000; border: none; width: 50px; height: 50px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; z-index: 10; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;">
+                <button class="carousel-nav-btn carousel-prev" onclick="navigatePrev()"
+                    style="position: absolute; left: -20px; top: 50%; transform: translateY(-50%); background: #000000; border: none; width: 50px; height: 50px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; z-index: 10; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;">
                     <i class="fas fa-chevron-left"></i>
                 </button>
-                <button class="carousel-nav-btn carousel-next" onclick="navigateNext()" style="position: absolute; right: -20px; top: 50%; transform: translateY(-50%); background: #000000; border: none; width: 50px; height: 50px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; z-index: 10; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;">
+                <button class="carousel-nav-btn carousel-next" onclick="navigateNext()"
+                    style="position: absolute; right: -20px; top: 50%; transform: translateY(-50%); background: #000000; border: none; width: 50px; height: 50px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; z-index: 10; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;">
                     <i class="fas fa-chevron-right"></i>
                 </button>
                 <div class="gradient-border">
                     <div class="gradient-border-inner">
                         <div class="row g-0" style="border-radius: 13px; overflow: hidden;">
                             <div class="col-lg-5" style="position: relative; overflow: hidden;">
-                                <img id="featured-img" src="./assets/img/Sessions/FutureForesight.jpg" alt="Featured Session"
+                                <img id="featured-img" src="./assets/img/Sessions/FutureForesight.jpg"
+                                    alt="Featured Session"
                                     style="width: 100%; height: 100%; object-fit: cover; min-height: 400px;">
                             </div>
                             <div class="col-lg-7 p-5 glass-effect">
                                 <div class="mb-3">
                                     <span class="gradient-text"
-                                        style="font-weight: 700; font-size: 14px; letter-spacing: 1px;">CONFERENCE TRACK</span>
+                                        style="font-weight: 700; font-size: 14px; letter-spacing: 1px;">CONFERENCE
+                                        TRACK</span>
                                     <span style="color: #6C757D; margin-left: 15px; font-size: 14px;"
                                         id="featured-date">29 Sep 2026</span>
                                 </div>
-                                <h3 id="featured-title"
-                                    style="color: #000000; font-weight: 800; margin-bottom: 20px;">Futures Foresight
+                                <h3 id="featured-title" style="color: #000000; font-weight: 800; margin-bottom: 20px;">
+                                    Futures Foresight
                                 </h3>
                                 <p id="featured-subtitle" class="mb-3"
-                                    style="color: #E91E63; font-weight: 600; font-size: 16px;">Theme: From Prediction to Preparedness</p>
+                                    style="color: #E91E63; font-weight: 600; font-size: 16px;">Theme: From Prediction to
+                                    Preparedness</p>
                                 <p id="featured-description"
                                     style="color: #495057; line-height: 1.8; margin-bottom: 25px;">
                                     In an era of deep uncertainty, relying on past data to predict the future is no
-                                    longer sufficient. This track moves beyond simple forecasting to explore Strategic Foresight—a
-                                    disciplined approach to identifying weak signals of change and creating alternative futures.
+                                    longer sufficient. This track moves beyond simple forecasting to explore Strategic
+                                    Foresight—a
+                                    disciplined approach to identifying weak signals of change and creating alternative
+                                    futures.
                                 </p>
                                 <div class="d-flex gap-2">
                                     <button class="btn btn-primary px-4 py-2" id="scrollToDetailsBtn"
-                                        style="border-radius: 25px; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);">View Details Below</button>
+                                        style="border-radius: 25px; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);">View
+                                        Details Below</button>
                                 </div>
                             </div>
                         </div>
@@ -319,7 +430,7 @@
             height: 100%;
         }
 
-        .track-card > div {
+        .track-card>div {
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -620,7 +731,8 @@
                                 <img src="./assets/img/Sessions/EducationPolicy.jpg" alt="Education Transformation">
                             </div>
                             <div class="track-card-body">
-                                <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Education Transformation
+                                <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Education
+                                    Transformation
                                 </h3>
                                 <p class="track-subtitle">Theme: Nurturing Resilient Lifelong Learners</p>
 
@@ -710,21 +822,348 @@
         </div>
     </div>
 
-    <div class="container-fluid py-5" style="background-color: #FFFFFF;">
+    <!-- Speakers Start -->
+    <div class="container-fluid py-5" style="background-color: #F8F9FA;">
         <div class="container py-5">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.2s">
+            <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.2s">
                 <h5 class="text-uppercase mb-2"
-                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Announcement</h5>
+                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Our Speakers</h5>
+                <h2 class="mb-4" style="font-weight: 800; color: #000000 !important;">Global Innovators & Design
+                    Thinkers</h2>
             </div>
-            <div class="row justify-content-center mt-3 text-center">
-                <div class="col-lg-8">
-                    <p class="fs-5 mb-0" style="color: #495057 !important; max-width: 800px; margin: 0 auto;">Detailed speaker information and session descriptions will be announced soon. Follow us on social media for the latest updates.</p>
+
+            <div class="row g-4 justify-content-center">
+                <!-- Speaker 1: Nalin -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Untitled design (16).png" alt=" Nalin" class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name"> Nalin</h5>
+                        <p class="speaker-role">Director</p>
+                        <p class="speaker-country">India</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Untitled ign (12).png" alt="Design Thinking Center Logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">Design Thinking Center</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Speaker 1: Uli Weinberg -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Untitled design (17).png" alt="Uli Weinberg" class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Uli Weinberg</h5>
+                        <p class="speaker-role">Director</p>
+                        <p class="speaker-country">Kazakhstan</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Untitled design (1).png" alt="Design Thinking Center Logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">Design Thinking Center</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Speaker 1: Maria Stashenko -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (1).png" alt="Maria Stashenko"
+                                class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Maria Stashenko</h5>
+                        <p class="speaker-role">Director</p>
+                        <p class="speaker-country">Kazakhstan</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Untitled design (12).png" alt="Design Thinking Center Logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">Design Thinking Center</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 2: Michael Lewrick -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (2).png" alt="Michael Lewrick"
+                                class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Michael Lewrick</h5>
+                        <p class="speaker-role">CEO</p>
+                        <p class="speaker-country">Switzerland</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (15).png" alt="Lewrick & Company Logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">Lewrick & Company</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 3: Richard Perez -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (3).png" alt="Richard Perez"
+                                class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Richard Perez</h5>
+                        <p class="speaker-role">Director</p>
+                        <p class="speaker-country">South Africa</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (17).png" alt="d-school Afrika Logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">d-school Afrika</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 4: André Bresges -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.4s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (4).png" alt="André Bresges"
+                                class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">André Bresges</h5>
+                        <p class="speaker-role">Ambassador</p>
+                        <p class="speaker-country">Germany</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (18).png" alt="Gateway Exzellenz Center Logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">Gateway Exzellenz Center</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 5: Agnes Kwek -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (5).png" alt="Agnes Kwek" class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Agnes Kwek</h5>
+                        <p class="speaker-role">Faculty</p>
+                        <p class="speaker-country">Singapore</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (19).png" alt="CEDEP Logo" class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">CEDEP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 6: Linlin Shui -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (6).png" alt="Linlin Shui" class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Linlin Shui</h5>
+                        <p class="speaker-role">Head of d.school</p>
+                        <p class="speaker-country">China</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (20).png" alt="Tsinghua d.school Logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">Tsinghua d.school</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 7: Ramesh Ramanujam -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (7).png" alt="Ramesh Ramanujam"
+                                class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Ramesh Ramanujam</h5>
+                        <p class="speaker-role">Engineering Center Head</p>
+                        <p class="speaker-country">Coimbatore</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (21).png" alt="Bosch Logo" class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">BOSCH</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 8: Anirban Bhattacharya -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.4s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (8).png" alt="Anirban Bhattacharya"
+                                class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Anirban Bhattacharya</h5>
+                        <p class="speaker-role">Founder</p>
+                        <p class="speaker-country">Bengaluru</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (22).png" alt="The Painted Sky Logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">The Painted Sky</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 9: Sreedevi Hegde -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (9).png" alt="Sreedevi Hegde"
+                                class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Sreedevi Hegde</h5>
+                        <p class="speaker-role">India GCC Head</p>
+                        <p class="speaker-country">Bengaluru</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (23).png" alt="Vervent Logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">VERVENT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 10: Revathi Kant -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (10).png" alt="Revathi Kant"
+                                class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Revathi Kant</h5>
+                        <p class="speaker-role">Chief Design Officer</p>
+                        <p class="speaker-country">Bengaluru</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (24).png" alt="Titan Logo" class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">TITAN</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 11: Can Guvenir -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (11).png" alt="Can Guvenir" class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Can Guvenir</h5>
+                        <p class="speaker-role">Design & Research Center Manager</p>
+                        <p class="speaker-country">Türkiye</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (25).png" alt="Yasar University Logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">Yasar University</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 12: Ricardo Ruffo -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.4s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (12).png" alt="Ricardo Ruffo"
+                                class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Ricardo Ruffo</h5>
+                        <p class="speaker-role">CEO & Founder</p>
+                        <p class="speaker-country">Brazil</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (26).png" alt="ECH/OS Logo" class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">ECH/OS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 13: Rajat Pandit -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (13).png" alt="Rajat Pandit"
+                                class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Rajat Pandit</h5>
+                        <p class="speaker-role">Head of AI Infrastructure</p>
+                        <p class="speaker-country">Singapore</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (27).png" alt="Google Logo" class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">Google</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker 14: Carolin Taenzer -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (14).png" alt="Carolin Taenzer"
+                                class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Carolin Taenzer</h5>
+                        <p class="speaker-role">Managing Director</p>
+                        <p class="speaker-country">Germany</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (28).png" alt="Impact Week Logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">Impact Week</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Speaker 15: Flavia Bleuel -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Untitled design (13).png" alt="Flavia Bleuel" class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Flavia Bleuel</h5>
+                        <p class="speaker-role">Head of Professional Development, HPI d-school</p>
+                        <p class="speaker-country">Germany</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Untitled design (14).png" alt="HPI d-school" class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">HPI d-school</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Speaker 16: -->
+                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Untitled design (15).png" alt="Tebogo Chaka" class="speaker-img">
+                        </div>
+                        <h5 class="speaker-name">Tebogo Chaka</h5>
+                        <p class="speaker-role">Design Thinking Programme Lead, Personal Development Coach, Facilitator
+                        </p>
+                        <p class="speaker-country">South Africa</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Copy of GDTA Poster  (17).png" alt="HPI d-school"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">d-school Afrika</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="container-fluid footer py-4 wow fadeIn" data-wow-delay="0.2s" style="background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('./assets/img/Background/travel_stay_bg.png') center center/cover no-repeat;">
+    <div class="container-fluid footer py-4 wow fadeIn" data-wow-delay="0.2s"
+        style="background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('./assets/img/Background/travel_stay_bg.png') center center/cover no-repeat;">
         <div class="container text-center py-4">
             <a href="./index">
                 <h2 class="mb-3" style="color: #000000 !important; font-weight: 800;">GDTA 2026</h2>
@@ -734,7 +1173,8 @@
                 GDTA India Chapter – D Conference 2026<br>Chaos & Clarity: Driving Progress with Design Thinking
             </p>
             <div class="d-flex justify-content-center gap-3 flex-wrap mb-3">
-                <a class="btn btn-sm btn-outline-primary border-2 px-3" href="./terms-and-conditions">Terms and Conditions</a>
+                <a class="btn btn-sm btn-outline-primary border-2 px-3" href="./terms-and-conditions">Terms and
+                    Conditions</a>
                 <a class="btn btn-sm btn-outline-primary border-2 px-3" href="./privacy-policy">Privacy Policy</a>
             </div>
             <div class="d-flex justify-content-center mb-3">
@@ -753,7 +1193,7 @@
             </div>
             <p style="font-size: 0.9rem; margin: 0; color: #6C757D !important;">September 29-30, 2026 | SNS
                 Institutions, India</p>
-                <p style="font-size: 0.9rem; margin-top: 10px; color: #6C757D !important;">&copy; <span
+            <p style="font-size: 0.9rem; margin-top: 10px; color: #6C757D !important;">&copy; <span
                     style="color: #000000 !important;">GDTA India Chapter</span>, All Rights Reserved.</p>
         </div>
     </div>
@@ -895,7 +1335,7 @@
 
             // Scroll to details button
             const scrollBtn = document.getElementById('scrollToDetailsBtn');
-            scrollBtn.addEventListener('click', function() {
+            scrollBtn.addEventListener('click', function () {
                 const detailsSection = document.querySelector('.track-card');
                 detailsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
@@ -905,7 +1345,7 @@
         });
 
 
-        
+
         // Make track cards clickable on mobile devices
         document.querySelectorAll('.track-card').forEach(card => {
             card.addEventListener('click', function () {
