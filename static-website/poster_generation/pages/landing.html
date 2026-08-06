@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid page-header mb-5">
+    <div class="container my-5 py-5">
+        <div class="row align-items-center justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="display-3 text-dark mb-3 animated slideInDown" style="font-weight: 800;">Generate Your Personalized LinkedIn Post</h1>
+                <p class="text-dark mb-4 pb-2" style="font-size: 1.2rem;">Upload your photo and instantly receive a personalized GDTA'26 conference poster, ready to share with your network on LinkedIn.</p>
+                <a href="{{ url_for('poster_bp.upload') }}" class="btn btn-primary py-3 px-5 animated slideInDown rounded-pill shadow">Generate My LinkedIn Post <i class="fa fa-arrow-right ms-3"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

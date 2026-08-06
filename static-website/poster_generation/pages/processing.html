@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid page-header mb-5">
+    <div class="container text-center py-5">
+        <h1 class="display-4 text-dark animated slideInDown" style="font-weight: 800;">Processing your photo...</h1>
+    </div>
+</div>
+
+<div class="container-xxl main-content py-5" style="min-height: 40vh;">
+    <div class="container text-center">
+        <div class="spinner-border text-primary mb-4" style="width: 4rem; height: 4rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h3 class="mb-3">Generating your LinkedIn poster...</h3>
+        <p class="text-muted">This usually takes only a few seconds.</p>
+        
+        <input type="hidden" id="temp-id" value="{{ temp_id }}">
+        <input type="hidden" id="attendee-name" value="{{ name }}">
+    </div>
+</div>
+{% endblock %}

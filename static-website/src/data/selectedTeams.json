@@ -1,0 +1,578 @@
+[
+  {
+    "id": 1,
+    "teamName": "Team Nova",
+    "track": "Smart City & Infrastructure",
+    "college": "Don Bosco Institute of Technology (DBIT), Bangalore, Karnataka"
+  },
+  {
+    "id": 2,
+    "teamName": "Arcus Zyren",
+    "track": "Healthcare",
+    "college": "Sona College of Technology (SCT), Salem, TamilNadu"
+  },
+  {
+    "id": 3,
+    "teamName": "CodeForgeX",
+    "track": "Healthcare",
+    "college": "Chennai Institute of Technology, Chennai, Tamil Nadu"
+  },
+  {
+    "id": 4,
+    "teamName": "Infinity tech",
+    "track": "Education Transformation",
+    "college": "Knowledge Institute of Technology (KIoT), Salem, Tamil Nadu"
+  },
+  {
+    "id": 5,
+    "teamName": "Hackverrz",
+    "track": "Smart City & Infrastructure",
+    "college": "Vivekananda Global University (VGU), Jaipur, Rajasthan"
+  },
+  {
+    "id": 6,
+    "teamName": "Risk Resolvers",
+    "track": "Smart City & Infrastructure",
+    "college": "Knowledge Institute of Technology (KIoT), Salem, Tamil Nadu"
+  },
+  {
+    "id": 7,
+    "teamName": "shagun",
+    "track": "Education Transformation",
+    "college": "Poornima University (PU), Jaipur, Rajasthan"
+  },
+  {
+    "id": 8,
+    "teamName": "Soloer",
+    "track": "Smart City & Infrastructure",
+    "college": "Chennai Institute of Technology, Chennai, Tamil Nadu"
+  },
+  {
+    "id": 9,
+    "teamName": "IdeaForge",
+    "track": "Smart City & Infrastructure",
+    "college": "PSNA College of Engineering and Technology (PSNACET), Dindigul"
+  },
+  {
+    "id": 10,
+    "teamName": "Sentinel",
+    "track": "Healthcare",
+    "college": "PSNA College of Engineering and Technology (PSNACET), Dindigul"
+  },
+  {
+    "id": 11,
+    "teamName": "SWASTIK",
+    "track": "Education Transformation",
+    "college": "Sri Krishna College Of Technology, Coimbatore, TamilNadu"
+  },
+  {
+    "id": 12,
+    "teamName": "Elite",
+    "track": "Healthcare",
+    "college": "kumaraguru college of technology, Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 13,
+    "teamName": "Sruthy R",
+    "track": "Education Transformation",
+    "college": "Kristu Jyoti College of Management and Technology (KJCMT), Kerala"
+  },
+  {
+    "id": 14,
+    "teamName": "Vaishnavi",
+    "track": "Smart City & Infrastructure",
+    "college": "SIES Graduate School of Technology, Navi Mumbai, Maharashtra"
+  },
+  {
+    "id": 15,
+    "teamName": "Avengers",
+    "track": "Healthcare",
+    "college": "COEP Technological University, Pune, Maharashtra"
+  },
+  {
+    "id": 16,
+    "teamName": "TechnoBlaze",
+    "track": "Education Transformation",
+    "college": "Chennai Institute of Technology, Chennai, Tamil Nadu"
+  },
+  {
+    "id": 17,
+    "teamName": "InnovX",
+    "track": "Education Transformation",
+    "college": "Dr NGP Institute of Technology Coimbatore, Tami Nadu"
+  },
+  {
+    "id": 18,
+    "teamName": "Insanity",
+    "track": "Healthcare",
+    "college": "Thakur College of Engineering and Technology (TCET), Mumbai, Maharashtra"
+  },
+  {
+    "id": 19,
+    "teamName": "3 Idiots",
+    "track": "Education Transformation",
+    "college": "Amrita Vishwa Vidyapeetham (AVV), Chennai, Tamil Nadu"
+  },
+  {
+    "id": 20,
+    "teamName": "Toddlerzz",
+    "track": "Healthcare",
+    "college": "SNS College of Technology, Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 21,
+    "teamName": "600CR",
+    "track": "Education Transformation",
+    "college": "Vellore Institute of Technology, Chennai, Tamil Nadu"
+  },
+  {
+    "id": 22,
+    "teamName": "Creative tinkers",
+    "track": "Healthcare",
+    "college": "CMR University (CMRU), Bangalore, Karnataka, Tamil Nadu"
+  },
+  {
+    "id": 23,
+    "teamName": "PowerHouse",
+    "track": "Smart City & Infrastructure",
+    "college": "Sri Krishna College of Engineering, Coimbatore , Tami Nadu"
+  },
+  {
+    "id": 24,
+    "teamName": "Fourth Iteration",
+    "track": "Healthcare",
+    "college": "Visvesvaraya Technological University (VTU), Belagavi, Karnataka"
+  },
+  {
+    "id": 25,
+    "teamName": "Velora",
+    "track": "Smart City & Infrastructure",
+    "college": "SRM Institute of Science and Technology, Kattankulathur, Chengalpattu , Tamil Nadu"
+  },
+  {
+    "id": 26,
+    "teamName": "Care Coders",
+    "track": "Healthcare",
+    "college": "Amity University (AU), Noida, NewDelhi"
+  },
+  {
+    "id": 27,
+    "teamName": "Super founder",
+    "track": "Smart City & Infrastructure",
+    "college": "Raiganj university, Raiganj, Uttar Dinajpur, West Bengal"
+  },
+  {
+    "id": 28,
+    "teamName": "Global",
+    "track": "Education Transformation",
+    "college": "SNS College of Technology, Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 29,
+    "teamName": "PENTAMINDS",
+    "track": "Education Transformation",
+    "college": "Muthayammal Engineering College (Autonomous) Rasipuram Namakkal, Tamil Nadu"
+  },
+  {
+    "id": 30,
+    "teamName": "Clickbait",
+    "track": "Education Transformation",
+    "college": "Thapar Institute of Engineering and Technology (TIET), Patiala, Punjab"
+  },
+  {
+    "id": 31,
+    "teamName": "Team Nexus",
+    "track": "Education Transformation",
+    "college": "SNS College of Technology, Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 32,
+    "teamName": "DJ NERDS",
+    "track": "Education Transformation",
+    "college": "Dehradun Institute of Technology University (DIT), Dehradun, Uttarakhand, India"
+  },
+  {
+    "id": 33,
+    "teamName": "Koleti Trishitha",
+    "track": "Smart City & Infrastructure",
+    "college": "Hindusthan University, Chennai"
+  },
+  {
+    "id": 34,
+    "teamName": "UNIT - 108",
+    "track": "Healthcare",
+    "college": "SRM Institute of Science and Technology (SRMIST), Kattankulathur, Chennai"
+  },
+  {
+    "id": 35,
+    "teamName": "Futuretechs",
+    "track": "Education Transformation",
+    "college": "Koneru Lakshmaiah Education Foundation (K.L. University), Guntur"
+  },
+  {
+    "id": 36,
+    "teamName": "Hydra",
+    "track": "Healthcare",
+    "college": "Muthayammal Engineering College (Autonomous) Rasipuram Namakkal"
+  },
+  {
+    "id": 37,
+    "teamName": "Team Rocket",
+    "track": "Smart City & Infrastructure",
+    "college": "MIT Vishwaprayaag University, Solapur, Pune"
+  },
+  {
+    "id": 38,
+    "teamName": "Visionary Vortex",
+    "track": "Smart City & Infrastructure",
+    "college": "Rathinam International Public School"
+  },
+  {
+    "id": 39,
+    "teamName": "PhoenixForce",
+    "track": "Healthcare",
+    "college": "Sri Ramakrishna Engineering College (SREC), Coimbatore"
+  },
+  {
+    "id": 40,
+    "teamName": "Medcore",
+    "track": "Healthcare",
+    "college": "Muthayammal Engineering College (Autonomous) Rasipuram Namakkal"
+  },
+  {
+    "id": 41,
+    "teamName": "dm4782",
+    "track": "Healthcare",
+    "college": "SRM Institute of Science and Technology (SRMIST), Kattankulathur, Chennai"
+  },
+  {
+    "id": 42,
+    "teamName": "vidyapath",
+    "track": "Education Transformation",
+    "college": "Jawaharlal Nehru Technological University (JNTUH), Hyderabad, Telangana"
+  },
+  {
+    "id": 43,
+    "teamName": "Radon",
+    "track": "Education Transformation",
+    "college": "SNS College of Technology, Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 44,
+    "teamName": "Binnovators",
+    "track": "Smart City & Infrastructure",
+    "college": "Pranveer Singh Institute of Technology (PSIT), Kanpur"
+  },
+  {
+    "id": 45,
+    "teamName": "TaxFix",
+    "track": "Smart City & Infrastructure",
+    "college": "Sri Krishna College of Engineering and Technology (SKCET), Coimbatore"
+  },
+  {
+    "id": 46,
+    "teamName": "Ridge",
+    "track": "Smart City & Infrastructure",
+    "college": "Parul University, Vadodara, Gujarat"
+  },
+  {
+    "id": 47,
+    "teamName": "Hack Forge",
+    "track": "Healthcare",
+    "college": "Sri Sivasubramaniya Nadar (SSN) College of Engineering, Chennai, Tamil Nadu"
+  },
+  {
+    "id": 48,
+    "teamName": "Code Raiders",
+    "track": "Smart City & Infrastructure",
+    "college": "Srinivas Institute of Technology, Mangaluru, Karnataka"
+  },
+  {
+    "id": 49,
+    "teamName": "Nexa",
+    "track": "Education Transformation",
+    "college": "SNS College of Technology , Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 50,
+    "teamName": "Code fighters",
+    "track": "Smart City & Infrastructure",
+    "college": "Sri Krishna College of Engineering and Technology (SKCET), Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 51,
+    "teamName": "Benzene",
+    "track": "Healthcare",
+    "college": "Indian Institute of Management (IIM), Jammu"
+  },
+  {
+    "id": 52,
+    "teamName": "Team404Error",
+    "track": "Smart City & Infrastructure",
+    "college": "Kumaraguru College of Technology (KCT), Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 53,
+    "teamName": "SKAI",
+    "track": "Education Transformation",
+    "college": "Indian Institute of Information Technology (IIIT), Raichur"
+  },
+  {
+    "id": 54,
+    "teamName": "ReMotion",
+    "track": "Healthcare",
+    "college": "MIT World Peace University, Pune, Maharashtra"
+  },
+  {
+    "id": 55,
+    "teamName": "Team Gnomic Blu",
+    "track": "Smart City & Infrastructure",
+    "college": "SSM Central School Senior Secondary, Pallipalayam - Kumarapalayam Rd,Namakkal, Tamil Nadu"
+  },
+  {
+    "id": 56,
+    "teamName": "Last_Minute_Chaos",
+    "track": "Education Transformation",
+    "college": "Thakur College of Engineering and Technology (TCET), Mumbai, Maharashtra"
+  },
+  {
+    "id": 57,
+    "teamName": "Vishwakarma",
+    "track": "Education Transformation",
+    "college": "KIT College of Engineering (KITCOE), Kohlapur"
+  },
+  {
+    "id": 58,
+    "teamName": "Team alchemy",
+    "track": "Education Transformation",
+    "college": "Vishwakarma Institute of Technology (VIT), Pune, Maharashtra"
+  },
+  {
+    "id": 59,
+    "teamName": "Climate Nanos",
+    "track": "Smart City & Infrastructure",
+    "college": "Federal University of Agriculture, Abeokuta, Nigeria"
+  },
+  {
+    "id": 60,
+    "teamName": "Edu crew tech",
+    "track": "Healthcare",
+    "college": "Sri Krishna College of Engineering and Technology (SKCET), Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 61,
+    "teamName": "Turbo Thinkers",
+    "track": "Healthcare",
+    "college": "Chennai Institute of Technology, Chennai, Tamil Nadu"
+  },
+  {
+    "id": 62,
+    "teamName": "Brilliant buzz",
+    "track": "Education Transformation",
+    "college": "SRM TRP Engineering College, Thirchy, Tamil Nadu"
+  },
+  {
+    "id": 63,
+    "teamName": "CROOKED",
+    "track": "Healthcare",
+    "college": "University of Mumbai && Vishwakarma Institute of Technology, Pune, Maharashtra"
+  },
+  {
+    "id": 64,
+    "teamName": "Single me",
+    "track": "Healthcare",
+    "college": "Chinmaya Vidyalaya, Tripunithura, Kerala"
+  },
+  {
+    "id": 65,
+    "teamName": "Horizon",
+    "track": "Smart City & Infrastructure",
+    "college": "Coimbatore Institute of Technology (CIT), Coimbatore"
+  },
+  {
+    "id": 66,
+    "teamName": "VisionX",
+    "track": "Smart City & Infrastructure",
+    "college": "Muthayammal Engineering College (Autonomous), Rasipuram;Namakkal, Tamil Nadu"
+  },
+  {
+    "id": 67,
+    "teamName": "Haima",
+    "track": "Healthcare",
+    "college": "Chennai Institute of Technology (CIT), Chennai, Tamil Nadu"
+  },
+  {
+    "id": 68,
+    "teamName": "AetherGrid",
+    "track": "Smart City & Infrastructure",
+    "college": "Indian Institute of Information Technology, Design and Manufacturing (IIITDM), Chennai, Tamil Nadu"
+  },
+  {
+    "id": 69,
+    "teamName": "Design Dragons",
+    "track": "Smart City & Infrastructure",
+    "college": "SNS College of Technology , Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 70,
+    "teamName": "CodebugX",
+    "track": "Education Transformation",
+    "college": "Mahendra Engineering College (MEC), Namakkal, Tamil Nadu"
+  },
+  {
+    "id": 71,
+    "teamName": "Nexora",
+    "track": "Healthcare",
+    "college": "SNS College of Technology , Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 72,
+    "teamName": "Bit Coders",
+    "track": "Education Transformation",
+    "college": "MVSR Engineering College (MVSREC), Hyderabad, Telangana"
+  },
+  {
+    "id": 73,
+    "teamName": "Slayer king",
+    "track": "Smart City & Infrastructure",
+    "college": "SD College of Engineering and Technology, Muzaffarnagar, UttarPradesh"
+  },
+  {
+    "id": 74,
+    "teamName": "Havoc",
+    "track": "Education Transformation",
+    "college": "Noida Institute of Engineering and Technology (NIET), Greater Noida"
+  },
+  {
+    "id": 75,
+    "teamName": "NeuroTech",
+    "track": "Healthcare",
+    "college": "Karpagam College of Engineering (KCE), Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 76,
+    "teamName": "Wi-Fighters",
+    "track": "Healthcare",
+    "college": "Sri Krishna College of Engineering and Technology (SKCET), Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 77,
+    "teamName": "SIRTIAN",
+    "track": "Smart City & Infrastructure",
+    "college": "Sagar Institute of Research and Technology (SIRT), Bhopal"
+  },
+  {
+    "id": 78,
+    "teamName": "Binary hunter",
+    "track": "Healthcare",
+    "college": "Jagan Institute of Management Studies (JIMS), Rohini, New Delhi"
+  },
+  {
+    "id": 79,
+    "teamName": "Spark",
+    "track": "Education Transformation",
+    "college": "SNS College of Technology , Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 80,
+    "teamName": "The Parallel Frontiers",
+    "track": "Smart City & Infrastructure",
+    "college": "Karpagam College of Engineering (KCE), Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 81,
+    "teamName": "Fensta",
+    "track": "Smart City & Infrastructure",
+    "college": "CMR University (CMRU), Bangalore, Karnataka"
+  },
+  {
+    "id": 82,
+    "teamName": "Grid Connect",
+    "track": "Smart City & Infrastructure",
+    "college": "PGDAV (E) College, University of Delhi"
+  },
+  {
+    "id": 83,
+    "teamName": "EDIPT 4",
+    "track": "Healthcare",
+    "college": "SNS College of Technology , Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 84,
+    "teamName": "TECH ARC",
+    "track": "Education Transformation",
+    "college": "Presidency University, Banglore, Karnataka"
+  },
+  {
+    "id": 85,
+    "teamName": "Student AI",
+    "track": "Education Transformation",
+    "college": "Punjab Engineering College (PEC), Chandigarh"
+  },
+  {
+    "id": 86,
+    "teamName": "CodeCrafters",
+    "track": "Education Transformation",
+    "college": "CSMSS, Chh. Shahu College Of Engineering (CSCE) Aurangabad, Maharashtra"
+  },
+  {
+    "id": 87,
+    "teamName": "Ember Syndicate",
+    "track": "Healthcare",
+    "college": "Coimbatore Institute of Technology (CIT), Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 88,
+    "teamName": "Helix",
+    "track": "Healthcare",
+    "college": "Karpagam College of Engineering (KCE), Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 89,
+    "teamName": "Sunshine",
+    "track": "Education Transformation",
+    "college": "PSGR Krishnammal College for Women, Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 90,
+    "teamName": "VOLTX",
+    "track": "Smart City & Infrastructure",
+    "college": "Muthayammal Engineering College (Autonomous), Rasipuram;Namakkal, Tamil Nadu"
+  },
+  {
+    "id": 91,
+    "teamName": "Legal nova",
+    "track": "Smart City & Infrastructure",
+    "college": "Anand Institute of Higher Technology (AIHT), Kazhipattur, Chennai, Tamil Nadu"
+  },
+  {
+    "id": 92,
+    "teamName": "APEX",
+    "track": "Smart City & Infrastructure",
+    "college": "RMK College of Engineering and Technology, Thiruvallur, Tamil Nadu"
+  },
+  {
+    "id": 93,
+    "teamName": "Quadra Minds",
+    "track": "Healthcare",
+    "college": "Velammal College of Engineering and Technology (VCET), Madurai, Tamil Nadu"
+  },
+  {
+    "id": 94,
+    "teamName": "bRo's",
+    "track": "Education Transformation",
+    "college": "Samrat Ashok Technological Institute (SATI), Vidisha, Maharasthra"
+  },
+  {
+    "id": 95,
+    "teamName": "The AI Aces",
+    "track": "Healthcare",
+    "college": "Karpagam College of Engineering (KCE), Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 96,
+    "teamName": "ArchiTechs",
+    "track": "Smart City & Infrastructure",
+    "college": "KPR Institute of Engineering and Technology (KPRIET), Coimbatore"
+  }
+]

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid page-header mb-5">
+    <div class="container text-center py-5">
+        <h1 class="display-4 text-dark animated slideInDown" style="font-weight: 800;">Upload Your Photo</h1>
+        <p class="text-dark">Step 1 of 2: Your photo will be placed into the official GDTA'26 LinkedIn poster template.</p>
+    </div>
+</div>
+
+<div class="container-xxl main-content py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="card bg-light border-0 shadow-lg rounded-4 p-5 text-center" id="upload-card">
+                    <div id="drop-area" class="border rounded-4 p-5 mb-4" style="border-style: dashed !important; border-width: 2px !important; border-color: #dee2e6 !important; cursor: pointer;">
+                        <i class="fa fa-cloud-upload-alt fa-4x text-primary mb-3"></i>
+                        <h4 class="mb-2">Drag & Drop your photo</h4>
+                        <p class="text-muted">or <span class="text-primary">Click to browse</span></p>
+                        <p class="small text-muted mb-0">Supported formats: JPG, PNG, WEBP (Max 10MB)</p>
+                        <input type="file" id="fileElem" accept="image/png, image/jpeg, image/webp" class="d-none">
+                    </div>
+                    
+                    <div id="preview-area" class="d-none mb-4">
+                        <img id="image-preview" src="" alt="Preview" class="img-fluid rounded shadow-sm mb-3" style="max-height: 250px;">
+                        <p id="file-name" class="fw-bold mb-2"></p>
+                        <button type="button" id="remove-btn" class="btn btn-outline-danger btn-sm rounded-pill px-3 mb-3">Remove Image</button>
+                        <div class="mt-3 text-start">
+                            <label for="attendee-name-input" class="form-label fw-bold">Your Name (for the poster) <span class="text-danger">*</span></label>
+                            <input type="text" id="attendee-name-input" class="form-control" placeholder="Enter your name" required>
+                        </div>
+                    </div>
+
+                    <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
+
+                    <button id="continue-btn" class="btn btn-primary py-3 px-5 w-100 rounded-pill d-none">Continue <i class="fa fa-arrow-right ms-2"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

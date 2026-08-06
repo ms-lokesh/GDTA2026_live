@@ -34,16 +34,16 @@ const server = http.createServer((req, res) => {
 
     let filePath = path.join(__dirname, safeUrl);
 
-    // If file doesn't exist, check extensionless HTML
-    if (!fs.existsSync(filePath)) {
-        const ext = path.extname(filePath);
-        if (!ext) {
-            const htmlPath = filePath + '.html';
-            if (fs.existsSync(htmlPath)) {
-                filePath = htmlPath;
-            }
+    // Check if an extensionless path actually refers to a .html file first, 
+    // to allow a file (e.g. hackathon.html) to exist alongside a directory (e.g. hackathon/)
+    if (!path.extname(filePath)) {
+        const htmlPath = filePath + '.html';
+        if (fs.existsSync(htmlPath)) {
+            filePath = htmlPath;
         }
     }
+    
+    // If it's still the directory path, and no .html was found, it will proceed to check for index.html
 
     // If it's a directory, look for index.html inside
     try {
