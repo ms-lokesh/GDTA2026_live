@@ -81,7 +81,7 @@
     <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="./assets/css/style.css" rel="stylesheet">
     <link href="./assets/css/custom-overrides.css" rel="stylesheet">
-    <link href="./assets/css/mobile.css?v=1.2" rel="stylesheet">
+    <link href="./assets/css/mobile.css?v=1.9" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
     <script>
         tailwind.config = {
@@ -299,11 +299,11 @@
             </a>
 
             <a class="navbar-register-btn-mobile" href="https://register.gdta2026.com/#/tickets">Register</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <button class="navbar-toggler" type="button" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="navbar-collapse collapse" id="navbarCollapse">
+            <div class="navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto">
                     <a href="./index" class="nav-item nav-link"
                         style="color: #000000 !important; font-weight: 700;">Home</a>
@@ -572,7 +572,7 @@
 
     <!-- Template Javascript -->
     <script src="./assets/js/main.js?v=1.2"></script>
-    <script src="./assets/js/mobile-nav.js"></script>
+    <script src="./assets/js/mobile-nav.js?v=1.9"></script>
 
 </body>
 

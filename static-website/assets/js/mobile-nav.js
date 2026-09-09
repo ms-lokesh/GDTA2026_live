@@ -6,7 +6,7 @@
 */
 
 (function () {
-  const MOBILE_MAX = 768;
+  const MOBILE_MAX = 991.98;
 
   function isMobile() {
     return window.matchMedia(`(max-width: ${MOBILE_MAX}px)`).matches;
@@ -42,6 +42,13 @@
     const targetSelector = toggler.getAttribute('data-bs-target') || toggler.getAttribute('data-target') || '#navbarCollapse';
     const collapse = document.querySelector(targetSelector) || document.getElementById('navbarCollapse') || document.querySelector('.navbar-collapse');
     if (!collapse) return;
+    const bootstrapToggle = toggler.getAttribute('data-bs-toggle');
+    const bootstrapTarget = toggler.getAttribute('data-bs-target');
+    const hadBootstrapCollapseClass = collapse.classList.contains('collapse');
+
+    function isMobileNavActive() {
+      return isMobile() || window.getComputedStyle(toggler).display !== 'none';
+    }
 
     // Set CSS variable for top offset
     document.documentElement.style.setProperty('--gdta-mobile-nav-top', `${getNavTop()}px`);
@@ -53,15 +60,50 @@
 
     const backdrop = ensureBackdrop();
 
+    function syncBootstrapControl() {
+      if (isMobileNavActive()) {
+        toggler.removeAttribute('data-bs-toggle');
+        toggler.removeAttribute('data-bs-target');
+        collapse.classList.remove('collapse');
+
+        if (window.bootstrap && window.bootstrap.Collapse) {
+          const instance = window.bootstrap.Collapse.getInstance(collapse);
+          if (instance) instance.dispose();
+        }
+        return;
+      }
+
+      if (bootstrapToggle) toggler.setAttribute('data-bs-toggle', bootstrapToggle);
+      if (bootstrapTarget) toggler.setAttribute('data-bs-target', bootstrapTarget);
+      if (hadBootstrapCollapseClass) collapse.classList.add('collapse');
+    }
+
+    function clearBootstrapOpenState() {
+      collapse.classList.remove('show', 'collapsing');
+      collapse.style.removeProperty('display');
+      collapse.style.removeProperty('height');
+      collapse.style.removeProperty('visibility');
+    }
+
     function open() {
+      clearBootstrapOpenState();
       collapse.classList.add('is-open');
+      toggler.classList.add('is-open');
       backdrop.classList.add('is-open');
       document.body.classList.add('mobile-nav-open');
       toggler.setAttribute('aria-expanded', 'true');
     }
 
     function close() {
+      clearBootstrapOpenState();
       collapse.classList.remove('is-open');
+      toggler.classList.remove('is-open');
+      collapse.querySelectorAll('.dropdown-menu.show').forEach(function (menu) {
+        menu.classList.remove('show');
+      });
+      collapse.querySelectorAll('.dropdown-toggle[aria-expanded="true"]').forEach(function (link) {
+        link.setAttribute('aria-expanded', 'false');
+      });
       backdrop.classList.remove('is-open');
       document.body.classList.remove('mobile-nav-open');
       toggler.setAttribute('aria-expanded', 'false');
@@ -78,14 +120,15 @@
     toggler.__gdtaMobileNavBound = true;
 
     toggler.addEventListener('click', function (e) {
-      if (!isMobile()) return;
+      if (!isMobileNavActive()) return;
       e.preventDefault();
       e.stopPropagation();
+      e.stopImmediatePropagation();
       toggle();
-    });
+    }, true);
 
     document.addEventListener('click', function (e) {
-      if (!isMobile()) return;
+      if (!isMobileNavActive()) return;
       const target = e.target;
       if (!target) return;
       if (toggler.contains(target)) return;
@@ -94,7 +137,7 @@
     });
 
     document.addEventListener('keydown', function (e) {
-      if (!isMobile()) return;
+      if (!isMobileNavActive()) return;
       if (e.key === 'Escape') close();
     });
 
@@ -102,7 +145,7 @@
     collapse.addEventListener('click', function (e) {
       const link = e.target && (e.target.closest('a') || e.target.closest('button'));
       if (!link) return;
-      if (!isMobile()) return;
+      if (!isMobileNavActive()) return;
 
       // If it's a dropdown toggle, prevent default and toggle the dropdown
       if (link.classList.contains('dropdown-toggle')) {
@@ -133,11 +176,13 @@
     // Keep nav top in sync on resize
     window.addEventListener('resize', function () {
       document.documentElement.style.setProperty('--gdta-mobile-nav-top', `${getNavTop()}px`);
-      if (!isMobile()) close();
+      syncBootstrapControl();
+      if (!isMobileNavActive()) close();
     });
 
     // Ensure closed initially on mobile
-    if (isMobile()) close();
+    syncBootstrapControl();
+    if (isMobileNavActive()) close();
   }
 
   function setupFeaturedCarouselSwipe() {
