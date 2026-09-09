@@ -1,8 +1,9 @@
 import http.server
 import os
 import sys
+from urllib.parse import urlparse
 
-class ExtensionlessHTMLHandler(http.server.SimpleHTTPRequestHandler):
+class StaticWebsiteHandler(http.server.SimpleHTTPRequestHandler):
     def translate_path(self, path):
         # Translate standard path
         translated = super().translate_path(path)
@@ -16,8 +17,9 @@ class ExtensionlessHTMLHandler(http.server.SimpleHTTPRequestHandler):
                     return html_path
         return translated
 
+
 if __name__ == '__main__':
-    # Change working directory to the script's directory so it serves static-website files correctly
+    # Change working directory to the script's directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(script_dir)
     
@@ -28,9 +30,10 @@ if __name__ == '__main__':
         except ValueError:
             pass
             
-    print(f"Starting server on port {port} with extensionless HTML routing support...")
+    print(f"Starting server on port {port}...")
+    print(f"Website available at: http://localhost:{port}")
     server_address = ('', port)
-    httpd = http.server.HTTPServer(server_address, ExtensionlessHTMLHandler)
+    httpd = http.server.HTTPServer(server_address, StaticWebsiteHandler)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
