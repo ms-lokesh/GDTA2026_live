@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>GDTA 2026 Conference | Design Thinking Event in Coimbatore, India</title>
+    <title>GDTA 2026 Conference | Details & Schedule</title>
     <meta name="description"
         content="Join GDTA 2026, an international Design Thinking conference in Coimbatore, India. Explore innovation, workshops, speakers, student learning, and global networking. Register now.">
     <meta name="keywords"
@@ -12,7 +12,7 @@
     <meta name="author" content="GDTA 2026">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="https://gdta2026.com/">
-    <meta property="og:title" content="GDTA 2026 Conference | Design Thinking Event in India">
+    <meta property="og:title" content="GDTA 2026 Conference | Details & Schedule">
     <meta property="og:description"
         content="Attend GDTA 2026 in Coimbatore, India. A global conference on Design Thinking, innovation, workshops, and student learning.">
     <meta property="og:url" content="https://gdta2026.com/">
@@ -39,30 +39,7 @@
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', 'GTM-PMBH5FPH');
     </script>
-    <!-- End Google Tag Manager -->
 
-    <!-- Meta Pixel Code -->
-    <script>
-        !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-                n.callMethod ?
-                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n;
-            n.push = n; n.loaded = !0; n.version = '2.0';
-            n.queue = [];
-            t = b.createElement(e); t.async = !0;
-            t.src = v;
-            s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-        }
-            (window, document, 'script',
-                'https://connect.facebook.net/en_US/fbevents.js');
-
-        fbq('init', '153788363108861');
-        fbq('track', 'PageView');
-    </script>
-    <!-- End Meta Pixel Code -->
     <link href="./assets/img/Logo/Screenshot 2026-01-24 143837.png" rel="icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -70,7 +47,7 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap"
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="./assets/lib/animate/animate.min.css" rel="stylesheet">
     <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="./assets/css/style.css" rel="stylesheet">
@@ -104,24 +81,6 @@
             overflow: hidden;
         }
 
-        .day-tab-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background-color: rgba(13, 110, 253, 0.1);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .day-tab-btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
         .day-tab-btn:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 30px rgba(13, 110, 253, 0.3);
@@ -135,15 +94,8 @@
             transform: translateY(-2px);
         }
 
-        .day-tab-btn.active:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(13, 110, 253, 0.5);
-        }
-
         .day-tab-btn i {
             margin-right: 10px;
-            position: relative;
-            z-index: 1;
         }
 
         /* Schedule Container */
@@ -302,7 +254,6 @@
             color: #f57c00;
         }
 
-        /* Timeline content border colors for different session types */
         .timeline-content.content-general {
             border-left-color: #6c757d;
         }
@@ -348,6 +299,75 @@
             margin-bottom: 0;
         }
 
+        .sub-panel-card,
+        .sub-workshop-card {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 18px 22px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .sub-panel-card {
+            border-left: 4px solid #fd7e14;
+        }
+
+        .sub-workshop-card {
+            border-left: 4px solid #6f42c1;
+        }
+
+        .sub-panel-card h6,
+        .sub-workshop-card h6 {
+            font-size: 1rem;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            color: #1e293b !important;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .sub-panel-card p,
+        .sub-workshop-card p {
+            font-size: 0.9rem;
+            line-height: 1.65;
+            color: #475569 !important;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .speaker-box {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            padding-top: 10px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .speaker-box label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #334155;
+            margin: 0 4px 0 0;
+        }
+
+        .speaker-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .timeline-item {
@@ -384,16 +404,7 @@
 
 <body>
 
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PMBH5FPH" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
-    <!-- Meta Pixel noscript -->
-    <noscript><img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id=153788363108861&ev=PageView&noscript=1" /></noscript>
-    <!-- End Meta Pixel noscript -->
-
+    <!-- Header Navbar -->
     <div class="container-fluid p-0"
         style="background-color: #F8F9FA; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;">
         <nav class="navbar navbar-expand-lg navbar-dark px-4 py-1">
@@ -441,18 +452,50 @@
         </nav>
     </div>
 
+    <!-- Page Banner -->
     <div class="container-fluid py-5"
         style="background: linear-gradient(rgba(31, 31, 31, 0.5), rgba(31, 31, 31, 0.5)), url('./assets/img/Background/travel_stay_bg.png') center center/cover no-repeat; margin-top: 100px; padding-top: 80px !important;">
         <div class="container text-center py-5">
             <h1 class="display-3 mb-3 wow fadeInDown" data-wow-delay="0.2s"
-                style="color: #FFFFFF !important; font-weight: 800;">Conference Schedule</h1>
-            <p class="fs-5 wow fadeInUp" data-wow-delay="0.2s" style="color: #FFFFFF !important;">September 29 & 30,
-                2026</p>
+                style="color: #FFFFFF !important; font-weight: 800;">Details & Schedule</h1>
+            <p class="fs-5 wow fadeInUp" data-wow-delay="0.2s" style="color: #FFFFFF !important;">GDTA Conference 2026 |
+                September 29 & 30, 2026</p>
         </div>
     </div>
 
+    <!-- Main Content Area -->
     <div class="container-fluid py-5" style="background-color: #F8F9FA;">
-        <div class="container py-5">
+        <div class="container py-4">
+
+            <!-- GENERAL CONFERENCE INFO CARD -->
+            <div class="card border-0 shadow-sm rounded-4 mb-5 wow fadeInUp" data-wow-delay="0.2s"
+                style="background: #ffffff; border-left: 6px solid #0d6efd !important;">
+                <div class="card-body p-4 p-md-5">
+                    <h5 class="text-uppercase fw-bold text-primary mb-3" style="letter-spacing: 1.5px;">General
+                        Conference Info</h5>
+                    <h2 class="fw-bold mb-4 text-dark" style="font-weight: 800;">GDTA Conference 2026: Panel Session
+                        Preparation</h2>
+                    <p class="text-secondary fs-5 leading-relaxed mb-3" style="line-height: 1.8;">
+                        We are living through a decade of compounding complexity. Technology, climate, and social change
+                        are reshaping the ground beneath organisations faster than most can respond — and in that noise,
+                        clarity has become the rarest and most valuable resource of all. What do we do when the world
+                        refuses to behave like a well-defined problem? As technology accelerates, expectations shift and
+                        old assumptions stop holding, the challenge is no longer simply to find answers—but to make
+                        sense of complexity and turn uncertainty into purposeful action.
+                    </p>
+                    <p class="text-secondary fs-5 leading-relaxed mb-0" style="line-height: 1.8;">
+                        <strong>d.Conference 2026</strong> asks a simple question with far-reaching implications: how do
+                        we use Design Thinking to navigate chaos and create clarity? Over two days at SNS Institutions
+                        in Coimbatore, the global Design Thinking community comes together to turn complexity into
+                        direction — sharing what works, testing new ideas, and building the capabilities that help
+                        organisations, communities, and societies make meaningful progress. All Panels include at least
+                        one voice from the Indian context for local connection and are overall an international group to
+                        cover diverse, global perspectives.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Section Title -->
             <div class="text-center mb-5">
                 <h5 class="text-uppercase mb-2 wow fadeInUp" data-wow-delay="0.2s"
                     style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Two-Day Program</h5>
@@ -463,31 +506,31 @@
             <!-- Day Tabs -->
             <div class="day-tabs wow fadeInUp" data-wow-delay="0.3s">
                 <button class="day-tab-btn active" onclick="switchDay(1)">
-                    Day 1 - September 29
+                    <i class="bi bi-calendar-event"></i> Day 1 - September 29
                 </button>
                 <button class="day-tab-btn" onclick="switchDay(2)">
-                    Day 2 - September 30
+                    <i class="bi bi-calendar2-check"></i> Day 2 - September 30
                 </button>
             </div>
 
-            <!-- Day 1 Schedule -->
+            <!-- Day 1 Schedule Timeline -->
             <div id="day1-schedule" class="schedule-day active">
 
-                <!-- Registration & Welcome -->
+                <!-- Item 1: Registration -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.1s">
                     <div class="timeline-time">
                         <h5>09:00 AM</h5>
                         <div class="time-end">09:30 AM</div>
                     </div>
                     <div class="timeline-content content-general">
-                        <span class="session-badge badge-general">General</span>
+                        <span class="session-badge badge-general">Registration</span>
                         <h4>Registration & Welcome</h4>
-                        <p>Collect your event kits and grab some fresh coffee before we kick off the opening ceremony.
-                        </p>
+                        <p>Collect your event kits and grab fresh coffee before we kick off the opening ceremony.</p>
+
                     </div>
                 </div>
 
-                <!-- Opening Ceremony -->
+                <!-- Item 2: Opening Ceremony -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.2s">
                     <div class="timeline-time">
                         <h5>09:30 AM</h5>
@@ -496,51 +539,159 @@
                     <div class="timeline-content content-keynote">
                         <span class="session-badge badge-keynote">Ceremony</span>
                         <h4>Opening Ceremony</h4>
-                        <p>Welcome by SNS institutions + KL University + CMR University leadership & GDTA Board followed
-                            by Traditional South-Indian / Tamil cultural performance (local heritage).</p>
+                        <ul class="text-secondary ps-3 mb-0">
+                            <li>Welcome by the organisers</li>
+                            <li>Address by Chief Guest: <strong class="text-dark fw-bold fs-6">Dr. TK Prabhu</strong>
+                                (Minister for Natural Resources, Minerals and Mines, Tamilnadu)</li>
+                            <li>Memorial Larry Leifer</li>
+                        </ul>
+                        <div class="mt-3 pt-2 border-top">
+                            <span class="speaker-tag"><i class="bi bi-building me-1"></i>SNS Institutions</span>
+                            <span class="speaker-tag"><i class="bi bi-mortarboard me-1"></i>KL University</span>
+                            <span class="speaker-tag"><i class="bi bi-mortarboard me-1"></i>CMR University</span>
+                            <span class="speaker-tag"><i class="bi bi-award me-1"></i>The Painted Sky Leadership</span>
+                            <span class="speaker-tag"><i class="bi bi-globe me-1"></i>GDTA Board</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Keynote Session 1 -->
+                <!-- Item 3: Keynote 1 -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.3s">
                     <div class="timeline-time">
                         <h5>10:00 AM</h5>
-                        <div class="time-end">11:00 AM</div>
+                        <div class="time-end">10:30 AM</div>
                     </div>
                     <div class="timeline-content content-keynote">
                         <span class="session-badge badge-keynote">Keynote</span>
-                        <h4>Keynote Session 1</h4>
-                        <p>Invite global speaker (e.g., testing AI / ML / research figure)</p>
+                        <h4>Keynote 1 – Chaos and Clarity</h4>
+                        <p>How can design thinking help us navigate chaos—and create the clarity needed to move forward?
+                            Illustrated by personal experience in the Indian context and beyond.</p>
+                        <div class="mt-3 pt-2 border-top">
+                            <span class="speaker-tag"><i class="bi bi-person-badge me-1"></i>Dr. Shankar
+                                Venugopal</span>
+                            <small class="text-muted ms-2">(President and Dean, Mahindra Technical Academy at Mahindra &
+                                Mahindra)</small>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Parallel Panel Sessions -->
+                <!-- Item 4: Public Panel -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.4s">
                     <div class="timeline-time">
-                        <h5>11:15 AM</h5>
-                        <div class="time-end">12:00 PM</div>
+                        <h5>11:00 AM</h5>
+                        <div class="time-end">11:30 AM</div>
                     </div>
                     <div class="timeline-content content-panel">
-                        <span class="session-badge badge-panel">Panel</span>
-                        <h4>Parallel Panel Sessions</h4>
-                        <p>Concurrent panel discussions exploring key design thinking topics and AI innovation.</p>
+                        <span class="session-badge badge-panel">Public Panel</span>
+                        <h4>Public Panel - Chaos & Clarity</h4>
+                        <p>Panel discussion as follow-up to Keynote 1.</p>
+                        <div class="mt-3 pt-2 border-top">
+                            <span class="speaker-tag">Dr. Shankar Venugopal</span>
+                            <span class="speaker-tag">LinLin Shui</span>
+                            <span class="speaker-tag">2 Speakers from Indian Context</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Public Talk -->
+                <!-- Item 5: Parallel Panel Sessions -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.5s">
                     <div class="timeline-time">
-                        <h5>12:00 PM</h5>
+                        <h5>11:40 AM</h5>
                         <div class="time-end">12:30 PM</div>
                     </div>
-                    <div class="timeline-content content-keynote">
-                        <span class="session-badge badge-keynote">Public Talk</span>
-                        <h4>Public Talk</h4>
-                        <p>Open public discourse on design thinking and innovation in the modern age.</p>
+                    <div class="timeline-content content-panel">
+                        <span class="session-badge badge-panel">Parallel Panels</span>
+                        <h4>Parallel Panel Sessions</h4>
+                        <p class="mb-3">Concurrent panel discussions exploring key design thinking topics and AI
+                            innovation:</p>
+
+                        <!-- Panel 1 -->
+                        <div class="sub-panel-card">
+                            <h6 class="fw-bold text-dark mb-2">Panel 1 - Education Transformation - From the Teaching
+                                Side to the Learning Side</h6>
+                            <p class="small text-secondary mb-2" style="line-height: 1.6;">Education is shifting from
+                                knowledge transfer to self-directed, collaborative and challenge-based learning. As AI
+                                makes knowledge increasingly accessible, the focus moves toward Future Skills such as
+                                creativity, critical thinking, collaboration, agency and the ability to navigate
+                                complexity. This panel brings together perspectives from government, teacher education,
+                                design, research and the student experience to explore how Design Thinking and AI can
+                                help reshape education for the future.</p>
+                            <div class="speaker-box">
+                                <label>Speakers:</label>
+                                <span class="speaker-tag">Agnes Kwek</span>
+                                <span class="speaker-tag">Andre Bresges (Online)</span>
+                                <span class="speaker-tag">Shirley Matthew</span>
+                                <span class="speaker-tag">Hoda Mostafa</span>
+                                <span class="speaker-tag">1 SNS Student</span>
+                                <span class="speaker-tag bg-light text-dark border">Moderation: Uli Weinberg</span>
+                            </div>
+                        </div>
+
+                        <!-- Panel 2 -->
+                        <div class="sub-panel-card">
+                            <h6 class="fw-bold text-dark mb-2">Panel 2 - Industry Innovations - Reimagining Value
+                                Creation Through Design Thinking</h6>
+                            <p class="small text-secondary mb-2" style="line-height: 1.6;">Industries across the world
+                                are being reshaped by new technologies, changing expectations and increasingly complex
+                                markets. This panel brings together perspectives from India and the United States to
+                                explore how Design Thinking can help organisations rethink products, services, business
+                                models and the ways value is created. The discussion considers how different market
+                                contexts and approaches to innovation can offer new perspectives on turning uncertainty
+                                into opportunity and creating meaningful, sustainable progress.</p>
+                            <div class="speaker-box">
+                                <label>Speakers:</label>
+                                <span class="speaker-tag">Sreedevi Hegde</span>
+                                <span class="speaker-tag">Revathi Kant</span>
+                                <span class="speaker-tag">Ramesh Ramanujam</span>
+                                <span class="speaker-tag">Matt Parkinson (confirmation pending)</span>
+                                <span class="speaker-tag bg-light text-dark border">Moderation: Nalin S. Kumar</span>
+                            </div>
+                        </div>
+
+                        <!-- Panel 3 -->
+                        <div class="sub-panel-card">
+                            <h6 class="fw-bold text-dark mb-2">Panel 3 - Design & AI - Design Thinking in the Age of
+                                Generative AI</h6>
+                            <p class="small text-secondary mb-2" style="line-height: 1.6;">AI is rapidly reshaping how
+                                we understand, practise and teach design thinking, opening new possibilities while
+                                challenging established ideas of creativity, expertise and human agency. Bringing
+                                together perspectives from the global south and north, this panel explores how different
+                                design communities are responding to the rise of AI and what it means for the future of
+                                human-centred innovation. The discussion considers how we can harness AI’s potential
+                                while keeping human judgement, creativity and responsibility at the centre.</p>
+                            <div class="speaker-box">
+                                <label>Speakers:</label>
+                                <span class="speaker-tag">Ricardo Ruffo</span>
+                                <span class="speaker-tag">Jacob Reeves</span>
+                                <span class="speaker-tag">Sayantan Mukherjee</span>
+                                <span class="speaker-tag bg-light text-dark border">Moderation: Monika Frech</span>
+                            </div>
+                        </div>
+
+                        <!-- Panel 4 -->
+                        <div class="sub-panel-card">
+                            <h6 class="fw-bold text-dark mb-2">Panel 4 - Social Impact – Design Thinking as a Catalyst
+                                for Community Change</h6>
+                            <p class="small text-secondary mb-2" style="line-height: 1.6;">Addressing complex social
+                                challenges requires more than good ideas — it calls for an understanding of systems,
+                                communities and the different realities in which change takes place. Bringing together
+                                perspectives from the global south and north, this panel explores how Design Thinking
+                                can contribute to meaningful social impact across diverse cultural and societal
+                                contexts. The discussion considers how human-centred approaches can help navigate
+                                complexity, build inclusive solutions and turn local insights into lasting change.</p>
+                            <div class="speaker-box">
+                                <label>Speakers:</label>
+                                <span class="speaker-tag">Carolin Tänzer</span>
+                                <span class="speaker-tag">Avinash Pratap Singh</span>
+                                <span class="speaker-tag">Tita Larasati (to be confirmed)</span>
+                                <span class="speaker-tag bg-light text-dark border">Moderation: Richard Perez</span>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Lunch + AI Expo -->
+                <!-- Item 6: Lunch + AI Expo -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.6s">
                     <div class="timeline-time">
                         <h5>12:30 PM</h5>
@@ -549,12 +700,14 @@
                     <div class="timeline-content content-break">
                         <span class="session-badge badge-break">Lunch + Expo</span>
                         <h4>Lunch + AI Expo</h4>
-                        <p>Live demos of autonomous AI-agents solving real-world problems. Startup showcase: 40-50
-                            Gen-AI & Agentic-AI startups (from SNS, KL, CMR networks).</p>
+                        <ul class="text-secondary ps-3 mb-0">
+                            <li>Live demos of autonomous AI-agents solving real-world problems</li>
+                            <li>Startup showcase: 40–60 Gen-AI & Agentic-AI startups (from SNS, KL, CMR networks)</li>
+                        </ul>
                     </div>
                 </div>
 
-                <!-- World Cafe -->
+                <!-- Item 7: World Cafe -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.7s">
                     <div class="timeline-time">
                         <h5>02:00 PM</h5>
@@ -562,56 +715,61 @@
                     </div>
                     <div class="timeline-content content-networking">
                         <span class="session-badge badge-networking">Interactive</span>
-                        <h4>World Cafe</h4>
-                        <p>Interactive discussion session with rotating tables fostering collaborative conversations on
-                            design innovation.</p>
+                        <h4>World Café / Open Microphone (Reflection)</h4>
+                        <ul class="text-secondary ps-3 mb-3">
+                            <li>4x5min Panel Summary (Moderators) - 20min</li>
+                            <li>10-20min Team reflection (meet your neighbour)</li>
+                            <li>Open Mic (moderated)</li>
+                        </ul>
+                        <div class="pt-2 border-top">
+                            <span class="speaker-tag">Richard Perez</span>
+                            <span class="speaker-tag">Nalin S. Kumar</span>
+                            <span class="speaker-tag">Uli Weinberg</span>
+                            <span class="speaker-tag">Monika Frech</span>
+                            <span class="speaker-tag">+ Session Moderator</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Panel Session 2 / Open Microphone -->
+                <!-- Item 8: Top 3 Pitches -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.8s">
                     <div class="timeline-time">
                         <h5>03:15 PM</h5>
-                        <div class="time-end">04:15 PM</div>
+                        <div class="time-end">04:00 PM</div>
                     </div>
-                    <div class="timeline-content content-panel">
-                        <span class="session-badge badge-panel">Panel</span>
-                        <h4>Panel Session 2 / Open Microphone</h4>
-                        <p>Engaging panel discussions followed by open microphone session for attendee participation.
-                        </p>
+                    <div class="timeline-content content-workshop">
+                        <span class="session-badge badge-workshop">Hackathon</span>
+                        <h4>Top 3 Pitches of the GDTA Hackathon</h4>
+                        <ul class="text-secondary ps-3 mb-3">
+                            <li>Pitching videos of the winning teams</li>
+                            <li>Award Ceremony</li>
+                        </ul>
+                        <div class="pt-2 border-top">
+                            <span class="speaker-tag">SNS</span>
+                            <span class="speaker-tag">Uli Weinberg</span>
+                            <span class="speaker-tag">Siemens Foundation</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Top 5 Pitches of Challenge 2026 -->
+                <!-- Item 9: Awards -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.9s">
                     <div class="timeline-time">
                         <h5>04:30 PM</h5>
-                        <div class="time-end">05:00 PM</div>
-                    </div>
-                    <div class="timeline-content content-workshop">
-                        <span class="session-badge badge-workshop">Competition</span>
-                        <h4>Top 5 Pitches of Challenge 2026</h4>
-                        <p>Siemens Foundation sponsored challenge presentations - witness the best innovation pitches.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Special Recognition & Awards Ceremony -->
-                <div class="timeline-item wow fadeInUp" data-wow-delay="1.0s">
-                    <div class="timeline-time">
-                        <h5>05:00 PM</h5>
-                        <div class="time-end">06:00 PM</div>
+                        <div class="time-end">05:30 PM</div>
                     </div>
                     <div class="timeline-content content-keynote">
                         <span class="session-badge badge-keynote">Awards</span>
                         <h4>Special Recognition & Awards Ceremony</h4>
-                        <p>Awards for research / design / innovation. Recognition of participating startups,
-                            contributors, and supporters.</p>
+                        <ul class="text-secondary ps-3 mb-0">
+                            <li>Launch / first edition of design / innovation awards</li>
+                            <li>Recognition of participating startups, contributors, supporters</li>
+                        </ul>
                     </div>
                 </div>
 
-                <!-- Coimbatore Nights -->
-                <div class="timeline-item wow fadeInUp" data-wow-delay="1.1s">
+                <!-- Item 10: Coimbatore Nights -->
+                <div class="timeline-item wow fadeInUp" data-wow-delay="1.0s">
                     <div class="timeline-time">
                         <h5>06:00 PM</h5>
                         <div class="time-end">08:00 PM</div>
@@ -626,51 +784,133 @@
 
             </div>
 
-            <!-- Day 2 Schedule -->
+            <!-- Day 2 Schedule Timeline -->
             <div id="day2-schedule" class="schedule-day">
 
-                <!-- Keynote Session 2 -->
+                <!-- Item 1: Keynote Session 2 -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.1s">
                     <div class="timeline-time">
-                        <h5>09:00 AM</h5>
-                        <div class="time-end">10:00 AM</div>
+                        <h5>09:15 AM</h5>
+                        <div class="time-end">09:45 AM</div>
                     </div>
                     <div class="timeline-content content-keynote">
                         <span class="session-badge badge-keynote">Keynote</span>
                         <h4>Keynote Session 2</h4>
-                        <p>Invite global speaker - Inspiring talk on the future of design thinking and innovation.</p>
+                        <p>Inspiring morning keynote address setting the theme for workshops and collaborative learning.
+                        </p>
+                        <div class="mt-3 pt-2 border-top">
+                            <span class="speaker-tag"><i class="bi bi-person-badge me-1"></i>Global Speaker</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Parallel Workshops / Start-Up Pitching -->
+                <!-- Item 2: Parallel Workshops -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.2s">
                     <div class="timeline-time">
                         <h5>10:00 AM</h5>
                         <div class="time-end">12:30 PM</div>
                     </div>
                     <div class="timeline-content content-workshop">
-                        <span class="session-badge badge-workshop">Workshop</span>
-                        <h4>Parallel Workshops / Start-Up Pitching by Students</h4>
-                        <p>Hands-on workshops and student entrepreneurship showcase with startup pitch presentations.
-                        </p>
+                        <span class="session-badge badge-workshop">Workshops</span>
+                        <h4>Parallel Workshops</h4>
+                        <p class="mb-3">Interactive hands-on workshop tracks exploring cutting-edge Design Thinking
+                            techniques:</p>
+
+                        <!-- Workshop 1 -->
+                        <div class="sub-workshop-card">
+                            <h6 class="fw-bold text-dark mb-2">Workshop 1: Playing the Future: How to Apply Trends for
+                                Generating Breakthrough Ideas</h6>
+                            <p class="small text-secondary mb-2" style="line-height: 1.6;">This hands-on workshop
+                                introduces participants to trend-watching models and practices, connecting them directly
+                                with the Design Thinking process and the idea generation phase. Through an interactive
+                                tabletop game – "Playing the Future" – teams collaborate to generate innovative ideas
+                                for products, services, and markets. The session explores how trends can create new
+                                opportunities, illustrated by real-world cases (such as Miro interactive boards), and
+                                culminates in team presentations of breakthrough concepts.</p>
+                            <div class="speaker-box">
+                                <label>Speaker:</label>
+                                <span class="speaker-tag">Maria Stashenko</span>
+                            </div>
+                        </div>
+
+                        <!-- Workshop 2 -->
+                        <div class="sub-workshop-card">
+                            <h6 class="fw-bold text-dark mb-2">Workshop 2: Interactive Innovation Workshop</h6>
+                            <p class="small text-secondary mb-2" style="line-height: 1.6;">Hands-on collaborative
+                                workshop focusing on modern design thinking methods and practice.</p>
+                            <div class="speaker-box">
+                                <label>Speaker:</label>
+                                <span class="speaker-tag">Tebogo Chaka</span>
+                            </div>
+                        </div>
+
+                        <!-- Workshop 3 -->
+                        <div class="sub-workshop-card">
+                            <h6 class="fw-bold text-dark mb-2">Workshop 3: Reimagining Design Thinking with Indigenous
+                                Knowledge and AI</h6>
+                            <p class="small text-secondary mb-2" style="line-height: 1.6;">This interactive workshop
+                                invites participants to explore how Design Thinking can be reimagined through the
+                                dialogue between Indigenous / traditional knowledge, artificial intelligence, and
+                                responsible future-making. Rather than approaching Design Thinking only as a
+                                contemporary innovation method, the session will ask how long-standing cultural wisdom,
+                                local problem-solving practices, and intergenerational perspectives can help us rethink
+                                the way we frame challenges, generate ideas, and imagine futures. Through a simple
+                                AI-supported activity, participants will create and compare visual scenarios, reflecting
+                                on how the questions we ask shape the futures we design. The workshop aims to open a
+                                space for responsible, resilient, and regenerative ways of thinking across design,
+                                education, innovation, and society.</p>
+                            <div class="speaker-box">
+                                <label>Speakers:</label>
+                                <span class="speaker-tag">Anirban Bhattacharya</span>
+                                <span class="speaker-tag">Can Güvenir</span>
+                            </div>
+                        </div>
+
+                        <!-- Workshop 4 -->
+                        <div class="sub-workshop-card">
+                            <h6 class="fw-bold text-dark mb-2">Workshop 4: Hands-On Design Session</h6>
+                            <p class="small text-secondary mb-2" style="line-height: 1.6;">Session details to be
+                                announced.</p>
+                            <div class="speaker-box">
+                                <label>Speaker:</label>
+                                <span class="speaker-tag">TBD</span>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Valedictory followed by Lunch -->
+                <!-- Item 3: Closing Ceremony -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.3s">
                     <div class="timeline-time">
                         <h5>12:30 PM</h5>
-                        <div class="time-end">02:00 PM</div>
+                        <div class="time-end">01:00 PM</div>
                     </div>
                     <div class="timeline-content content-keynote">
                         <span class="session-badge badge-keynote">Closing</span>
-                        <h4>Valedictory followed by Lunch</h4>
-                        <p>Closing ceremony with reflections on the conference and farewell lunch.</p>
+                        <h4>Closing Ceremony</h4>
+                        <p>Concluding ceremony, final reflections, and closing remarks for GDTA Conference 2026.</p>
+                        <div class="mt-3 pt-2 border-top">
+                            <span class="speaker-tag"><i class="bi bi-award me-1"></i>GDTA & SNS Leadership</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Coimbatore Innovation Safari -->
+                <!-- Item 4: Lunch -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.4s">
+                    <div class="timeline-time">
+                        <h5>01:00 PM</h5>
+                        <div class="time-end">02:00 PM</div>
+                    </div>
+                    <div class="timeline-content content-break">
+                        <span class="session-badge badge-break">Lunch</span>
+                        <h4>Networking Lunch / Packed Lunch</h4>
+                        <p>Informal networking lunch and preparation for afternoon Safaris.</p>
+                    </div>
+                </div>
+
+                <!-- Item 5: Safari -->
+                <div class="timeline-item wow fadeInUp" data-wow-delay="0.5s">
                     <div class="timeline-time">
                         <h5>02:00 PM</h5>
                         <div class="time-end">06:00 PM</div>
@@ -680,12 +920,10 @@
                         <h4>"Coimbatore Innovation Safari"</h4>
                         <p>Site visits and real-world immersion tours. Delegates choose one route:</p>
                         <ul style="margin-top: 10px; color: #495057;">
-                            <li><strong>Route 1</strong> — Isha Foundation, Velliangiri Hills, Perur Patteeswarar Temple
-                                &amp; Agri Field Visit</li>
-                            <li><strong>Route 2</strong> — Maruthamalai Temple, Town Hall, Roots/MSME &amp; Gedee Car
-                                Museum</li>
-                            <li><strong>Route 3</strong> — Cotton Textile Mills, Sirumugai, Tenthirupathi Temple &amp;
-                                Silk Saree Weaving</li>
+                            <li><strong>Route 1</strong> — Isha Foundation, Veliyangiri and Perur Temple</li>
+                            <li><strong>Route 2</strong> — Maruthamalai Temple, Town Hall & Ukkadam lake</li>
+                            <li><strong>Route 3</strong> — Cotton Textile Mills in Sirumugai and Tentirupathi Temple
+                                Visit</li>
                         </ul>
                     </div>
                 </div>
@@ -695,8 +933,9 @@
         </div>
     </div>
 
+    <!-- Note Section -->
     <div class="container-fluid py-5" style="background-color: #FFFFFF;">
-        <div class="container py-5">
+        <div class="container py-4">
             <div class="text-center wow fadeInUp" data-wow-delay="0.2s">
                 <h5 class="text-uppercase mb-2"
                     style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Note</h5>
@@ -707,6 +946,7 @@
         </div>
     </div>
 
+    <!-- Footer -->
     <div class="container-fluid footer py-4 wow fadeIn" data-wow-delay="0.2s"
         style="background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('./assets/img/Background/travel_stay_bg.png') center center/cover no-repeat;">
         <div class="container text-center py-4">
@@ -770,7 +1010,9 @@
             document.getElementById('day' + day + '-schedule').classList.add('active');
 
             // Add active class to clicked tab
-            event.target.closest('.day-tab-btn').classList.add('active');
+            if (window.event && window.event.target) {
+                window.event.target.closest('.day-tab-btn').classList.add('active');
+            }
 
             // Re-initialize WOW animations for the new content
             new WOW().init();
