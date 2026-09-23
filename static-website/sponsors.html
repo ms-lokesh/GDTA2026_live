@@ -76,10 +76,23 @@
     <link href="./assets/css/style.css" rel="stylesheet">
     <link href="./assets/css/custom-overrides.css" rel="stylesheet">
     <link href="./assets/css/mobile.css?v=1.2" rel="stylesheet">
+    <link href="./assets/css/hscroll-carousel.css" rel="stylesheet">
 
     <style>
         .content-card {
             min-height: auto !important;
+        }
+
+        .hscroll-card {
+            width: 260px;
+            display: flex;
+        }
+
+        .hscroll-card .content-card {
+            width: 100%;
+            height: 100%;
+            min-height: 260px !important;
+            justify-content: center;
         }
 
         .partner-learn-more-btn {
@@ -253,97 +266,109 @@
                     style="font-weight: 800; color: #000000 !important;">Supporting GDTA 2026</h2>
             </div>
 
-            <div class="row g-4 justify-content-center">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
-                    <div class="content-card text-center" style="padding: 36px;">
-                        <div
-                            style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-                            <img src="./assets/img/Logo/202006_Logo_SieSti_Partner_RGB.png" alt="Siemens Stiftung Logo"
-                                onerror="this.onerror=null;this.src='../static/img/Logo/202006_Logo_SieSti_Partner_RGB.png';"
-                                style="max-width: 85%; max-height: 85%; object-fit: contain;">
+            <div class="hscroll-carousel">
+                <button class="hscroll-arrow hscroll-arrow-left" aria-label="Scroll sponsors left"><i
+                        class="fas fa-chevron-left"></i></button>
+                <div class="hscroll-track">
+                    <div class="hscroll-card">
+                        <div class="content-card text-center" style="padding: 36px;">
+                            <div
+                                style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <img src="./assets/img/Logo/202006_Logo_SieSti_Partner_RGB.png"
+                                    alt="Siemens Stiftung Logo"
+                                    onerror="this.onerror=null;this.src='../static/img/Logo/202006_Logo_SieSti_Partner_RGB.png';"
+                                    style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                            </div>
+                            <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">SIEMENS |
+                                Stiftung
+                            </h4>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">SIEMENS | Stiftung
-                        </h4>
                     </div>
-                </div>
 
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="content-card text-center" style="padding: 36px;">
-                        <div
-                            style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-                            <img src="./assets/img/Logo/Unstop-Logo-Blue-Large.jpg" alt="Unstop Logo"
-                                style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                    <div class="hscroll-card">
+                        <div class="content-card text-center" style="padding: 36px;">
+                            <div
+                                style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <img src="./assets/img/Logo/Unstop-Logo-Blue-Large.jpg" alt="Unstop Logo"
+                                    style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                            </div>
+                            <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">Unstop</h4>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">Unstop</h4>
                     </div>
-                </div>
 
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
-                    <div class="content-card text-center" style="padding: 36px;">
-                        <div
-                            style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-                            <img src="./assets/img/Logo/Untitled design (6).png" alt="n8n Logo"
-                                style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                    <div class="hscroll-card">
+                        <div class="content-card text-center" style="padding: 36px;">
+                            <div
+                                style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <img src="./assets/img/Logo/Untitled design (6).png" alt="n8n Logo"
+                                    style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                            </div>
+                            <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">n8n</h4>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">n8n</h4>
                     </div>
-                </div>
 
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="content-card text-center" style="padding: 36px;">
-                        <div
-                            style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-                            <img src="./assets/img/Logo/Untitled design (7).png" alt="Kumaran Medical Center Logo"
-                                style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                    <div class="hscroll-card">
+                        <div class="content-card text-center" style="padding: 36px;">
+                            <div
+                                style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <img src="./assets/img/Logo/Untitled design (7).png" alt="Kumaran Medical Center Logo"
+                                    style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                            </div>
+                            <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">Kumaran
+                                Medical
+                                Center</h4>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">Kumaran Medical
-                            Center</h4>
                     </div>
-                </div>
 
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
-                    <div class="content-card text-center" style="padding: 36px;">
-                        <div
-                            style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-                            <img src="./assets/img/Logo/Untitled design (8).png" alt="Indiaglitz Logo"
-                                style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                    <div class="hscroll-card">
+                        <div class="content-card text-center" style="padding: 36px;">
+                            <div
+                                style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <img src="./assets/img/Logo/Untitled design (8).png" alt="Indiaglitz Logo"
+                                    style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                            </div>
+                            <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">Indiaglitz
+                            </h4>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">Indiaglitz</h4>
                     </div>
-                </div>
 
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="content-card text-center" style="padding: 36px;">
-                        <div
-                            style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-                            <img src="./assets/img/Logo/Untitled design (9).png" alt="SNS Square Logo"
-                                style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                    <div class="hscroll-card">
+                        <div class="content-card text-center" style="padding: 36px;">
+                            <div
+                                style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <img src="./assets/img/Logo/Untitled design (9).png" alt="SNS Square Logo"
+                                    style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                            </div>
+                            <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">SNS Square
+                            </h4>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">SNS Square</h4>
                     </div>
-                </div>
 
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.8s">
-                    <div class="content-card text-center" style="padding: 36px;">
-                        <div
-                            style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-                            <img src="./assets/img/Logo/Untitled design (11).png" alt="Alan's Logo"
-                                style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                    <div class="hscroll-card">
+                        <div class="content-card text-center" style="padding: 36px;">
+                            <div
+                                style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <img src="./assets/img/Logo/Untitled design (11).png" alt="Alan's Logo"
+                                    style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                            </div>
+                            <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">Alan's</h4>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">Alan's</h4>
                     </div>
-                </div>
 
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.9s">
-                    <div class="content-card text-center" style="padding: 36px;">
-                        <div
-                            style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-                            <img src="./assets/img/Logo/Untitled design (19).png" alt="Sponsor Logo"
-                                style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                    <div class="hscroll-card">
+                        <div class="content-card text-center" style="padding: 36px;">
+                            <div
+                                style="width: 100%; height: 180px; background-color: #FFFFFF; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <img src="./assets/img/Logo/Untitled design (19).png" alt="Sponsor Logo"
+                                    style="max-width: 85%; max-height: 85%; object-fit: contain;">
+                            </div>
+                            <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">Haribhavanam
+                            </h4>
                         </div>
-                        <h4 style="color: #000000 !important; font-weight: 800; margin-bottom: 4px;">Haribhavanam</h4>
                     </div>
                 </div>
+                <button class="hscroll-arrow hscroll-arrow-right" aria-label="Scroll sponsors right"><i
+                        class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </div>
@@ -404,6 +429,7 @@
     <script src="./assets/lib/waypoints/waypoints.min.js"></script>
     <script src="./assets/js/main.js?v=1.2"></script>
     <script src="./assets/js/mobile-nav.js"></script>
+    <script src="./assets/js/hscroll-carousel.js"></script>
 </body>
 
 </html>

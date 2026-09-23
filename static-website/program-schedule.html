@@ -368,6 +368,18 @@
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
         }
 
+        a.speaker-tag {
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+
+        a.speaker-tag:hover {
+            background: #E91E63;
+            color: #FFFFFF;
+            transform: translateY(-1px);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .timeline-item {
@@ -546,10 +558,10 @@
                         </ul>
                         <div class="mt-3 pt-2 border-top">
                             <span class="speaker-tag"><i class="bi bi-person-badge me-1"></i>Dr. T.K. Prabhu</span>
-                            <span class="speaker-tag">Prof. Uli Weinberg</span>
-                            <span class="speaker-tag">Dr. Nalin SNS</span>
-                            <span class="speaker-tag">Mr. Anirban</span>
-                            <span class="speaker-tag">Prof. Richard Perez</span>
+                            <a class="speaker-tag" href="./program-sessions#speaker-uli-weinberg">Prof. Uli Weinberg</a>
+                            <a class="speaker-tag" href="./program-sessions#speaker-nalin-sns">Dr. Nalin SNS</a>
+                            <a class="speaker-tag" href="./program-sessions#speaker-anirban-bhattacharya">Mr. Anirban</a>
+                            <a class="speaker-tag" href="./program-sessions#speaker-richard-perez">Prof. Richard Perez</a>
                             <span class="speaker-tag bg-light text-dark border">Moderation: SNS Team</span>
                         </div>
                     </div>
@@ -567,7 +579,7 @@
                         <p>Special tribute honoring the life, pioneering contributions, and legacy of Stanford Professor
                             Larry Leifer.</p>
                         <div class="mt-3 pt-2 border-top">
-                            <span class="speaker-tag"><i class="bi bi-person-badge me-1"></i>Prof. Uli Weinberg</span>
+                            <a class="speaker-tag" href="./program-sessions#speaker-uli-weinberg"><i class="bi bi-person-badge me-1"></i>Prof. Uli Weinberg</a>
                             <span class="speaker-tag bg-light text-dark border">Moderation: SNS Team</span>
                         </div>
                     </div>
@@ -638,7 +650,7 @@
                                 help reshape education for the future.</p>
                             <div class="speaker-box">
                                 <label>Speakers:</label>
-                                <span class="speaker-tag">Ms. Agnes Kwek</span>
+                                <a class="speaker-tag" href="./program-sessions#speaker-agnes-kwek">Ms. Agnes Kwek</a>
                                 <span class="speaker-tag">Mr. Andre Bresgas (Online)</span>
                                 <span class="speaker-tag">Ms. Shirley Mathew</span>
                                 <span class="speaker-tag">SNS Student</span>
@@ -660,8 +672,8 @@
                                 into opportunity and creating meaningful, sustainable progress.</p>
                             <div class="speaker-box">
                                 <label>Speakers:</label>
-                                <span class="speaker-tag">Ms. Sreedevi Hegde</span>
-                                <span class="speaker-tag">Ms. Revathi Kant</span>
+                                <a class="speaker-tag" href="./program-sessions#speaker-sreedevi-hegde">Ms. Sreedevi Hegde</a>
+                                <a class="speaker-tag" href="./program-sessions#speaker-revathi-kant">Ms. Revathi Kant</a>
                                 <span class="speaker-tag">Mr. Matt Parkinson</span>
                                 <span class="speaker-tag bg-light text-dark border">Moderation: Dr. Nalin SNS</span>
                             </div>
@@ -680,7 +692,7 @@
                                 while keeping human judgement, creativity and responsibility at the centre.</p>
                             <div class="speaker-box">
                                 <label>Speakers:</label>
-                                <span class="speaker-tag">Mr. Ricardo Ruffo</span>
+                                <a class="speaker-tag" href="./program-sessions#speaker-ricardo-ruffo">Mr. Ricardo Ruffo</a>
                                 <span class="speaker-tag">Prof. Jacob Reeves</span>
                                 <span class="speaker-tag">Mr. Sayantan Mukherjee</span>
                                 <span class="speaker-tag bg-light text-dark border">Moderation: Monika Frech</span>
@@ -700,9 +712,9 @@
                                 complexity, build inclusive solutions and turn local insights into lasting change.</p>
                             <div class="speaker-box">
                                 <label>Speakers:</label>
-                                <span class="speaker-tag">Ms. Carolin Tänzer</span>
+                                <a class="speaker-tag" href="./program-sessions#speaker-carolin-taenzer">Ms. Carolin Tänzer</a>
                                 <span class="speaker-tag">Mr. Avinash Pratap Singh</span>
-                                <span class="speaker-tag">Dr. Michael Lewrick (Online)</span>
+                                <a class="speaker-tag" href="./program-sessions#speaker-michael-lewrick">Dr. Michael Lewrick (Online)</a>
                                 <span class="speaker-tag">Mr. John Ngila</span>
                                 <span class="speaker-tag bg-light text-dark border">Moderation: Richard Perez</span>
                             </div>
@@ -739,9 +751,9 @@
                             <li>Open Mic (moderated)</li>
                         </ul>
                         <div class="pt-2 border-top">
-                            <span class="speaker-tag">Prof. Richard Perez</span>
-                            <span class="speaker-tag">Dr. Nalin SNS</span>
-                            <span class="speaker-tag">Prof. Uli Weinberg</span>
+                            <a class="speaker-tag" href="./program-sessions#speaker-richard-perez">Prof. Richard Perez</a>
+                            <a class="speaker-tag" href="./program-sessions#speaker-nalin-sns">Dr. Nalin SNS</a>
+                            <a class="speaker-tag" href="./program-sessions#speaker-uli-weinberg">Prof. Uli Weinberg</a>
                             <span class="speaker-tag">Ms. Monika Frech</span>
                             <span class="speaker-tag">+ Session Moderator</span>
                         </div>
@@ -856,7 +868,7 @@
                                 culminates in team presentations of breakthrough concepts.</p>
                             <div class="speaker-box">
                                 <label>Speaker:</label>
-                                <span class="speaker-tag">Ms. Maria Stashenko</span>
+                                <a class="speaker-tag" href="./program-sessions#speaker-maria-stashenko">Ms. Maria Stashenko</a>
                             </div>
                         </div>
 
@@ -876,7 +888,7 @@
                                 space for it in how we teach design thinking.</p>
                             <div class="speaker-box">
                                 <label>Speaker:</label>
-                                <span class="speaker-tag">Ms. Tebogo Chaka</span>
+                                <a class="speaker-tag" href="./program-sessions#speaker-tebogo-chaka">Ms. Tebogo Chaka</a>
                             </div>
                         </div>
 
@@ -897,8 +909,8 @@
                                 education, innovation, and society.</p>
                             <div class="speaker-box">
                                 <label>Speakers:</label>
-                                <span class="speaker-tag">Mr. Anirban Bhattacharya</span>
-                                <span class="speaker-tag">Dr. Can Güvenir</span>
+                                <a class="speaker-tag" href="./program-sessions#speaker-anirban-bhattacharya">Mr. Anirban Bhattacharya</a>
+                                <a class="speaker-tag" href="./program-sessions#speaker-can-guvenir">Dr. Can Güvenir</a>
                             </div>
                         </div>
 

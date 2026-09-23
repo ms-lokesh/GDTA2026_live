@@ -531,6 +531,104 @@
             transform: translateY(0);
             opacity: 1;
         }
+
+        /* Countdown Section */
+        .countdown-unit {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 18px 22px;
+            min-width: 90px;
+        }
+
+        .countdown-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #FFFFFF !important;
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #CED4DA !important;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 576px) {
+            .countdown-unit {
+                min-width: 70px;
+                padding: 14px 12px;
+            }
+
+            .countdown-number {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Stat Counters */
+        .stat-unit {
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .stat-number {
+            font-size: 2.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #E91E63 0%, #FF6B6B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #CED4DA !important;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 576px) {
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+
+        /* Why Attend Section */
+        .why-attend-card {
+            padding: 30px 20px;
+            height: 100%;
+        }
+
+        .why-attend-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #E91E63 0%, #FF6B6B 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: #FFFFFF !important;
+            box-shadow: 0 8px 20px rgba(233, 30, 99, 0.25);
+        }
+
+        .why-attend-title {
+            font-weight: 800;
+            color: #000000 !important;
+            margin-bottom: 10px;
+        }
+
+        .why-attend-text {
+            color: #495057 !important;
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
     </style>
 <script src="./assets/js/modal.js"></script>
 </head>
@@ -629,6 +727,105 @@
     </div>
     
     <!-- Hero Section End -->
+
+    <!-- Countdown Section Start -->
+    <div class="container-fluid py-5" style="background-color: #000000;">
+        <div class="container py-3 text-center">
+            <h5 class="text-uppercase mb-3 wow fadeInUp" data-wow-delay="0.1s"
+                style="color: #E91E63 !important; letter-spacing: 2px; font-weight: 600;">Countdown to GDTA 2026</h5>
+            <p class="mb-4 wow fadeInUp" data-wow-delay="0.15s" style="color: #FFFFFF !important; opacity: 0.85;">
+                29 – 30 September 2026 &bull; SNS Institutions, Coimbatore, India</p>
+            <div class="d-flex justify-content-center flex-wrap gap-3 gap-md-4 wow fadeInUp" data-wow-delay="0.2s"
+                id="countdown-timer">
+                <div class="countdown-unit">
+                    <div class="countdown-number" id="cd-days">00</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-unit">
+                    <div class="countdown-number" id="cd-hours">00</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-unit">
+                    <div class="countdown-number" id="cd-minutes">00</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-unit">
+                    <div class="countdown-number" id="cd-seconds">00</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center flex-wrap gap-4 gap-md-5 mt-5 pt-3 wow fadeInUp"
+                data-wow-delay="0.25s" id="stat-counters">
+                <div class="stat-unit">
+                    <div class="stat-number"><span class="stat-value" data-target="25">0</span>+</div>
+                    <div class="stat-label">Speakers</div>
+                </div>
+                <div class="stat-unit">
+                    <div class="stat-number"><span class="stat-value" data-target="2">0</span></div>
+                    <div class="stat-label">Days</div>
+                </div>
+                <div class="stat-unit">
+                    <div class="stat-number"><span class="stat-value" data-target="25">0</span>+</div>
+                    <div class="stat-label">Countries</div>
+                </div>
+                <div class="stat-unit">
+                    <div class="stat-number"><span class="stat-value" data-target="4">0</span></div>
+                    <div class="stat-label">Tracks</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Countdown Section End -->
+
+    <!-- Why Attend Section Start -->
+    <div class="container-fluid py-5" style="background-color: #F8F9FA;">
+        <div class="container py-4">
+            <div class="row g-4 text-center">
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="why-attend-card">
+                        <div class="why-attend-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h5 class="why-attend-title">Global Speakers</h5>
+                        <p class="why-attend-text">Learn from design thinking leaders and practitioners from 25+
+                            countries.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="why-attend-card">
+                        <div class="why-attend-icon">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h5 class="why-attend-title">Hands-On Workshops</h5>
+                        <p class="why-attend-text">Apply design thinking methods to real challenges in guided,
+                            interactive sessions.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="why-attend-card">
+                        <div class="why-attend-icon">
+                            <i class="fas fa-people-arrows"></i>
+                        </div>
+                        <h5 class="why-attend-title">Networking</h5>
+                        <p class="why-attend-text">Connect with innovators, educators, and change-makers from around
+                            the world.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
+                    <div class="why-attend-card">
+                        <div class="why-attend-icon">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <h5 class="why-attend-title">Certification</h5>
+                        <p class="why-attend-text">Receive an official certificate of participation for the D
+                            Conference 2026.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Why Attend Section End -->
 
     <!-- Introduction Section Start -->
     <div class="container-fluid py-5 intro-section" style="background-color: #FFFFFF;">
@@ -838,18 +1035,6 @@
         </div>
     </div>
     <!-- Footer End -->
-
-    <!-- Guest Highlights Modal -->
-    <div id="guestModal" class="guest-modal-overlay">
-        <div class="guest-modal-box">
-            <button class="guest-modal-close-btn" id="closeGuestModalBtn" aria-label="Close modal">&times;</button>
-            <div class="guest-modal-img-container">
-                <img src="./assets/img/GDTA%20Poster%20%20(8).pdf.png" alt="Featured Guests" class="guest-modal-img">
-            </div>
-            <a href="https://register.gdta2026.com/#/tickets" target="_blank" class="guest-modal-action-btn">Register Now</a>
-        </div>
-    </div>
-
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1031,11 +1216,6 @@
                     video.currentTime = 0;
                 });
                 showNavbar();
-                
-                // Show guest modal a short time after the hero video finishes
-                if (typeof openGuestModal === 'function') {
-                    setTimeout(openGuestModal, 500);
-                }
             };
 
             if (heroAlreadyPlayed) {
@@ -1166,46 +1346,6 @@
 
             // Start auto-rotation
             startAutoRotate();
-
-            // Guest Modal Logic
-            const guestModal = document.getElementById('guestModal');
-            const closeGuestModalBtn = document.getElementById('closeGuestModalBtn');
-
-            function openGuestModal() {
-                document.documentElement.classList.add('modal-open');
-                document.body.classList.add('modal-open');
-                guestModal.classList.add('show');
-            }
-
-            function closeGuestModal() {
-                document.documentElement.classList.remove('modal-open');
-                document.body.classList.remove('modal-open');
-                guestModal.classList.remove('show');
-            }
-
-            if (guestModal && closeGuestModalBtn) {
-                closeGuestModalBtn.addEventListener('click', closeGuestModal);
-                
-                // Also close modal when clicking on the overlay backdrop
-                guestModal.addEventListener('click', (e) => {
-                    if (e.target === guestModal) {
-                        closeGuestModal();
-                    }
-                });
-
-                // Also close on escape key
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && guestModal.classList.contains('show')) {
-                        closeGuestModal();
-                    }
-                });
-
-                // Close on click of CTA button
-                const actionBtn = guestModal.querySelector('.guest-modal-action-btn');
-                if (actionBtn) {
-                    actionBtn.addEventListener('click', closeGuestModal);
-                }
-            }
         });
 
         // Add ripple animation keyframe
@@ -1219,6 +1359,85 @@
             }
         `;
         document.head.appendChild(style);
+
+        // Countdown to GDTA 2026 (29 Sep 2026, 00:00 IST)
+        (function () {
+            const eventDate = new Date('2026-09-29T00:00:00+05:30').getTime();
+            const daysEl = document.getElementById('cd-days');
+            const hoursEl = document.getElementById('cd-hours');
+            const minutesEl = document.getElementById('cd-minutes');
+            const secondsEl = document.getElementById('cd-seconds');
+
+            if (!daysEl) return;
+
+            function pad(n) {
+                return String(n).padStart(2, '0');
+            }
+
+            function updateCountdown() {
+                const distance = eventDate - Date.now();
+
+                if (distance <= 0) {
+                    daysEl.textContent = '00';
+                    hoursEl.textContent = '00';
+                    minutesEl.textContent = '00';
+                    secondsEl.textContent = '00';
+                    clearInterval(countdownInterval);
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                daysEl.textContent = pad(days);
+                hoursEl.textContent = pad(hours);
+                minutesEl.textContent = pad(minutes);
+                secondsEl.textContent = pad(seconds);
+            }
+
+            updateCountdown();
+            const countdownInterval = setInterval(updateCountdown, 1000);
+        })();
+
+        // Animated stat counters (count up when scrolled into view)
+        (function () {
+            const statEls = document.querySelectorAll('.stat-value');
+            if (!statEls.length) return;
+
+            function animateStat(el) {
+                const target = parseInt(el.dataset.target, 10) || 0;
+                const duration = 1500;
+                const startTime = performance.now();
+
+                function step(now) {
+                    const progress = Math.min((now - startTime) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    el.textContent = Math.round(eased * target);
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        el.textContent = target;
+                    }
+                }
+                requestAnimationFrame(step);
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        statEls.forEach(animateStat);
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.4 });
+
+            const counterSection = document.getElementById('stat-counters');
+            if (counterSection) {
+                observer.observe(counterSection);
+            }
+        })();
     </script>
 </body>
 

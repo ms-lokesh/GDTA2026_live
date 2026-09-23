@@ -76,6 +76,7 @@
     <link href="./assets/css/style.css" rel="stylesheet">
     <link href="./assets/css/custom-overrides.css" rel="stylesheet">
     <link href="./assets/css/mobile.css?v=1.2" rel="stylesheet">
+    <link href="./assets/css/hscroll-carousel.css" rel="stylesheet">
 
     <style>
         /* Featured Article Fade Animation */
@@ -159,6 +160,10 @@
         }
 
         /* Speaker Section Styles */
+        .hscroll-card {
+            width: 260px;
+        }
+
         .speaker-card {
             background: #FFFFFF;
             border: 1px solid rgba(0, 0, 0, 0.08);
@@ -329,7 +334,7 @@
                 <h5 class="text-uppercase mb-2"
                     style="color: #E91E63 !important; letter-spacing: 2px; font-weight: 600;">Explore Our Tracks</h5>
                 <h2 class="mb-4" style="font-weight: 800; color: #000000 !important;">Featured Conference Sessions</h2>
-                <p style="color: #495057; max-width: 800px; margin: 0 auto;">Discover our five thematic tracks that will
+                <p style="color: #495057; max-width: 800px; margin: 0 auto;">Discover our four thematic tracks that will
                     shape the future of design thinking</p>
             </div>
 
@@ -349,7 +354,7 @@
                     <div class="gradient-border-inner">
                         <div class="row g-0" style="border-radius: 13px; overflow: hidden;">
                             <div class="col-lg-5" style="position: relative; overflow: hidden;">
-                                <img id="featured-img" src="./assets/img/Sessions/FutureForesight.jpg"
+                                <img id="featured-img" src="./assets/img/Sessions/DesignAi.jpg"
                                     alt="Featured Session"
                                     style="width: 100%; height: 100%; object-fit: cover; min-height: 400px;">
                             </div>
@@ -362,18 +367,18 @@
                                         id="featured-date">29 Sep 2026</span>
                                 </div>
                                 <h3 id="featured-title" style="color: #000000; font-weight: 800; margin-bottom: 20px;">
-                                    Futures Foresight
+                                    Design AI
                                 </h3>
                                 <p id="featured-subtitle" class="mb-3"
-                                    style="color: #E91E63; font-weight: 600; font-size: 16px;">Theme: From Prediction to
-                                    Preparedness</p>
+                                    style="color: #E91E63; font-weight: 600; font-size: 16px;">Theme: Design Thinking in
+                                    the Age of Generative AI</p>
                                 <p id="featured-description"
                                     style="color: #495057; line-height: 1.8; margin-bottom: 25px;">
-                                    In an era of deep uncertainty, relying on past data to predict the future is no
-                                    longer sufficient. This track moves beyond simple forecasting to explore Strategic
-                                    Foresight—a
-                                    disciplined approach to identifying weak signals of change and creating alternative
-                                    futures.
+                                    AI is rapidly reshaping how we understand, practise and teach design thinking,
+                                    opening new possibilities while challenging established ideas of creativity,
+                                    expertise and human agency. This panel explores how different design communities are
+                                    responding to the rise of AI and what it means for the future of human-centred
+                                    innovation.
                                 </p>
                                 <div class="d-flex gap-2">
                                     <button class="btn btn-primary px-4 py-2" id="scrollToDetailsBtn"
@@ -394,6 +399,9 @@
         .track-card {
             position: relative;
             overflow: hidden;
+            display: block;
+            text-decoration: none !important;
+            color: inherit;
         }
 
         .track-card>div {
@@ -477,14 +485,7 @@
         }
 
         .track-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-        }
-
-        .track-card:hover .track-content,
-        .track-card.active .track-content {
-            max-height: 2000px;
+            flex: 1;
         }
 
         .track-subtitle {
@@ -500,25 +501,23 @@
             margin-bottom: 15px;
         }
 
-        .track-list {
-            list-style: none;
-            padding-left: 0;
+        .track-moderator {
+            color: #000000;
+            margin-bottom: 0;
         }
 
-        .track-list li {
-            color: #495057;
-            margin-bottom: 12px;
-            padding-left: 25px;
-            position: relative;
-            line-height: 1.6;
-        }
-
-        .track-list li:before {
-            content: "→";
-            position: absolute;
-            left: 0;
+        .track-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            font-weight: 700;
             color: #E91E63;
-            font-weight: bold;
+            transition: gap 0.3s ease;
+        }
+
+        .track-card:hover .track-cta {
+            gap: 14px;
         }
 
         /* Micro Interactions */
@@ -590,142 +589,68 @@
         <div class="container py-5">
             <div class="text-center mb-5">
                 <h2 class="mb-4 wow fadeInUp" data-wow-delay="0.2s"
-                    style="font-weight: 800; color: #000000 !important;">Explore Our Five Thematic Tracks</h2>
-                <p style="color: #495057; max-width: 800px; margin: 0 auto;">Hover over each card to explore the track
-                    details</p>
+                    style="font-weight: 800; color: #000000 !important;">Explore Our Four Thematic Tracks</h2>
+                <p style="color: #495057; max-width: 800px; margin: 0 auto;">Click any card to see the track's full
+                    session, moderator & speakers</p>
             </div>
 
             <div class="row g-4">
-                <!-- Track 1: Futures Foresight -->
+                <!-- Track 1: Design AI -->
                 <div class="col-lg-6 wow fadeInLeft stagger-animation" data-wow-delay="0.2s">
-                    <div class="track-card">
-                        <div>
-                            <div class="track-card-image">
-                                <img src="./assets/img/Sessions/FutureForesight.jpg" alt="Futures Foresight">
-                            </div>
-                            <div class="track-card-body">
-                                <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Futures Foresight
-                                </h3>
-                                <p class="track-subtitle">Theme: From Prediction to Preparedness</p>
-
-                                <div class="track-content">
-                                    <p class="track-description">
-                                        In an era of deep uncertainty, relying on past data to predict the future is no
-                                        longer sufficient.
-                                        This track moves beyond simple forecasting to explore Strategic Foresight—a
-                                        disciplined approach
-                                        to identifying weak signals of change and creating alternative futures.
-                                    </p>
-                                    <ul class="track-list">
-                                        <li><strong>Beyond Forecasting:</strong> Understanding the difference between
-                                            predicting a single probable future and preparing for multiple plausible
-                                            futures
-                                            (the "pluriverse").</li>
-                                        <li><strong>Methodologies for Clarity:</strong> Workshops on Horizon Scanning,
-                                            Causal Layered Analysis, and the Three Horizons Framework.</li>
-                                        <li><strong>Speculative Design:</strong> Using design to create "props" and
-                                            immersive scenarios from the future to test strategies today.</li>
-                                        <li><strong>Anticipatory Governance:</strong> How governments and institutions
-                                            can
-                                            use foresight to build resilience against shocks like pandemics or climate
-                                            change.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Track 2: Design AI -->
-                <div class="col-lg-6 wow fadeInRight stagger-animation" data-wow-delay="0.2s">
-                    <div class="track-card">
+                    <a class="track-card" href="./track-detail?track=design-ai">
                         <div>
                             <div class="track-card-image">
                                 <img src="./assets/img/Sessions/DesignAi.jpg" alt="Design AI">
                             </div>
                             <div class="track-card-body">
                                 <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Design AI</h3>
-                                <p class="track-subtitle">Theme: Human-Centered Intelligence</p>
-
+                                <p class="track-subtitle">Theme: Design Thinking in the Age of Generative AI</p>
                                 <div class="track-content">
                                     <p class="track-description">
-                                        As we enter the "Intelligence Age," AI is reshaping the design process
-                                        itself. This
-                                        track
-                                        examines the intersection of Human-Centered Design and Artificial
-                                        Intelligence,
-                                        focusing on
-                                        how we can automate the routine to unleash the creative.
+                                        AI is rapidly reshaping how we understand, practise and teach design thinking,
+                                        opening new possibilities while challenging established ideas of creativity,
+                                        expertise and human agency. Bringing together perspectives from the global
+                                        south and north, this panel explores how different design communities are
+                                        responding to the rise of AI and what it means for the future of
+                                        human-centred innovation.
                                     </p>
-                                    <ul class="track-list">
-                                        <li><strong>Human-Centered AI (HCAI):</strong> Shifting focus from replacing
-                                            humans
-                                            to augmenting human capabilities with reliable, safe, and trustworthy AI
-                                            systems.</li>
-                                        <li><strong>Generative Design & Automation:</strong> How AI tools automate
-                                            complex
-                                            layout generation, allowing designers to focus on high-level problem
-                                            solving.
-                                        </li>
-                                        <li><strong>Trust & Transparency:</strong> Implementing UX principles like
-                                            "Layered
-                                            Transparency" and "Dynamic Consent" for algorithmic decisions.</li>
-                                        <li><strong>The AI-Powered Workflow:</strong> Utilizing AI for user research
-                                            analysis and prototype generation as a "creative intern."</li>
-                                    </ul>
+                                    <p class="track-moderator"><strong>Moderator:</strong> Monika Frech</p>
                                 </div>
+                                <span class="track-cta">View Track & Speakers <i class="fas fa-arrow-right"></i></span>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
-                <!-- Track 3: Social Impact -->
-                <div class="col-lg-6 wow fadeInLeft stagger-animation" data-wow-delay="0.2s">
-                    <div class="track-card">
+                <!-- Track 2: Social Impact -->
+                <div class="col-lg-6 wow fadeInRight stagger-animation" data-wow-delay="0.2s">
+                    <a class="track-card" href="./track-detail?track=social-impact">
                         <div>
                             <div class="track-card-image">
                                 <img src="./assets/img/Sessions/SocialImpact.jpg" alt="Social Impact">
                             </div>
                             <div class="track-card-body">
-                                <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Social Impact
-                                </h3>
-                                <p class="track-subtitle">Theme: Designing for Good in Complex Systems</p>
-
+                                <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Social Impact</h3>
+                                <p class="track-subtitle">Theme: Design Thinking as a Catalyst for Community Change</p>
                                 <div class="track-content">
                                     <p class="track-description">
-                                        Aligned with GDTA's mission of "Design Thinking for Good," this track
-                                        tackles
-                                        "Wicked Problems"—
-                                        challenges with conflicting values and confusing information. We focus on
-                                        moving
-                                        from good
-                                        intentions to measurable, systemic change.
+                                        Addressing complex social challenges requires more than good ideas — it calls
+                                        for an understanding of systems, communities and the different realities in
+                                        which change takes place. Bringing together perspectives from the global
+                                        south and north, this panel explores how Design Thinking can contribute to
+                                        meaningful social impact across diverse cultural and societal contexts.
                                     </p>
-                                    <ul class="track-list">
-                                        <li><strong>Theory of Change:</strong> Moving beyond "impact washing" by
-                                            rigorously
-                                            mapping how specific activities lead to sustained long-term community
-                                            changes.
-                                        </li>
-                                        <li><strong>Systems Thinking:</strong> Understanding social impact as a
-                                            network of
-                                            relationships connecting individual efforts to larger ecosystems.</li>
-                                        <li><strong>Rigorous Evaluation:</strong> Establishing high standards for
-                                            "AI for
-                                            Social Good" projects, ensuring they are deployed and effective.</li>
-                                        <li><strong>Inclusive Innovation:</strong> Case studies on frugal innovation
-                                            and
-                                            "Jugaad" driving breakthrough social solutions.</li>
-                                    </ul>
+                                    <p class="track-moderator"><strong>Moderator:</strong> Richard Perez</p>
                                 </div>
+                                <span class="track-cta">View Track & Speakers <i class="fas fa-arrow-right"></i></span>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
-                <!-- Track 4: Education Transformation -->
-                <div class="col-lg-6 wow fadeInRight stagger-animation" data-wow-delay="0.2s">
-                    <div class="track-card">
+                <!-- Track 3: Education Transformation -->
+                <div class="col-lg-6 wow fadeInLeft stagger-animation" data-wow-delay="0.2s">
+                    <a class="track-card" href="./track-detail?track=education-transformation">
                         <div>
                             <div class="track-card-image">
                                 <img src="./assets/img/Sessions/EducationPolicy.jpg" alt="Education Transformation">
@@ -734,44 +659,28 @@
                                 <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Education
                                     Transformation
                                 </h3>
-                                <p class="track-subtitle">Theme: Nurturing Resilient Lifelong Learners</p>
-
+                                <p class="track-subtitle">Theme: From the Teaching Side to the Learning Side</p>
                                 <div class="track-content">
                                     <p class="track-description">
-                                        With the backdrop of India's National Education Policy (NEP) 2020, this
-                                        track
-                                        explores how
-                                        education must evolve to prepare students for a multidisciplinary, AI-driven
-                                        world.
+                                        Education is shifting from knowledge transfer to self-directed, collaborative
+                                        and challenge-based learning. As AI makes knowledge increasingly accessible,
+                                        the focus moves toward Future Skills such as creativity, critical thinking,
+                                        collaboration, agency and the ability to navigate complexity. This panel
+                                        brings together perspectives from government, teacher education, design,
+                                        research and the student experience to explore how Design Thinking and AI can
+                                        help reshape education for the future.
                                     </p>
-                                    <ul class="track-list">
-                                        <li><strong>Holistic & Multidisciplinary Learning:</strong> Breaking down
-                                            silos
-                                            between arts, sciences, and vocational skills to create well-rounded
-                                            critical
-                                            thinkers.</li>
-                                        <li><strong>AI Literacy & Ethics:</strong> Integrating AI education as
-                                            foundational
-                                            literacy for all, focusing on ethical implications and responsible
-                                            technology
-                                            use.</li>
-                                        <li><strong>Lifelong Learning:</strong> Shifting education from one-time
-                                            degrees to
-                                            continuous upskilling and reskilling for digital transformation.</li>
-                                        <li><strong>EdTech Privacy & Security:</strong> Addressing technology
-                                            acquisition
-                                            hurdles while protecting student data privacy in the surveillance era.
-                                        </li>
-                                    </ul>
+                                    <p class="track-moderator"><strong>Moderator:</strong> Prof. Uli Weinberg</p>
                                 </div>
+                                <span class="track-cta">View Track & Speakers <i class="fas fa-arrow-right"></i></span>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
-                <!-- Track 5: Industry Innovation -->
-                <div class="col-lg-6 mx-auto wow fadeInUp stagger-animation" data-wow-delay="0.5s">
-                    <div class="track-card">
+                <!-- Track 4: Industry Innovation -->
+                <div class="col-lg-6 wow fadeInRight stagger-animation" data-wow-delay="0.2s">
+                    <a class="track-card" href="./track-detail?track=industry-innovation">
                         <div>
                             <div class="track-card-image">
                                 <img src="./assets/img/Sessions/IndustryInnovation.jpg" alt="Industry Innovation">
@@ -779,44 +688,23 @@
                             <div class="track-card-body">
                                 <h3 style="color: #000000; font-weight: 800; margin-bottom: 10px;">Industry
                                     Innovation</h3>
-                                <p class="track-subtitle">Theme: The Industrial Metaverse & The Digital Twin</p>
-
+                                <p class="track-subtitle">Theme: Reimagining Value Creation Through Design Thinking</p>
                                 <div class="track-content">
                                     <p class="track-description">
-                                        Leveraging our partnership with Siemens, this track focuses on the
-                                        convergence of
-                                        digital and
-                                        physical worlds. We explore how "Industry 4.0" and emerging "Industry 5.0"
-                                        are
-                                        creating smarter,
-                                        more sustainable production systems.
+                                        Industries across the world are being reshaped by new technologies, changing
+                                        expectations and increasingly complex markets. This panel brings together
+                                        perspectives from India and the United States to explore how Design Thinking
+                                        can help organisations rethink products, services, business models and the
+                                        ways value is created. The discussion considers how different market contexts
+                                        and approaches to innovation can offer new perspectives on turning uncertainty
+                                        into opportunity and creating meaningful, sustainable progress.
                                     </p>
-                                    <ul class="track-list">
-                                        <li><strong>The Executable Digital Twin:</strong> How virtual models of
-                                            physical
-                                            assets allow us to simulate, predict, and optimize performance before
-                                            building.
-                                        </li>
-                                        <li><strong>Siemens Xcelerator & Open Ecosystems:</strong> The shift from
-                                            closed
-                                            systems to open digital business platforms accelerating transformation
-                                            through
-                                            collaboration.</li>
-                                        <li><strong>Disruptive Innovation:</strong> How technologies like 3D
-                                            printing and
-                                            IoT enable smaller, more affordable solutions to challenge established
-                                            markets.
-                                        </li>
-                                        <li><strong>Sustainable Industry (DEGREE Framework):</strong> Digital tools
-                                            like
-                                            blockchain and sensors driving decarbonization and supply chain
-                                            transparency.
-                                        </li>
-                                    </ul>
+                                    <p class="track-moderator"><strong>Moderator:</strong> Nalin SNS</p>
                                 </div>
+                                <span class="track-cta">View Track & Speakers <i class="fas fa-arrow-right"></i></span>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -832,9 +720,11 @@
                     Thinkers</h2>
             </div>
 
-            <div class="row g-4 justify-content-center">
+            <div class="hscroll-carousel">
+                <button class="hscroll-arrow hscroll-arrow-left" aria-label="Scroll speakers left"><i class="fas fa-chevron-left"></i></button>
+                <div class="hscroll-track">
                 <!-- Speaker 1: Nalin -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div id="speaker-nalin-sns" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Untitled design (16).png" alt=" Nalin" class="speaker-img">
@@ -853,7 +743,7 @@
                     </div>
                 </div>
                 <!-- Speaker 1: Uli Weinberg -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div id="speaker-uli-weinberg" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Untitled design (17).png" alt="Uli Weinberg" class="speaker-img">
@@ -872,7 +762,7 @@
                     </div>
                 </div>
                 <!-- Speaker 1: Maria Stashenko -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div id="speaker-maria-stashenko" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Copy of GDTA Poster  (1).png" alt="Maria Stashenko"
@@ -891,7 +781,7 @@
                 </div>
 
                 <!-- Speaker 2: Michael Lewrick -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.2s">
+                <div id="speaker-michael-lewrick" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Copy of GDTA Poster  (2).png" alt="Michael Lewrick"
@@ -910,7 +800,7 @@
                 </div>
 
                 <!-- Speaker 3: Richard Perez -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div id="speaker-richard-perez" class="hscroll-card wow fadeInUp" data-wow-delay="0.3s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Copy of GDTA Poster  (3).png" alt="Richard Perez"
@@ -929,7 +819,7 @@
                 </div>
 
                 <!-- Speaker 5: Agnes Kwek -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div id="speaker-agnes-kwek" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Copy of GDTA Poster  (5).png" alt="Agnes Kwek" class="speaker-img">
@@ -945,44 +835,8 @@
                     </div>
                 </div>
 
-                <!-- Speaker 6: Linlin Shui -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.2s">
-                    <div class="speaker-card">
-                        <div class="speaker-img-container">
-                            <img src="./assets/img/Copy of GDTA Poster  (6).png" alt="Linlin Shui" class="speaker-img">
-                        </div>
-                        <h5 class="speaker-name">Linlin Shui</h5>
-                        <p class="speaker-role">Head of d.school</p>
-                        <p class="speaker-country">China</p>
-                        <div class="speaker-logo-container">
-                            <img src="./assets/img/Copy of GDTA Poster  (20).png" alt="Tsinghua d.school Logo"
-                                class="speaker-logo"
-                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                            <span class="company-text-fallback" style="display:none;">Tsinghua d.school</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Speaker 7: Ramesh Ramanujam -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="speaker-card">
-                        <div class="speaker-img-container">
-                            <img src="./assets/img/Copy of GDTA Poster  (30).png" alt="Ramesh Ramanujam"
-                                class="speaker-img">
-                        </div>
-                        <h5 class="speaker-name">Ramesh Ramanujam</h5>
-                        <p class="speaker-role">Engineering Center Head</p>
-                        <p class="speaker-country">Coimbatore</p>
-                        <div class="speaker-logo-container">
-                            <img src="./assets/img/Copy of GDTA Poster  (21).png" alt="Bosch Logo" class="speaker-logo"
-                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                            <span class="company-text-fallback" style="display:none;">BOSCH</span>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Speaker 8: Anirban Bhattacharya -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.4s">
+                <div id="speaker-anirban-bhattacharya" class="hscroll-card wow fadeInUp" data-wow-delay="0.4s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Copy of GDTA Poster  (8).png" alt="Anirban Bhattacharya"
@@ -1001,7 +855,7 @@
                 </div>
 
                 <!-- Speaker 9: Sreedevi Hegde -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div id="speaker-sreedevi-hegde" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Copy of GDTA Poster  (9).png" alt="Sreedevi Hegde"
@@ -1020,7 +874,7 @@
                 </div>
 
                 <!-- Speaker 10: Revathi Kant -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.2s">
+                <div id="speaker-revathi-kant" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Copy of GDTA Poster  (10).png" alt="Revathi Kant"
@@ -1038,7 +892,7 @@
                 </div>
 
                 <!-- Speaker 11: Can Guvenir -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div id="speaker-can-guvenir" class="hscroll-card wow fadeInUp" data-wow-delay="0.3s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Copy of GDTA Poster  (11).png" alt="Can Guvenir" class="speaker-img">
@@ -1056,7 +910,7 @@
                 </div>
 
                 <!-- Speaker 12: Ricardo Ruffo -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.4s">
+                <div id="speaker-ricardo-ruffo" class="hscroll-card wow fadeInUp" data-wow-delay="0.4s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Copy of GDTA Poster  (12).png" alt="Ricardo Ruffo"
@@ -1073,26 +927,9 @@
                     </div>
                 </div>
 
-                <!-- Speaker 13: Rajat Pandit -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="speaker-card">
-                        <div class="speaker-img-container">
-                            <img src="./assets/img/Copy of GDTA Poster  (13).png" alt="Rajat Pandit"
-                                class="speaker-img">
-                        </div>
-                        <h5 class="speaker-name">Rajat Pandit</h5>
-                        <p class="speaker-role">Head of AI Infrastructure</p>
-                        <p class="speaker-country">Singapore</p>
-                        <div class="speaker-logo-container">
-                            <img src="./assets/img/Copy of GDTA Poster  (27).png" alt="Google Logo" class="speaker-logo"
-                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                            <span class="company-text-fallback" style="display:none;">Google</span>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Speaker 14: Carolin Taenzer -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.2s">
+                <div id="speaker-carolin-taenzer" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Copy of GDTA Poster  (14).png" alt="Carolin Taenzer"
@@ -1110,7 +947,7 @@
                     </div>
                 </div>
                 <!-- Speaker 16: -->
-                <div class="col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div id="speaker-tebogo-chaka" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
                     <div class="speaker-card">
                         <div class="speaker-img-container">
                             <img src="./assets/img/Copy of GDTA Poster  (31).png" alt="Tebogo Chaka"
@@ -1128,6 +965,8 @@
                         </div>
                     </div>
                 </div>
+                </div>
+                <button class="hscroll-arrow hscroll-arrow-right" aria-label="Scroll speakers right"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </div>
@@ -1175,48 +1014,91 @@
     <script src="./assets/lib/waypoints/waypoints.min.js"></script>
     <script src="./assets/js/main.js?v=1.2"></script>
     <script src="./assets/js/mobile-nav.js"></script>
+    <script src="./assets/js/hscroll-carousel.js"></script>
+    <style>
+        .speaker-card.speaker-highlight {
+            animation: speaker-highlight-pulse 1.8s ease-in-out 2;
+            border-color: #E91E63 !important;
+        }
+
+        @keyframes speaker-highlight-pulse {
+            0%, 100% {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            }
+            50% {
+                box-shadow: 0 0 0 6px rgba(233, 30, 99, 0.35);
+            }
+        }
+    </style>
+    <script>
+        // Deep-link from the Program & Schedule timeline to a specific speaker card
+        document.addEventListener('DOMContentLoaded', function () {
+            const hash = window.location.hash;
+            if (!hash || !hash.startsWith('#speaker-')) return;
+
+            const card = document.querySelector(hash);
+            if (!card) return;
+
+            const carousel = card.closest('.hscroll-carousel');
+
+            setTimeout(function () {
+                card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'center' });
+
+                if (carousel) {
+                    carousel.dispatchEvent(new Event('mouseenter'));
+                    setTimeout(function () {
+                        carousel.dispatchEvent(new Event('mouseleave'));
+                    }, 4000);
+                }
+
+                const inner = card.querySelector('.speaker-card');
+                if (inner) {
+                    inner.classList.add('speaker-highlight');
+                    setTimeout(function () {
+                        inner.classList.remove('speaker-highlight');
+                    }, 3600);
+                }
+            }, 300);
+        });
+    </script>
     <script>
         // Featured Sessions Carousel Data
         const sessions = [
             {
                 number: "01",
-                title: "Futures Foresight",
-                subtitle: "Theme: From Prediction to Preparedness",
-                description: "In an era of deep uncertainty, relying on past data to predict the future is no longer sufficient. This track moves beyond simple forecasting to explore Strategic Foresight—a disciplined approach to identifying weak signals of change and creating alternative futures.",
-                image: "./assets/img/Sessions/FutureForesight.jpg",
-                date: "29 Sep 2026"
-            },
-            {
-                number: "02",
+                slug: "design-ai",
                 title: "Design AI",
-                subtitle: "Theme: Human-Centered Intelligence",
-                description: "As we enter the 'Intelligence Age,' AI is reshaping the design process itself. This track examines the intersection of Human-Centered Design and Artificial Intelligence, focusing on how we can automate the routine to unleash the creative.",
+                subtitle: "Theme: Design Thinking in the Age of Generative AI",
+                description: "AI is rapidly reshaping how we understand, practise and teach design thinking, opening new possibilities while challenging established ideas of creativity, expertise and human agency. This panel explores how different design communities are responding to the rise of AI and what it means for the future of human-centred innovation.",
                 image: "./assets/img/Sessions/DesignAi.jpg",
                 date: "29 Sep 2026"
             },
             {
-                number: "03",
+                number: "02",
+                slug: "social-impact",
                 title: "Social Impact",
-                subtitle: "Theme: Designing for Good in Complex Systems",
-                description: "Aligned with GDTA's mission of 'Design Thinking for Good,' this track tackles 'Wicked Problems'—challenges with conflicting values and confusing information. We focus on moving from good intentions to measurable, systemic change.",
+                subtitle: "Theme: Design Thinking as a Catalyst for Community Change",
+                description: "Addressing complex social challenges requires more than good ideas — it calls for an understanding of systems, communities and the different realities in which change takes place. This panel explores how Design Thinking can contribute to meaningful social impact across diverse cultural and societal contexts.",
                 image: "./assets/img/Sessions/SocialImpact.jpg",
                 date: "29 Sep 2026"
             },
             {
-                number: "04",
+                number: "03",
+                slug: "education-transformation",
                 title: "Education Transformation",
-                subtitle: "Theme: Nurturing Resilient Lifelong Learners",
-                description: "With the backdrop of India's National Education Policy (NEP) 2020, this track explores how education must evolve to prepare students for a multidisciplinary, AI-driven world.",
+                subtitle: "Theme: From the Teaching Side to the Learning Side",
+                description: "Education is shifting from knowledge transfer to self-directed, collaborative and challenge-based learning. This panel brings together perspectives from government, teacher education, design, research and the student experience to explore how Design Thinking and AI can help reshape education for the future.",
                 image: "./assets/img/Sessions/EducationPolicy.jpg",
-                date: "30 Sep 2026"
+                date: "29 Sep 2026"
             },
             {
-                number: "05",
+                number: "04",
+                slug: "industry-innovation",
                 title: "Industry Innovation",
-                subtitle: "Theme: The Industrial Metaverse & The Digital Twin",
-                description: "Leveraging our partnership with Siemens, this track focuses on the convergence of digital and physical worlds. We explore how 'Industry 4.0' and emerging 'Industry 5.0' are creating smarter, more sustainable production systems.",
+                subtitle: "Theme: Reimagining Value Creation Through Design Thinking",
+                description: "Industries across the world are being reshaped by new technologies, changing expectations and increasingly complex markets. This panel explores how Design Thinking can help organisations rethink products, services, business models and the ways value is created.",
                 image: "./assets/img/Sessions/IndustryInnovation.jpg",
-                date: "30 Sep 2026"
+                date: "29 Sep 2026"
             }
         ];
 
@@ -1312,18 +1194,6 @@
 
             // Start auto-rotation
             startAutoRotate();
-        });
-
-
-
-        // Make track cards clickable on mobile devices
-        document.querySelectorAll('.track-card').forEach(card => {
-            card.addEventListener('click', function () {
-                // Toggle active class on click for mobile
-                if (window.innerWidth <= 768) {
-                    this.classList.toggle('active');
-                }
-            });
         });
     </script>
 </body>
