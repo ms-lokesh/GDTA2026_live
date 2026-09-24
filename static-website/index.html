@@ -93,6 +93,7 @@
     <link href="./assets/css/custom-overrides.css?v=1.3" rel="stylesheet">
     <link href="./assets/css/mobile.css?v=1.2" rel="stylesheet">
     <link href="./assets/css/hscroll-carousel.css" rel="stylesheet">
+    <link href="./assets/css/featured-speakers.css?v=1.0" rel="stylesheet">
 
     <!-- Advanced UI Enhancements -->
     <style>
@@ -945,6 +946,72 @@
     </div>
     <!-- Introduction Section End -->
 
+    <!-- Featured Keynote Speakers and Chief Guest Start -->
+    <section class="container-fluid featured-speakers-section py-5">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <p class="featured-speakers-kicker text-uppercase mb-2">Featured Guests</p>
+                <h2 class="featured-speakers-title mb-3">Chief Guest &amp; Keynote Speakers</h2>
+                <p class="text-secondary mb-0">Meet the distinguished voices opening and shaping GDTA 2026.</p>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-6 col-lg-4">
+                    <div class="speaker-card featured-speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Speakers/prabhu.png" alt="Dr. T.K. Prabhu" class="speaker-img">
+                        </div>
+                        <h3 class="speaker-name">Dr. T.K. Prabhu</h3>
+                        <p class="speaker-role">Minister for Natural Resources, Minerals and Mines,<br>Tamil Nadu</p>
+                        <p class="speaker-country">India</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Logo/Seal_of_Tamil_Nadu.svg" alt="Government of Tamil Nadu seal"
+                                class="speaker-logo tamil-nadu-seal"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">Government of Tamil Nadu</span>
+                        </div>
+                        <span class="speaker-type-tag chief-guest">Chief Guest</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div id="speaker-dr-palanivelu" class="speaker-card featured-speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Speakers/palanivelu.png" alt="Dr. Palanivelu" class="speaker-img">
+                        </div>
+                        <h3 class="speaker-name">Dr. Palanivelu</h3>
+                        <p class="speaker-role">Chairman<br>GEM Hospital</p>
+                        <p class="speaker-country">India</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Logo/gem_hospital_logo.webp" alt="GEM Hospital logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">GEM Hospital</span>
+                        </div>
+                        <span class="speaker-type-tag keynote-speaker">Keynote Speaker</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div id="speaker-shankar-venugopal" class="speaker-card featured-speaker-card">
+                        <div class="speaker-img-container">
+                            <img src="./assets/img/Speakers/shankar-venugopal.png" alt="Dr. Shankar Venugopal"
+                                class="speaker-img">
+                        </div>
+                        <h3 class="speaker-name">Dr. Shankar Venugopal</h3>
+                        <p class="speaker-role">Vice President<br>Mahindra &amp; Mahindra</p>
+                        <p class="speaker-country">India</p>
+                        <div class="speaker-logo-container">
+                            <img src="./assets/img/Logo/mahindra_logo.jpeg" alt="Mahindra &amp; Mahindra logo"
+                                class="speaker-logo"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="company-text-fallback" style="display:none;">Mahindra &amp; Mahindra</span>
+                        </div>
+                        <span class="speaker-type-tag keynote-speaker">Keynote Speaker</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Featured Keynote Speakers and Chief Guest End -->
+
     <!-- Speakers Start -->
     <div class="container-fluid py-5" style="background-color: #F8F9FA;">
         <div class="container py-5">
@@ -1303,27 +1370,6 @@
                             <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
                         </div>
                     </div>
-                    <!-- Speaker: Dr. Palanivelu -->
-                    <div id="speaker-dr-palanivelu" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="speaker-card">
-                            <div class="speaker-img-container">
-                                <img src="./assets/img/Speakers/palanivelu.png" alt="Dr. Palanivelu"
-                                    class="speaker-img">
-                            </div>
-                            <h5 class="speaker-name">Dr. Palanivelu</h5>
-                            <p class="speaker-role">Chairman
-                                <br>GEM Hospital<br>
-                            </p>
-                            <p class="speaker-country">India</p>
-                            <div class="speaker-logo-container">
-                                <img src="./assets/img/Logo/gem_hospital_logo.webp" alt="GEM Hospital Logo"
-                                    class="speaker-logo"
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                <span class="company-text-fallback" style="display:none;">GEM Hospital</span>
-                            </div>
-                            <span class="speaker-type-tag keynote-speaker">Keynote Speaker</span>
-                        </div>
-                    </div>
                     <!-- Speaker: Raju Balachander -->
                     <div id="speaker-raju-balachander" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
                         <div class="speaker-card">
@@ -1404,27 +1450,6 @@
                                 <span class="company-text-fallback" style="display:none;">CMR University</span>
                             </div>
                             <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
-                        </div>
-                    </div>
-                    <!-- Speaker: Dr. Shankar Venugopal -->
-                    <div id="speaker-shankar-venugopal" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
-                        <div class="speaker-card">
-                            <div class="speaker-img-container">
-                                <img src="./assets/img/Speakers/shankar-venugopal.png" alt="Dr. Shankar Venugopal"
-                                    class="speaker-img">
-                            </div>
-                            <h5 class="speaker-name">Dr. Shankar Venugopal</h5>
-                            <p class="speaker-role">Vice President
-                                <br>Mahindra & Mahindra<br>
-                            </p>
-                            <p class="speaker-country">India</p>
-                            <div class="speaker-logo-container">
-                                <img src="./assets/img/Logo/mahindra_logo.jpeg" alt="Mahindra & Mahindra Logo"
-                                    class="speaker-logo"
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                <span class="company-text-fallback" style="display:none;">Mahindra & Mahindra</span>
-                            </div>
-                            <span class="speaker-type-tag keynote-speaker">Keynote Speaker</span>
                         </div>
                     </div>
                     <!-- Speaker: Sayantan Mukherjee -->

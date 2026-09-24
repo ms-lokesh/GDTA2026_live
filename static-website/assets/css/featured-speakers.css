@@ -1,0 +1,36 @@
+.featured-speakers-section {
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.featured-speakers-section .featured-speakers-kicker {
+    color: #7b1f2e;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+}
+
+.featured-speakers-section .featured-speakers-title {
+    color: #161616;
+    font-weight: 800;
+}
+
+.featured-speakers-section .featured-speaker-card {
+    min-height: 100%;
+    border-top: 4px solid #c99a3b;
+}
+
+.featured-speakers-section .speaker-logo-container img.tamil-nadu-seal {
+    max-height: 42px;
+    max-width: 42px;
+}
+
+.speaker-type-tag.chief-guest {
+    background: #e8f3ec;
+    color: #17633d;
+}
+
+@media (max-width: 575.98px) {
+    .featured-speakers-section .featured-speakers-title {
+        font-size: 1.8rem;
+    }
+}
