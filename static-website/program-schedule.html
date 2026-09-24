@@ -312,6 +312,32 @@
             font-size: 0.85rem;
         }
 
+        .venue-badge[href],
+        .sub-venue-tag[href] {
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .venue-badge[href]:hover,
+        .sub-venue-tag[href]:hover {
+            color: #0d6efd;
+            border-color: #93c5fd;
+            background: #eff6ff;
+        }
+
+        .venue-badge[href]:focus-visible,
+        .sub-venue-tag[href]:focus-visible {
+            outline: 3px solid rgba(13, 110, 253, 0.35);
+            outline-offset: 2px;
+        }
+
+        .venue-link-icon {
+            font-size: 0.7em;
+            margin-left: 2px;
+            opacity: 0.65;
+        }
+
         .sub-venue-tag strong {
             color: #0f172a;
             font-weight: 700;
@@ -600,7 +626,7 @@
                     <div class="timeline-content content-general">
                         <div class="session-header-row">
                             <span class="session-badge badge-general">Registration</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Communication & Growth Centre, SNS Technical Campus</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/Ft67Mcg5TQbWTqM68" target="_blank" rel="noopener noreferrer" aria-label="Open map for Communication & Growth Centre, SNS Technical Campus"><i class="bi bi-geo-alt-fill"></i>Communication & Growth Centre, SNS Technical Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>Registration & Welcome</h4>
                         <p>Collect your event kits and grab fresh coffee before we kick off the opening ceremony.</p>
@@ -616,7 +642,7 @@
                     <div class="timeline-content content-keynote">
                         <div class="session-header-row">
                             <span class="session-badge badge-keynote">Ceremony</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>Opening Ceremony</h4>
                         <ul class="text-secondary ps-3 mb-0">
@@ -646,7 +672,7 @@
                     <div class="timeline-content content-general">
                         <div class="session-header-row">
                             <span class="session-badge badge-general">Memorial</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>Memorial for Late Stanford Professor Larry Leifer</h4>
                         <p>Special tribute honoring the life, pioneering contributions, and legacy of Stanford Professor
@@ -667,7 +693,7 @@
                     <div class="timeline-content content-keynote">
                         <div class="session-header-row">
                             <span class="session-badge badge-keynote">Keynote</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>Keynote Session 1 — Designing Clarity in a Complex India: Navigating Chaos Through Design
                             Thinking</h4>
@@ -690,7 +716,7 @@
                     <div class="timeline-content content-panel">
                         <div class="session-header-row">
                             <span class="session-badge badge-panel">Public Panel</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>Public Panel - Chaos & Clarity</h4>
                         <p>Panel discussion exploring navigating chaos and driving progress through design thinking.</p>
@@ -724,8 +750,8 @@
                             <h6 class="fw-bold text-dark mb-2">Panel 1 - Education Transformation - From the Teaching
                                 Side to the Learning Side</h6>
                             <div class="mb-2">
-                                <span class="sub-venue-tag"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
-                                    Open Auditorium, SNS AI Campus</span>
+                                <a class="sub-venue-tag" href="https://maps.app.goo.gl/gAuzAQ5hxoFEG8Ck7" target="_blank" rel="noopener noreferrer" aria-label="Open map for RM Hall"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
+                                    RM Hall<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                             </div>
                             <p class="small text-secondary mb-2" style="line-height: 1.6;">Education is shifting from
                                 knowledge transfer to self-directed, collaborative and challenge-based learning. As AI
@@ -751,8 +777,8 @@
                             <h6 class="fw-bold text-dark mb-2">Panel 2 - Industry Innovations - Reimagining Value
                                 Creation Through Design Thinking</h6>
                             <div class="mb-2">
-                                <span class="sub-venue-tag"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
-                                    Ground Floor, DT Playhouse</span>
+                                <a class="sub-venue-tag" href="https://maps.app.goo.gl/yCH7aJt8XsVkWcmh6" target="_blank" rel="noopener noreferrer" aria-label="Open map for First Floor, DT Playhouse"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
+                                    First Floor, DT Playhouse<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                             </div>
                             <p class="small text-secondary mb-2" style="line-height: 1.6;">Industries across the world
                                 are being reshaped by new technologies, changing expectations and increasingly complex
@@ -778,8 +804,8 @@
                             <h6 class="fw-bold text-dark mb-2">Panel 3 - Design & AI - Design Thinking in the Age of
                                 Generative AI</h6>
                             <div class="mb-2">
-                                <span class="sub-venue-tag"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
-                                    First Floor, DT Playhouse</span>
+                                <a class="sub-venue-tag" href="https://maps.app.goo.gl/yCH7aJt8XsVkWcmh6" target="_blank" rel="noopener noreferrer" aria-label="Open map for Ground Floor, DT Playhouse"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
+                                    Ground Floor, DT Playhouse<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                             </div>
                             <p class="small text-secondary mb-2" style="line-height: 1.6;">AI is rapidly reshaping how
                                 we understand, practise and teach design thinking, opening new possibilities while
@@ -805,8 +831,8 @@
                             <h6 class="fw-bold text-dark mb-2">Panel 4 - Social Impact – Design Thinking as a Catalyst
                                 for Community Change</h6>
                             <div class="mb-2">
-                                <span class="sub-venue-tag"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
-                                    Second Floor, DT Playhouse</span>
+                                <a class="sub-venue-tag" href="https://maps.app.goo.gl/yCH7aJt8XsVkWcmh6" target="_blank" rel="noopener noreferrer" aria-label="Open map for Second Floor, DT Playhouse"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
+                                    Second Floor, DT Playhouse<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                             </div>
                             <p class="small text-secondary mb-2" style="line-height: 1.6;">Addressing complex social
                                 challenges requires more than good ideas — it calls for an understanding of systems,
@@ -838,7 +864,7 @@
                     <div class="timeline-content content-break">
                         <div class="session-header-row">
                             <span class="session-badge badge-break">Lunch</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Food Court</span>
+                            <a class="venue-badge" href="https://share.google/DR8hW4hUdZVtYU5bt" target="_blank" rel="noopener noreferrer" aria-label="Open map for Food Court"><i class="bi bi-geo-alt-fill"></i>Food Court<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>Networking Lunch</h4>
                         <p>Networking lunch and informal discussions for attendees, speakers, and delegates.</p>
@@ -854,7 +880,7 @@
                     <div class="timeline-content content-networking">
                         <div class="session-header-row">
                             <span class="session-badge badge-networking">Interactive</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>Reflective Session</h4>
                         <ul class="text-secondary ps-3 mb-3">
@@ -882,7 +908,7 @@
                     <div class="timeline-content content-workshop">
                         <div class="session-header-row">
                             <span class="session-badge badge-workshop">Hackathon</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>Top 3 Pitches of GDTA Hackathon 2026</h4>
                         <p>Pitch presentations from the top 3 finalist teams of the GDTA Hackathon 2026.</p>
@@ -898,7 +924,7 @@
                     <div class="timeline-content content-keynote">
                         <div class="session-header-row">
                             <span class="session-badge badge-keynote">Awards</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>Special Recognition & Awards Ceremony</h4>
                         <ul class="text-secondary ps-3 mb-0">
@@ -923,7 +949,7 @@
                     <div class="timeline-content content-networking">
                         <div class="session-header-row">
                             <span class="session-badge badge-networking">Cultural</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>"Coimbatore Nights"</h4>
                         <p>Cultural evening blending traditional South-Indian / Tamil heritage, networking dinner, local
@@ -936,6 +962,22 @@
             <!-- Day 2 Schedule Timeline -->
             <div id="day2-schedule" class="schedule-day">
 
+                <!-- Day 1 Recap -->
+                <div class="timeline-item wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="timeline-time">
+                        <h5>09:00 AM</h5>
+                        <div class="time-end">09:15 AM</div>
+                    </div>
+                    <div class="timeline-content content-networking">
+                        <div class="session-header-row">
+                            <span class="session-badge badge-networking">Recap</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
+                        </div>
+                        <h4>Day 1 Session Recap</h4>
+                        <p>A brief recap of Day 1’s keynotes, panels, and reflections to set the context for the day’s sessions.</p>
+                    </div>
+                </div>
+
                 <!-- Item 1: Keynote Session 2 -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.1s">
                     <div class="timeline-time">
@@ -945,7 +987,7 @@
                     <div class="timeline-content content-keynote">
                         <div class="session-header-row">
                             <span class="session-badge badge-keynote">Keynote</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>Keynote Session 2 — Designing for 2030: What Should We Be Solving Now? (Design Thinking and
                             AI)</h4>
@@ -980,8 +1022,8 @@
                             <h6 class="fw-bold text-dark mb-2">Workshop 1: Playing the Future: How to Apply Trends for
                                 Generating Breakthrough Ideas</h6>
                             <div class="mb-2">
-                                <span class="sub-venue-tag"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
-                                    Ground Floor, DT Playhouse</span>
+                                <a class="sub-venue-tag" href="https://maps.app.goo.gl/yCH7aJt8XsVkWcmh6" target="_blank" rel="noopener noreferrer" aria-label="Open map for Ground Floor, DT Playhouse"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
+                                    Ground Floor, DT Playhouse<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                             </div>
                             <p class="small text-secondary mb-2" style="line-height: 1.6;">This hands-on workshop
                                 introduces participants to trend-watching models and practices, connecting them directly
@@ -1002,8 +1044,8 @@
                             <h6 class="fw-bold text-dark mb-2">Workshop 2 - Beyond the Design Process: Making the Unseen
                                 Visible</h6>
                             <div class="mb-2">
-                                <span class="sub-venue-tag"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
-                                    First Floor, DT Playhouse</span>
+                                <a class="sub-venue-tag" href="https://maps.app.goo.gl/yCH7aJt8XsVkWcmh6" target="_blank" rel="noopener noreferrer" aria-label="Open map for First Floor, DT Playhouse"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
+                                    First Floor, DT Playhouse<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                             </div>
                             <p class="small text-secondary mb-2" style="line-height: 1.6;">Design thinking education
                                 often makes visible the methods, tools, and activities of the design process, while
@@ -1027,8 +1069,8 @@
                             <h6 class="fw-bold text-dark mb-2">Workshop 3 - Reimagining Design Thinking with Indigenous
                                 Knowledge and AI</h6>
                             <div class="mb-2">
-                                <span class="sub-venue-tag"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
-                                    Second Floor, DT Playhouse</span>
+                                <a class="sub-venue-tag" href="https://maps.app.goo.gl/yCH7aJt8XsVkWcmh6" target="_blank" rel="noopener noreferrer" aria-label="Open map for Second Floor, DT Playhouse"><i class="bi bi-geo-alt-fill"></i><strong>Venue:</strong>
+                                    Second Floor, DT Playhouse<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                             </div>
                             <p class="small text-secondary mb-2" style="line-height: 1.6;">This interactive workshop
                                 invites participants to explore how Design Thinking can be reimagined through the
@@ -1052,16 +1094,32 @@
                     </div>
                 </div>
 
+                <!-- Workshop Reflective Session -->
+                <div class="timeline-item wow fadeInUp" data-wow-delay="0.25s">
+                    <div class="timeline-time">
+                        <h5>12:30 PM</h5>
+                        <div class="time-end">12:50 PM</div>
+                    </div>
+                    <div class="timeline-content content-networking">
+                        <div class="session-header-row">
+                            <span class="session-badge badge-networking">Interactive</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
+                        </div>
+                        <h4>Workshop Reflective Session</h4>
+                        <p>Share key insights and takeaways from the parallel workshops before the closing ceremony.</p>
+                    </div>
+                </div>
+
                 <!-- Item 3: Closing Ceremony -->
                 <div class="timeline-item wow fadeInUp" data-wow-delay="0.3s">
                     <div class="timeline-time">
-                        <h5>12:30 PM</h5>
+                        <h5>12:50 PM</h5>
                         <div class="time-end">01:00 PM</div>
                     </div>
                     <div class="timeline-content content-keynote">
                         <div class="session-header-row">
                             <span class="session-badge badge-keynote">Closing</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>Closing Ceremony</h4>
                         <p>Concluding ceremony, final reflections, and closing remarks for GDTA Conference 2026.</p>
@@ -1077,7 +1135,7 @@
                     <div class="timeline-content content-experience">
                         <div class="session-header-row">
                             <span class="session-badge badge-experience">Safari</span>
-                            <span class="venue-badge"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus (Departure)</span>
+                            <a class="venue-badge" href="https://maps.app.goo.gl/M2swpx64SMw5Qtk76" target="_blank" rel="noopener noreferrer" aria-label="Open map for Open Auditorium, SNS AI Campus (Departure)"><i class="bi bi-geo-alt-fill"></i>Open Auditorium, SNS AI Campus (Departure)<i class="bi bi-box-arrow-up-right venue-link-icon" aria-hidden="true"></i></a>
                         </div>
                         <h4>"Coimbatore Innovation Safari"</h4>
                         <p>Site visits and real-world immersion tours. Delegates choose one route:</p>
@@ -1138,7 +1196,7 @@
     <script src="./assets/lib/wow/wow.min.js"></script>
     <script src="./assets/lib/easing/easing.min.js"></script>
     <script src="./assets/lib/waypoints/waypoints.min.js"></script>
-    <script src="./assets/js/main.js?v=1.3"></script>
+    <script src="./assets/js/main.js?v=1.5"></script>
     <script src="./assets/js/mobile-nav.js"></script>
 
     <script>
@@ -1170,6 +1228,7 @@
         }
     </script>
 
+    <script src="./assets/js/whatsapp-contact.js?v=1.3"></script>
 </body>
 
 </html>

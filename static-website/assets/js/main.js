@@ -77,20 +77,19 @@
     $(function () {
         var styleEl = document.createElement('style');
         styleEl.id = 'gdta-hanging-tags-style';
-        styleEl.textContent = "\n#gdta-register-tag,#gdta-view-speakers-tag{position:fixed;right:-2px;transform:translateY(-50%);transform-origin:top center;z-index:1200;background:#000;color:#fff;text-decoration:none;padding:12px 10px;font-weight:700;letter-spacing:.4px;border-radius:12px 0 0 12px;box-shadow:0 10px 24px rgba(0,0,0,.2);transition:transform .2s ease,box-shadow .2s ease,background .2s ease;animation:swing-cta 3.5s ease-in-out infinite;}\n#gdta-register-tag{top:40%;}\n#gdta-view-speakers-tag{top:calc(40% + 230px);}\n#gdta-register-tag span,#gdta-view-speakers-tag span{writing-mode:vertical-rl;transform:rotate(180deg);display:block;color:#ffffff !important;text-shadow:0 0 6px rgba(255,255,255,.95),0 0 14px rgba(255,255,255,.8),0 0 24px rgba(255,255,255,.6);animation:blink-text 1.4s step-start infinite;}\n#gdta-register-tag:hover,#gdta-view-speakers-tag:hover{transform:translateY(-50%) translateX(-6px);box-shadow:0 12px 28px rgba(0,0,0,.28);background:#1f1f1f;}\n" +
-                              "@media (max-width:768px){#gdta-register-tag,#gdta-view-speakers-tag{display:block !important;padding:8px 5px !important;right:-1px !important;}#gdta-register-tag span,#gdta-view-speakers-tag span{font-size:11px !important;}}\n@keyframes swing-cta{0%,100%{transform:translateY(-50%) rotate(0deg);}25%{transform:translateY(-50%) rotate(4deg);}50%{transform:translateY(-50%) rotate(-4deg);}75%{transform:translateY(-50%) rotate(3deg);}}\n@keyframes blink-text{0%,50%{opacity:1;}50.1%,100%{opacity:0.2;}}\n";
+        styleEl.textContent = "\n#gdta-agenda-tag,#gdta-view-speakers-tag{position:fixed;right:-2px;transform:translateY(-50%);transform-origin:top center;z-index:1200;background:#000;color:#fff;text-decoration:none;padding:12px 10px;font-weight:700;letter-spacing:.4px;border-radius:12px 0 0 12px;box-shadow:0 10px 24px rgba(0,0,0,.2);transition:transform .2s ease,box-shadow .2s ease,background .2s ease;animation:swing-cta 3.5s ease-in-out infinite;}\n#gdta-agenda-tag{top:40%;}\n#gdta-view-speakers-tag{top:calc(40% + 115px);}\n#gdta-agenda-tag span,#gdta-view-speakers-tag span{writing-mode:vertical-rl;transform:rotate(180deg);display:block;color:#ffffff !important;text-shadow:0 0 6px rgba(255,255,255,.95),0 0 14px rgba(255,255,255,.8),0 0 24px rgba(255,255,255,.6);animation:blink-text 1.4s step-start infinite;}\n#gdta-agenda-tag:hover,#gdta-view-speakers-tag:hover{transform:translateY(-50%) translateX(-6px);box-shadow:0 12px 28px rgba(0,0,0,.28);background:#1f1f1f;}\n" +
+                              "@media (max-width:768px){#gdta-agenda-tag,#gdta-view-speakers-tag{display:block !important;padding:8px 5px !important;right:-1px !important;}#gdta-agenda-tag span,#gdta-view-speakers-tag span{font-size:11px !important;}}\n@keyframes swing-cta{0%,100%{transform:translateY(-50%) rotate(0deg);}25%{transform:translateY(-50%) rotate(4deg);}50%{transform:translateY(-50%) rotate(-4deg);}75%{transform:translateY(-50%) rotate(3deg);}}\n@keyframes blink-text{0%,50%{opacity:1;}50.1%,100%{opacity:0.2;}}\n";
         if (!document.getElementById(styleEl.id)) document.head.appendChild(styleEl);
 
-        if (!document.getElementById('gdta-register-tag')) {
-            var registerTag = document.createElement('a');
-            registerTag.id = 'gdta-register-tag';
-            // Always point the floating register tag to the external registration URL
-            registerTag.href = 'https://register.gdta2026.com/#/tickets';
-            registerTag.setAttribute('target', '_blank');
-            registerTag.setAttribute('rel', 'noopener noreferrer');
-            registerTag.setAttribute('aria-label', 'Register Now');
-            registerTag.innerHTML = '<span>Register Now</span>';
-            document.body.appendChild(registerTag);
+        if (!document.getElementById('gdta-agenda-tag')) {
+            var agendaTag = document.createElement('a');
+            agendaTag.id = 'gdta-agenda-tag';
+            agendaTag.href = window.location.pathname.indexOf('/hackathon/') !== -1
+                ? '../program-schedule.html'
+                : './program-schedule.html';
+            agendaTag.setAttribute('aria-label', 'Agenda');
+            agendaTag.innerHTML = '<span>Agenda</span>';
+            document.body.appendChild(agendaTag);
         }
 
         if (!document.getElementById('gdta-view-speakers-tag')) {
