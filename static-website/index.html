@@ -92,6 +92,7 @@
     <!-- Custom Color Overrides -->
     <link href="./assets/css/custom-overrides.css?v=1.3" rel="stylesheet">
     <link href="./assets/css/mobile.css?v=1.2" rel="stylesheet">
+    <link href="./assets/css/hscroll-carousel.css" rel="stylesheet">
 
     <!-- Advanced UI Enhancements -->
     <style>
@@ -629,6 +630,144 @@
             font-size: 0.95rem;
             line-height: 1.6;
         }
+
+        /* Speaker Section Styles */
+        .hscroll-card {
+            width: 260px;
+        }
+
+        .speaker-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .speaker-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.12);
+        }
+
+        .speaker-img-container {
+            width: 100%;
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-radius: 0 0 120px 120px;
+            overflow: hidden;
+            background-color: #FFFFFF;
+        }
+
+        .speaker-img {
+            height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+
+        .speaker-card:hover .speaker-img {
+            transform: scale(1.05);
+        }
+
+        .speaker-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #000000 !important;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .speaker-type-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-top: 14px;
+            margin-bottom: 0;
+        }
+
+        .speaker-type-tag.keynote-speaker {
+            background: #FFF4E0;
+            color: #B8860B;
+        }
+
+        .speaker-type-tag.panel-moderator {
+            background: #FDE8EF;
+            color: #E91E63;
+        }
+
+        .speaker-type-tag.panel-speaker {
+            background: #E8F0FE;
+            color: #1A56DB;
+        }
+
+        .speaker-type-tag.workshop-moderator {
+            background: #F1E8FE;
+            color: #7B1FA2;
+        }
+
+        .speaker-type-tag.public-talk {
+            background: #E4F7EC;
+            color: #1E8E5A;
+        }
+
+        .speaker-type-tag.online {
+            background: #E9ECEF;
+            color: #495057;
+        }
+
+        .speaker-role {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #495057 !important;
+            margin-bottom: 4px;
+        }
+
+        .speaker-country {
+            font-size: 0.85rem;
+            color: #6C757D !important;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .speaker-logo-container {
+            height: 45px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .speaker-logo {
+            max-height: 100%;
+            max-width: 80%;
+            object-fit: contain;
+        }
+
+        .company-text-fallback {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #6C757D;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
     </style>
 <script src="./assets/js/modal.js"></script>
 </head>
@@ -804,9 +943,691 @@
             </div>
         </div>
     </div>
-    </div>
-    </div>
     <!-- Introduction Section End -->
+
+    <!-- Speakers Start -->
+    <div class="container-fluid py-5" style="background-color: #F8F9FA;">
+        <div class="container py-5">
+            <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.2s">
+                <h5 class="text-uppercase mb-2"
+                    style="color: #000000 !important; letter-spacing: 2px; font-weight: 600;">Our Speakers</h5>
+                <h2 class="mb-4" style="font-weight: 800; color: #000000 !important;">Global Innovators & Design
+                    Thinkers</h2>
+            </div>
+
+            <div class="hscroll-carousel">
+                <button class="hscroll-arrow hscroll-arrow-left" aria-label="Scroll speakers left"><i
+                        class="fas fa-chevron-left"></i></button>
+                <div class="hscroll-track">
+                    <!-- Speaker 1: Nalin -->
+                    <div id="speaker-nalin-sns" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Untitled design (16).png" alt=" Nalin" class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name"> Dr. Nalin SNS</h5>
+                            <p class="speaker-role">Trustee / Secretary
+                                <br>SNS Group<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/SNS - A Soil of Victory 2.png" alt="Design Thinking Center Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Design Thinking Center</span>
+                            </div>
+                            <span class="speaker-type-tag panel-moderator">Panel Moderator</span>
+                        </div>
+                    </div>
+                    <!-- Speaker 1: Uli Weinberg -->
+                    <div id="speaker-uli-weinberg" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Untitled design (17).png" alt="Uli Weinberg" class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Prof. Uli Weinberg</h5>
+                            <p class="speaker-role">President /
+                                <br>Co Founder Global Design Thinking Alliance<br>
+                            </p>
+                            <p class="speaker-country">Germany</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/gdta_logo.png" alt="GDTA Logo" class="speaker-logo"
+                                    style="width: 100%; max-width: 100% !important; max-height: 55px;"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">GDTA</span>
+                            </div>
+                            <span class="speaker-type-tag panel-moderator">Panel Moderator</span>
+                        </div>
+                    </div>
+                    <!-- Speaker 1: Maria Stashenko -->
+                    <div id="speaker-maria-stashenko" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (1).png" alt="Maria Stashenko"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Maria Stashenko</h5>
+                            <p class="speaker-role">Director
+                                <br>Design Thinking Center Asia<br>
+                            </p>
+                            <p class="speaker-country">Kazakhstan</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Untitled design (12).png" alt="Design Thinking Center Logo"
+                                    class="speaker-logo"
+                                    style="width: 100%; max-width: 100% !important; max-height: 55px;"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Design Thinking Center Asia</span>
+                            </div>
+                            <span class="speaker-type-tag workshop-moderator">Workshop Moderator</span>
+                        </div>
+                    </div>
+
+                    <!-- Speaker 2: Michael Lewrick -->
+                    <div id="speaker-michael-lewrick" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (2).png" alt="Michael Lewrick"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Michael Lewrick</h5>
+                            <p class="speaker-role">Founder
+                                <br>Lewrick & Company<br>
+                            </p>
+                            <p class="speaker-country">Switzerland</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (15).png" alt="Lewrick & Company Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Lewrick & Company</span>
+                            </div>
+                            <span class="speaker-type-tag online">Online</span>
+                        </div>
+                    </div>
+
+                    <!-- Speaker 3: Richard Perez -->
+                    <div id="speaker-richard-perez" class="hscroll-card wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/richard-perez.png" alt="Richard Perez"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Richard Perez</h5>
+                            <p class="speaker-role">Director
+                                <br>HPI South Africa<br>
+                            </p>
+                            <p class="speaker-country">South Africa</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/HPI_south.png"
+                                    alt="HPI South Africa Logo" class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">HPI South Africa</span>
+                            </div>
+                            <span class="speaker-type-tag panel-moderator">Panel Moderator</span>
+                        </div>
+                    </div>
+
+                    <!-- Speaker 5: Agnes Kwek -->
+                    <div id="speaker-agnes-kwek" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (5).png" alt="Agnes Kwek"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Agnes Kwek</h5>
+                            <p class="speaker-role">Professor
+                                <br>CEDEP<br>
+                            </p>
+                            <p class="speaker-country">Singapore</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (19).png" alt="CEDEP Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">CEDEP</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+
+                    <!-- Speaker 8: Anirban Bhattacharya -->
+                    <div id="speaker-anirban-bhattacharya" class="hscroll-card wow fadeInUp" data-wow-delay="0.4s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (8).png" alt="Anirban Bhattacharya"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Anirban Bhattacharya</h5>
+                            <p class="speaker-role">Founder
+                                <br>The Painted Sky<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (22).png" alt="The Painted Sky Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">The Painted Sky</span>
+                            </div>
+                            <span class="speaker-type-tag workshop-moderator">Workshop Moderator</span>
+                        </div>
+                    </div>
+
+                    <!-- Speaker 9: Sreedevi Hegde -->
+                    <div id="speaker-sreedevi-hegde" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/sreedevi-hegde.png" alt="Sreedevi Hegde"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Sreedevi Hegde</h5>
+                            <p class="speaker-role">India Country Head
+                                <br>Acentra Health<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Untitled design (18).png" alt="Acentra Health Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">ACENTRA HEALTH</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+
+                    <!-- Speaker 10: Revathi Kant -->
+                    <div id="speaker-revathi-kant" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (10).png" alt="Revathi Kant"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Revathi Kant</h5>
+                            <p class="speaker-role">Chief Design Officer
+                                <br>Titan<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (24).png" alt="Titan Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">TITAN</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+
+                    <!-- Speaker 11: Can Guvenir -->
+                    <div id="speaker-can-guvenir" class="hscroll-card wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (11).png" alt="Can Güvenir"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Can Güvenir</h5>
+                            <p class="speaker-role">Design and Research Center Manager
+                                <br>Yasar University<br>
+                            </p>
+                            <p class="speaker-country">Türkiye</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (25).png" alt="Yasar University Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Yasar University</span>
+                            </div>
+                            <span class="speaker-type-tag workshop-moderator">Workshop Moderator</span>
+                        </div>
+                    </div>
+
+                    <!-- Speaker 12: Ricardo Ruffo -->
+                    <div id="speaker-ricardo-ruffo" class="hscroll-card wow fadeInUp" data-wow-delay="0.4s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (12).png" alt="Ricardo Ruffo"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Ricardo Ruffo</h5>
+                            <p class="speaker-role">CEO & Founder
+                                <br>ECH/OS Lab<br>
+                            </p>
+                            <p class="speaker-country">Brazil</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (26).png" alt="ECH/OS Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">ECH/OS</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+
+
+                    <!-- Speaker 14: Carolin Taenzer -->
+                    <div id="speaker-carolin-taenzer" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (14).png" alt="Carolin Tänzer"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Carolin Tänzer</h5>
+                            <p class="speaker-role">Managing Director
+                                <br>Impact Week<br>
+                            </p>
+                            <p class="speaker-country">Germany</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (28).png" alt="Impact Week Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Impact Week</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker 16: -->
+                    <div id="speaker-tebogo-chaka" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Copy of GDTA Poster  (31).png" alt="Tebogo Chaka"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Tebogo Chaka</h5>
+                            <p class="speaker-role">Design Thinking Programme Lead
+                                <br>HPI South Africa<br>
+                            </p>
+                            <p class="speaker-country">South Africa</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/HPI_south.png"
+                                    alt="HPI South Africa Logo" class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">HPI South Africa</span>
+                            </div>
+                            <span class="speaker-type-tag workshop-moderator">Workshop Moderator</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Monika Frech -->
+                    <div id="speaker-monika-frech" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/monika-frech.png"
+                                    alt="Monika Frech" class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Monika Frech</h5>
+                            <p class="speaker-role">Head of d-school
+                                <br>HPI, Potsdam<br>
+                            </p>
+                            <p class="speaker-country">Germany</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/hpi_logo.svg" alt="HPI Logo" class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">HPI</span>
+                            </div>
+                            <span class="speaker-type-tag panel-moderator">Panel Moderator</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Andre Bresges -->
+                    <div id="speaker-andre-bresges" class="hscroll-card wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/andre-bresges.png"
+                                    alt="Andre Bresges" class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Andre Bresges</h5>
+                            <p class="speaker-role">University Professor
+                                <br>University of Cologne<br>
+                            </p>
+                            <p class="speaker-country">Germany</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/university_of_cologne_logo.png"
+                                    alt="University of Cologne Logo" class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">University of Cologne</span>
+                            </div>
+                            <span class="speaker-type-tag online">Online</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Avinash Pratap Singh -->
+                    <div id="speaker-avinash-pratap-singh" class="hscroll-card wow fadeInUp" data-wow-delay="0.4s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/avinash-pratap-singh.png" alt="Avinash Pratap Singh"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Avinash Pratap Singh</h5>
+                            <p class="speaker-role">Director of Sustainability
+                                <br>Six Senses Zighy Bay, Oman<br>
+                            </p>
+                            <p class="speaker-country">Oman</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/six_senses_logo.jpeg" alt="Six Senses Zighy Bay Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Six Senses Zighy Bay</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Dr. Palanivelu -->
+                    <div id="speaker-dr-palanivelu" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/palanivelu.png" alt="Dr. Palanivelu"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Dr. Palanivelu</h5>
+                            <p class="speaker-role">Chairman
+                                <br>GEM Hospital<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/gem_hospital_logo.webp" alt="GEM Hospital Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">GEM Hospital</span>
+                            </div>
+                            <span class="speaker-type-tag keynote-speaker">Keynote Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Raju Balachander -->
+                    <div id="speaker-raju-balachander" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/raju-balachander.png" alt="Raju Balachander"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Raju Balachander</h5>
+                            <p class="speaker-role">Managing Director
+                                <br>Haribhavanam<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/haribhavanam_logo.png" alt="Haribhavanam Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Haribhavanam</span>
+                            </div>
+                            <span class="speaker-type-tag public-talk">Public Talk</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Sriram Prasad -->
+                    <div id="speaker-sriram-prasad" class="hscroll-card wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/sriram-prasad.png" alt="Sriram Prasad"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Sriram Prasad</h5>
+                            <p class="speaker-role">Founder
+                                <br>Keerakadai<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/keerakadai_logo.webp" alt="Keerakadai Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Keerakadai</span>
+                            </div>
+                            <span class="speaker-type-tag public-talk">Public Talk</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Arun Titan -->
+                    <div id="speaker-arun-titan" class="hscroll-card wow fadeInUp" data-wow-delay="0.4s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/arun-titan.png" alt="Arun Titan" class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Arun Titan</h5>
+                            <p class="speaker-role">Founder
+                                <br>Silaii<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/silaii_logo.avif" alt="Silaii Logo" class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Silaii</span>
+                            </div>
+                            <span class="speaker-type-tag public-talk">Public Talk</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Shirley Mathew -->
+                    <div id="speaker-shirley-mathew" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/shirley-mathew.png" alt="Shirley Mathew"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Shirley Mathew</h5>
+                            <p class="speaker-role">Assistant Professor
+                                <br>CMR University<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/CMR-NAAC-LOGO.png" alt="CMR University Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">CMR University</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Dr. Shankar Venugopal -->
+                    <div id="speaker-shankar-venugopal" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/shankar-venugopal.png" alt="Dr. Shankar Venugopal"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Dr. Shankar Venugopal</h5>
+                            <p class="speaker-role">Vice President
+                                <br>Mahindra & Mahindra<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/mahindra_logo.jpeg" alt="Mahindra & Mahindra Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Mahindra & Mahindra</span>
+                            </div>
+                            <span class="speaker-type-tag keynote-speaker">Keynote Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Sayantan Mukherjee -->
+                    <div id="speaker-sayantan-mukherjee" class="hscroll-card wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/sayantan-mukherjee.png" alt="Sayantan Mukherjee"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Sayantan Mukherjee</h5>
+                            <p class="speaker-role">Founder
+                                <br>The Innovator's Garage<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/innovators_garage_logo.png"
+                                    alt="The Innovator's Garage Logo" class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">The Innovator's Garage</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: John Ngila -->
+                    <div id="speaker-john-ngila" class="hscroll-card wow fadeInUp" data-wow-delay="0.4s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/john-ngila.png" alt="John Ngila" class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">John Ngila</h5>
+                            <p class="speaker-role">Innovation Lead
+                                <br>Africa Nazarene University<br>
+                            </p>
+                            <p class="speaker-country">Kenya</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/africa_nazarene_university_logo.jpg"
+                                    alt="Africa Nazarene University Logo" class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Africa Nazarene
+                                    University</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Vikasini Sridharan -->
+                    <div id="speaker-vikasini-sridharan" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/vikasini-sridharan.png" alt="Vikasini Sridharan"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Vikasini Sridharan</h5>
+                            <p class="speaker-role">Grade-11
+                                <br>SNS Academy<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/sns_academy_logo.webp" alt="SNS Academy Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">SNS Academy</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Dr. Sudhakaran R -->
+                    <div id="speaker-sudhakaran-r" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/r-sudhakaran.png" alt="Dr. Sudhakaran R"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Dr. Sudhakaran R</h5>
+                            <p class="speaker-role">Vice-Principal
+                                <br>SNS College of Technology (AI Campus)<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/snsct_logo.png" alt="SNS College of Technology Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">SNS College of
+                                    Technology</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Suresh Kumar Viswanathan -->
+                    <div id="speaker-suresh-kumar-viswanathan" class="hscroll-card wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/suresh-kumar-viswanathan.png"
+                                    alt="Suresh Kumar Viswanathan" class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Suresh Kumar Viswanathan</h5>
+                            <p class="speaker-role">Director
+                                <br>Rabwin Mouldsmith Private Limited<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/rabwin_logo.webp" alt="Rabwin Mouldsmith Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Rabwin Mouldsmith</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Dr. Vijay Chandru -->
+                    <div id="speaker-vijay-chandru" class="hscroll-card wow fadeInUp" data-wow-delay="0.4s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/vijay-chandru.png" alt="Dr. Vijay Chandru"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Dr. Vijay Chandru</h5>
+                            <p class="speaker-role">Executive Director
+                                <br>Chandramari Group<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/chandramani_logo.png" alt="Chandramari Group Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Chandramari Group</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Arun Munuswamy -->
+                    <div id="speaker-arun-munuswamy" class="hscroll-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/arun-munuswamy.png" alt="Arun Munuswamy"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Arun Munuswamy</h5>
+                            <p class="speaker-role">International Growth
+                                <br>EXL<br>
+                            </p>
+                            <p class="speaker-country">India</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/exl_logo.jpeg" alt="EXL Logo" class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">EXL</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Prof. Jacob Reeves -->
+                    <div id="speaker-jacob-reeves" class="hscroll-card wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/jacob-reeves.png" alt="Prof. Jacob Reeves"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Prof. Jacob Reeves</h5>
+                            <p class="speaker-role">Assistant Professor
+                                <br>Western University<br>
+                            </p>
+                            <p class="speaker-country">Canada</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/western_university_logo.png" alt="Western University Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">Western University</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                    <!-- Speaker: Peter Matthews -->
+                    <div id="speaker-peter-matthews" class="hscroll-card wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="speaker-card">
+                            <div class="speaker-img-container">
+                                <img src="./assets/img/Speakers/peter-matthews.png" alt="Peter Matthews"
+                                    class="speaker-img">
+                            </div>
+                            <h5 class="speaker-name">Peter Matthews</h5>
+                            <p class="speaker-role">Deputy Director: Operations
+                                <br>HPI South Africa<br>
+                            </p>
+                            <p class="speaker-country">South Africa</p>
+                            <div class="speaker-logo-container">
+                                <img src="./assets/img/Logo/HPI_south.png" alt="HPI South Africa Logo"
+                                    class="speaker-logo"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span class="company-text-fallback" style="display:none;">HPI South Africa</span>
+                            </div>
+                            <span class="speaker-type-tag panel-speaker">Panel Speaker</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="hscroll-arrow hscroll-arrow-right" aria-label="Scroll speakers right"><i
+                        class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="text-center" style="margin-top: -20px; padding-bottom: 20px; background-color: #F8F9FA;">
+        <a href="./program-sessions" class="btn btn-primary px-4 py-2"
+            style="border-radius: 25px; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);">View All Speakers</a>
+    </div>
 
     <!-- Highlights Section Start -->
     <div class="container-fluid py-5" style="background-color: #FFFFFF;">
@@ -921,8 +1742,9 @@
     <script src="./assets/lib/waypoints/waypoints.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="./assets/js/main.js?v=1.2"></script>
+    <script src="./assets/js/main.js?v=1.3"></script>
     <script src="./assets/js/mobile-nav.js"></script>
+    <script src="./assets/js/hscroll-carousel.js"></script>
 
     <script>
         // Initialize
