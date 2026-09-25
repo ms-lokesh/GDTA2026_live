@@ -10,7 +10,7 @@
     const style = document.createElement('style');
     style.textContent = `
         .gdta-whatsapp-widget { position: fixed; right: 24px; bottom: 24px; z-index: 1250; font-family: inherit; }
-        .gdta-whatsapp-widget.gdta-home-actions { display: flex; align-items: center; gap: 12px; }
+        .gdta-whatsapp-widget.gdta-home-actions { display: flex; flex-direction: column; align-items: center; gap: 12px; }
         .gdta-whatsapp-link, .gdta-whatsapp-toggle { display: flex; align-items: center; justify-content: center; gap: 12px; border: 0; border-radius: 999px; background: #25d366; color: #073b1d; box-shadow: 0 8px 24px rgba(0,0,0,.24); text-decoration: none; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
         .gdta-whatsapp-link:hover, .gdta-whatsapp-toggle:hover { color: #073b1d; transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,.28); }
         .gdta-whatsapp-link:focus-visible, .gdta-whatsapp-toggle:focus-visible, .gdta-whatsapp-card a:focus-visible { outline: 3px solid #128c4a; outline-offset: 3px; }
@@ -25,13 +25,14 @@
         .gdta-location-link:hover { color: #b3261e; transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,.28); }
         .gdta-location-link:focus-visible { outline: 3px solid #d93025; outline-offset: 3px; }
         .gdta-whatsapp-card { position: absolute; right: 0; bottom: 72px; width: 260px; padding: 18px; border: 1px solid #e5e7eb; border-radius: 16px; background: #fff; color: #1f2937; box-shadow: 0 12px 35px rgba(0,0,0,.2); }
+        .gdta-whatsapp-widget.gdta-home-actions .gdta-whatsapp-card { bottom: 140px; }
         .gdta-whatsapp-card[hidden] { display: none; }
         .gdta-whatsapp-card p { margin: 0 0 12px; font-weight: 600; }
         .gdta-whatsapp-card a { display: block; color: #128c4a; font-size: 18px; font-weight: 800; text-decoration: none; }
         .gdta-whatsapp-card a:hover { text-decoration: underline; }
         @keyframes gdta-whatsapp-flash { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .78; transform: scale(1.06); } }
         @keyframes gdta-whatsapp-ring { 0% { transform: scale(.86); opacity: .95; } 75%, 100% { transform: scale(1.55); opacity: 0; } }
-        @media (max-width: 575px) { .gdta-whatsapp-widget { right: 16px; bottom: 16px; } .gdta-whatsapp-widget.gdta-home-actions { gap: 10px; } .gdta-whatsapp-card { width: min(260px, calc(100vw - 32px)); } }
+        @media (max-width: 575px) { .gdta-whatsapp-widget { right: 16px; bottom: 16px; } .gdta-whatsapp-widget.gdta-home-actions { gap: 10px; } .gdta-whatsapp-widget.gdta-home-actions .gdta-whatsapp-card { bottom: 136px; width: min(260px, calc(100vw - 32px)); } .gdta-whatsapp-card { width: min(260px, calc(100vw - 32px)); } }
         @media (prefers-reduced-motion: reduce) { .gdta-whatsapp-link, .gdta-whatsapp-toggle, .gdta-location-link { transition: none; } .gdta-whatsapp-icon, .gdta-whatsapp-toggle .fa-whatsapp, .gdta-whatsapp-toggle::before, .gdta-whatsapp-toggle::after { animation: none; } }
     `;
     document.head.appendChild(style);
