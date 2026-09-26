@@ -102,11 +102,11 @@
             scroll-behavior: smooth;
         }
 
-        /* Hero: keep fallback image/video from cropping oddly on different screens */
+        /* Keep the 16:9 hero artwork inside a matching, fluid frame. */
         .hero-section {
-            /* Match hero image aspect ratio (16:9) */
-            height: min(100vh, calc(100vw * 9 / 16));
-            min-height: 520px;
+            height: auto;
+            min-height: 0;
+            aspect-ratio: 16 / 9;
             padding: 0 !important;
         }
 
@@ -131,8 +131,8 @@
         }
 
         body.hero-video-finished .hero-section {
-            height: calc(100vw * 9 / 16) !important;
-            min-height: 520px !important;
+            height: auto !important;
+            min-height: 0 !important;
             padding: 0 !important;
         }
 
@@ -148,9 +148,14 @@
         }
 
         @media (max-width: 768px) {
+            .hero-section {
+                aspect-ratio: auto;
+            }
+
             body.hero-video-finished .hero-section {
                 height: auto !important;
                 min-height: 0 !important;
+                aspect-ratio: auto;
                 padding: var(--gdta-mobile-nav-top, 72px) 0 0 0 !important;
             }
             body.hero-video-finished .hero-media {
