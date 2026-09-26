@@ -107,6 +107,8 @@
             height: auto;
             min-height: 0;
             aspect-ratio: 16 / 9;
+            /* Cap the box so it never grows taller than the screen on wide/short monitors. */
+            max-height: 100vh;
             padding: 0 !important;
         }
 
@@ -133,6 +135,9 @@
         body.hero-video-finished .hero-section {
             height: auto !important;
             min-height: 0 !important;
+            /* Never let the 16:9 box grow taller than the screen, so the bottom of the
+               poster (dates/sponsors) stays visible without scrolling on short/wide monitors. */
+            max-height: 100vh !important;
             padding: 0 !important;
         }
 
@@ -145,17 +150,22 @@
 
         body.hero-video-finished .hero-media .hero-image {
             height: 100% !important;
+            /* When the box is capped shorter than 16:9, crop from the top and keep the bottom pinned. */
+            object-fit: cover;
+            object-position: center bottom;
         }
 
         @media (max-width: 768px) {
             .hero-section {
                 aspect-ratio: auto;
+                max-height: none;
             }
 
             body.hero-video-finished .hero-section {
                 height: auto !important;
                 min-height: 0 !important;
                 aspect-ratio: auto;
+                max-height: none !important;
                 padding: var(--gdta-mobile-nav-top, 72px) 0 0 0 !important;
             }
             body.hero-video-finished .hero-media {
@@ -167,6 +177,7 @@
             body.hero-video-finished .hero-media .hero-image {
                 position: relative !important;
                 height: auto !important;
+                object-fit: contain;
             }
         }
 
@@ -863,7 +874,7 @@
         <div class="hero-media hero-media-desktop" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 1;">
             <video id="heroVideo" autoplay muted playsinline webkit-playsinline preload="auto"
                 poster="./assets/img/Background/gdta-2026-home-hero.jpeg"
-                style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; background-color: #000000;">
+                style="width: 100%; height: 100%; object-fit: cover; object-position: center bottom; display: block; background-color: #000000;">
                 <source src="./assets/img/Background/bg_vdo.web.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
