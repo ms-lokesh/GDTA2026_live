@@ -115,7 +115,8 @@
             inset: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            /* Preserve the supplied hero artwork and all of its text at every viewport size. */
+            object-fit: contain;
             object-position: center;
             display: block;
             opacity: 0;
@@ -856,22 +857,22 @@
 
         <div class="hero-media hero-media-desktop" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 1;">
             <video id="heroVideo" autoplay muted playsinline webkit-playsinline preload="auto"
-                poster="./assets/img/Background/desktop-hero.jpg"
+                poster="./assets/img/Background/gdta-2026-home-hero.jpeg"
                 style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; background-color: #000000;">
                 <source src="./assets/img/Background/bg_vdo.web.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
-            <img class="hero-image" src="./assets/img/Background/desktop-hero.jpg" alt="GDTA 2026 Hero (Desktop)">
+            <img class="hero-image" src="./assets/img/Background/gdta-2026-home-hero.jpeg" alt="GDTA 2026 conference hero artwork">
         </div>
 
         <div class="hero-media hero-media-mobile" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 1;">
             <video id="heroVideoMobile" autoplay muted playsinline webkit-playsinline preload="auto"
-                poster="./assets/img/Background/mobile-hero.jpg"
+                poster="./assets/img/Background/gdta-2026-home-hero.jpeg"
                 style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; background-color: #000000;">
                 <source src="./assets/img/Background/hero_mobile.web.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
-            <img class="hero-image" src="./assets/img/Background/mobile-hero.jpg" alt="GDTA 2026 Hero (Mobile)">
+            <img class="hero-image" src="./assets/img/Background/gdta-2026-home-hero.jpeg" alt="GDTA 2026 conference hero artwork">
         </div>
     </div>
     
